@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24512" systemVersion="25D5087f" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="AppSettingsEntity" representedClassName="AppSettingsEntity" syncable="YES">
+        <attribute name="api_path" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="UserEntity" representedClassName="UserEntity" syncable="YES">
+        <attribute name="access_token" optional="YES" attributeType="String"/>
+        <attribute name="api_path" optional="YES" attributeType="String"/>
+        <attribute name="check_in" optional="YES" attributeType="String"/>
+        <attribute name="check_in_date" optional="YES" attributeType="String"/>
+        <attribute name="check_in_time" optional="YES" attributeType="String"/>
+        <attribute name="company_name" optional="YES" attributeType="String"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="fullname" optional="YES" attributeType="String"/>
+        <attribute name="menuroles" optional="YES" attributeType="String"/>
+        <attribute name="mobile" optional="YES" attributeType="String"/>
+        <attribute name="offline_id" optional="YES" attributeType="String"/>
+        <attribute name="online_id" optional="YES" attributeType="String"/>
+        <attribute name="password" optional="YES" attributeType="String"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
+        <attribute name="user_id" optional="YES" attributeType="String"/>
+    </entity>
+</model>

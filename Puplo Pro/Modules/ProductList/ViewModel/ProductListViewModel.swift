@@ -1,0 +1,34 @@
+//
+//  ProductListViewModel.swift
+//  Puplo Pro
+//
+//  Created by Ahmed on 05/01/2026.
+//
+
+import Foundation
+import RxSwift
+import RxCocoa
+import UIKit
+final class ProductListViewModel {
+
+    // MARK: - Outputs
+    let loadingBehavior = BehaviorRelay<Bool>(value: false)
+    var productsModelObservable: Observable<[Lines]> {
+        productsRelay.asObservable()
+    }
+
+    // MARK: - Private
+    private let productsRelay = BehaviorRelay<[Lines]>(value: [])
+
+    // MARK: - Public
+    func loadProducts() {
+        loadingBehavior.accept(true)
+        DispatchQueue.global(qos: .userInitiated).async {
+            let items = LocalStorageManager.shared.getMasterData()?.data?.products ?? []
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                self.productsRelay.accept(items)
+                self.loadingBehavior.accept(false)
+            }
+        }
+    }
+}

@@ -1,0 +1,6 @@
+framework module Pods_Puplo_Pro {
+  umbrella header "Pods-Puplo Pro-umbrella.h"
+
+  export *
+  module * { export * }
+}
