@@ -7,5 +7,5 @@
 
 import Foundation
 protocol SelectableItem {
-    var idValue: Int { get }
+    var idValue: String { get }
 }

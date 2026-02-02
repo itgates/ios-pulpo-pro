@@ -30,7 +30,7 @@ class DataCenterViewModel {
             ("GET MASTER DATA", "MASTERDATA", nil),
             ("GET ACCOUNTS DATA", "ACCOUNTSDATA", nil),
             ("GET PLANNED VISITS DATA", "Paln", nil),
-            ("GET PLANNED OW DATA", "PLANNEDOW", nil),
+//            ("GET PLANNED OW DATA", "PLANNEDOW", nil),
             ("GET PRESENTATIONS DATA", "PRESENTATIONS", nil)
         ]
 
@@ -44,16 +44,15 @@ class DataCenterViewModel {
     
     // MARK: - get Master Data
     func getMasterData(completion: @escaping (Bool) -> Void) {
-        
         let user = LocalStorageManager.shared.getLoggedUser()
-        
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.masterDataURL
-        print("url >>\(url)")
+        let now = Date()
         
+        let url = "\(baseURL + URLs.masterDataURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")&lineId=\(user?.lineIds ?? "")&divId=\(user?.divIds ?? "")"
+        print("url >>\(url)")
+
         // MARK: - Headers
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user?.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",
@@ -77,7 +76,7 @@ class DataCenterViewModel {
                 print("DEBUG: switch success with model: \(model)")
                 // Save master data locally
                 LocalStorageManager.shared.saveMasterData(model: model)
-                if model.data != nil {
+                if model.Data != nil {
                     completion(true)
                 } else {
                     completion(false)
@@ -89,17 +88,11 @@ class DataCenterViewModel {
     }
     // MARK: - get Accounts Doctors
     func getAccountsDoctors(completion: @escaping (Bool) -> Void) {
-        
-        guard let user = LocalStorageManager.shared.getLoggedUser() else {
-            completion(false)
-            return
-        }
-        
+        let user = LocalStorageManager.shared.getLoggedUser()
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.accountsDoctorsURL
+        let url = "\(baseURL + URLs.accountsDoctorsURL)&lineId=\(user?.lineIds ?? "")&divId=\(user?.divIds ?? "")"
         
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",
@@ -160,7 +153,7 @@ class DataCenterViewModel {
                         otherDoctors.append(item)
                     }
                 }
-
+                
                 LocalStorageManager.shared.saveAccountsDoctorsAM(model: amDoctors)
                 LocalStorageManager.shared.saveAccountsDoctorsPM(model: pmDoctors)
                 LocalStorageManager.shared.saveAccountsDoctorsOther(model: otherDoctors)
@@ -173,18 +166,19 @@ class DataCenterViewModel {
             }
         }
     }
+     
     // MARK: - get plan Visits data
+    //(empty data please check the data entry)
     func getPlanVisitsData(completion: @escaping (Bool) -> Void) {
         
         let user = LocalStorageManager.shared.getLoggedUser()
-        
+        let now = Date()
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.planVisitsURL
+        let url = "\(baseURL + URLs.planVisitsURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")"
         print("url >>\(url)")
         
         // MARK: - Headers
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user?.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",
@@ -219,63 +213,14 @@ class DataCenterViewModel {
         }
     }
     
-    // MARK: - get Plan Ows Data
-    func getPlanOwsData(completion: @escaping (Bool) -> Void) {
-        
-        guard let user = LocalStorageManager.shared.getLoggedUser() else {
-            completion(false)
-            return
-        }
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.planOwsURL
-        
-        let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user.access_token ?? "")",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "lang": "ar",
-            "device-id": AppInfo.shared.deviceID,
-            "timezone": "Africa/Cairo"
-        ]
-        
-        loadingBehavior.accept(true)
-        
-        NetworkLayer.shared.fetchData(
-            method: .get,
-            url: url,
-            parameters: [:],
-            headers: headers
-        ) { [weak self] (result: Result<PlanOwsDataModel>) in
-            guard let self = self else { return }
-            self.loadingBehavior.accept(false)
-            switch result {
-            case .success(let model):
-                // Save  Plan Ows Data locally
-                LocalStorageManager.shared.savePlanOwsData(model: model.data ?? [])
-                if model.data != nil {
-                    completion(true)
-                } else {
-                    completion(false)
-                }
-            case .failure(let error):
-                print("Error fetching doctors: \(error)")
-                completion(false)
-            }
-        }
-    }
-    
     // MARK: - get app presentations
     func getAppPresentations(completion: @escaping (Bool) -> Void) {
         
-        guard let user = LocalStorageManager.shared.getLoggedUser() else {
-            completion(false)
-            return
-        }
+        let user = LocalStorageManager.shared.getLoggedUser()
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.appPresentationsURL
+        let url = "\(baseURL + URLs.appPresentationsURL)&teamId=\(user?.lineIds ?? "")"
         
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",
@@ -309,6 +254,5 @@ class DataCenterViewModel {
             }
         }
     }
-    
 }
 

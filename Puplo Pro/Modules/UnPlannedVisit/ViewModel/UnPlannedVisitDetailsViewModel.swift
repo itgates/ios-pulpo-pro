@@ -36,7 +36,7 @@ final class UnPlannedVisitDetailsViewModel {
     var allManagersSelected: Observable<Bool> {
         managers
             .map { currentManagers in
-                guard let masterManagers = LocalStorageManager.shared.getMasterData()?.data?.managers,
+                guard let masterManagers = LocalStorageManager.shared.getMasterData()?.Data?.managers,
                       !masterManagers.isEmpty else {
                     return false
                 }
@@ -129,7 +129,8 @@ final class UnPlannedVisitDetailsViewModel {
     // MARK: - Managers
     func addManager(name: String) {
         var list = managers.value
-        let newId = (list.last?.id ?? 0) + 1
+        let lastId = Int(list.last?.id ?? "0") ?? 0
+        let newId = String(lastId + 1)
         let newManager = Lines(id: newId, name: name)
         list.append(newManager)
         managers.accept(list)

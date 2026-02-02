@@ -2,10 +2,6 @@ PODS:
   - Alamofire (5.10.2)
   - Differentiator (5.0.0)
   - DropDown (2.3.13)
-  - GoogleMaps (9.4.0):
-    - GoogleMaps/Maps (= 9.4.0)
-  - GoogleMaps/Maps (9.4.0)
-  - GooglePlaces (9.4.1)
   - IQKeyboardCore (1.0.8)
   - IQKeyboardManagerSwift (8.0.1):
     - IQKeyboardManagerSwift/Appearance (= 8.0.1)
@@ -62,8 +58,6 @@ PODS:
 DEPENDENCIES:
   - Alamofire
   - DropDown
-  - GoogleMaps
-  - GooglePlaces
   - IQKeyboardManagerSwift
   - Kingfisher
   - Koyomi
@@ -78,8 +72,6 @@ SPEC REPOS:
     - Alamofire
     - Differentiator
     - DropDown
-    - GoogleMaps
-    - GooglePlaces
     - IQKeyboardCore
     - IQKeyboardManagerSwift
     - IQKeyboardNotification
@@ -101,8 +93,6 @@ SPEC CHECKSUMS:
   Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
   DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
-  GoogleMaps: 0608099d4870cac8754bdba9b6953db543432438
-  GooglePlaces: 8afca6c4e946472e91298589d1640d614b51749a
   IQKeyboardCore: 8652977ec919cf5351aa2977fedd1a6546476fbc
   IQKeyboardManagerSwift: 835fc9c6e4732398113406d84900ad2e8f141218
   IQKeyboardNotification: eb4910401f5a0e68f97e71c62f8a0c5b7e9d535c
@@ -120,6 +110,6 @@ SPEC CHECKSUMS:
   RxSwift: 31649ace6aceeb422e16ff71c60804f9c3281ed9
   SSZipArchive: 8a6ee5677c8e304bebc109e39cf0da91ccef22ea
 
-PODFILE CHECKSUM: 1565dddcc94bdc4d8fbfbc0d4423a5ed60c3597b
+PODFILE CHECKSUM: 678f9f0df0b8ed978f80ad96dff6fe2965017903
 
 COCOAPODS: 1.16.2

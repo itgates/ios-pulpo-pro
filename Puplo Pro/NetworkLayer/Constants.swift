@@ -14,39 +14,36 @@ struct URLs {
     
     /// Pin endpoint used for authentication or initial validation
     static let pinEndpoint = "/itg_pulpoultra/android/index.php"
-    
+    // "https://ultra.pulpopharma.net/itg_pulpoultra_demo/androidnew/index.php?FN=CheckLogin&username=your_username&password=your_password
     /// Login endpoint used for authentication or initial validation
-    static let loginEndpoint = "/api/login"
-    
-    /// check In Outs endpoint used for authentication or initial validation
-    static let checkInOuts = "/api/v2/store_check_in_outs"
+    static let loginEndpoint = "/index.php?FN=CheckLogin"
     
     /// master Data endpoint used for authentication or initial validation
-    static let masterData = "/api/master-data"
-    
+    static let masterData = "/index.php?FN=GetMasterData"
+
     /// accountsDoctors endpoint used for authentication or initial validation
-    static let accountsDoctors = "/api/accounts-doctors"
-    
+    static let accountsDoctors = "/index.php?FN=GetAllAccountTypeTeamAndDoctorDetails"
+
     /// savePlan endpoint used for authentication or initial validation
-    static let savePlan = "/api/save-plan"
+    static let savePlan = "/index.php?FN=save-plan"
     
     /// save plan-ows endpoint used for authentication or initial validation
-    static let savePlanOws = "/api/plan-ows"
-    
+//    static let savePlanOws = "/index.php?FN=plan-ows"
+        
     /// save plan-visits endpoint used for authentication or initial validation
-    static let savePlanVisits = "/api/plan-visits"
+    static let savePlanVisits = "/index.php?FN=GetUpcomingPlannedVisits"
     
     /// save app-presentations  endpoint used for authentication or initial validation
-    static let saveAppPresentations = "/api/app-presentations"
+    static let saveAppPresentations = "/index.php?FN=GetPresentations"
     
     /// saveOw  endpoint used for authentication or initial validation
-    static let saveOw = "/api/save-ow"
+    static let saveOw = "/index.php?FN=save-ow"
     
     /// saveActuals  endpoint used for authentication or initial validation
-    static let saveActuals = "/api/save-actuals"
+    static let saveActuals = "/index.php?FN=save-actuals"
     
     /// attachments  endpoint used for authentication or initial validation
-    static let attachmentsEndpoint = "/api/upload/mobile/attachments"
+    static let attachmentsEndpoint = "/index.php?FN=upload/mobile/attachments"
     
     /// Full URL for the pin request (baseURL + pinEndpoint)
     static var pinURL: String {
@@ -55,10 +52,6 @@ struct URLs {
     /// Full URL for the login request
     static var loginURL: String {
         return loginEndpoint
-    }
-    /// Full URL for the check in outs  request
-    static var checkInOutsURL: String {
-        return checkInOuts
     }
     /// Full URL for the master Data request
     static var masterDataURL: String {
@@ -73,9 +66,9 @@ struct URLs {
         return savePlan
     }
     /// Full URL for the save Plan ows  request
-    static var planOwsURL: String {
-        return savePlanOws
-    }
+//    static var planOwsURL: String {
+//        return savePlanOws
+//    }
     /// Full URL for the save Plan Visits  request
     static var planVisitsURL: String {
         return savePlanVisits

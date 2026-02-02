@@ -340,14 +340,14 @@ private extension PlanningVisitsVC {
 
         switch type {
         case .division:
-            currentLines = masterData?.data?.divisions ?? []
+            currentLines = masterData?.Data?.divisions ?? []
         case .brick:
             guard let id = selectedFilter.division?.id else { currentLines = []; break }
-            currentLines = masterData?.data?.bricks?.filter { $0.line_division_id == id } ?? []
+            currentLines = masterData?.Data?.bricks?.filter { $0.line_division_id == Int(id) } ?? []
         case .accountType:
-            currentLines = masterData?.data?.accountTypes ?? []
+            currentLines = masterData?.Data?.account_types ?? []
         case .classes:
-            currentLines = masterData?.data?.classes ?? []
+            currentLines = masterData?.Data?.classes ?? []
         }
 
         dropDown.dataSource = currentLines.compactMap { $0.name }

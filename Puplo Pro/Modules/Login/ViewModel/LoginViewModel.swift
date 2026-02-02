@@ -18,27 +18,12 @@ class LoginViewModel {
     
     // MARK: - API Call: Login
     func loginUser(name: String, password: String,companyName:String, completion: @escaping (Bool) -> Void) {
-        
-        let user = LocalStorageManager.shared.getLoggedUser()
-        
+                
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.loginURL
+        let url = "\(baseURL + URLs.loginURL)&username=\(name)&password=\(password)"
         print("url >>\(url)")
-        // MARK: - Prepare Parameters
-        let params: [String: Any] = [
-            "name": name,
-            "password": password,
-            "isRealLogin": true,
-            "appVersion": AppInfo.shared.appVersion,
-            "osVersion": AppInfo.shared.osVersion,
-            "deviceBrand": AppInfo.shared.deviceModel,
-            "osType": "iOS",
-            "OsID": AppInfo.shared.deviceID
-        ]
-        
         // MARK: - Headers
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user?.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",
@@ -46,13 +31,12 @@ class LoginViewModel {
             "timezone": "Africa/Cairo"
         ]
         print("headers >>\(headers)")
-        print("params >>\(params)")
         loadingBehavior.accept(true)
         
         NetworkLayer.shared.fetchData(
             method: .post,
             url: url,
-            parameters: params,
+            parameters: [:],
             headers: headers
         ) { [weak self] (result: Result<LoginModel>) in
             guard let self = self else { return }
@@ -60,7 +44,7 @@ class LoginViewModel {
             switch result {
             case .success(let model):
                
-                if model.code != 500 {
+                if model.status != 500 && model.data?.count ?? 0 > 0 {
                     
                     LocalStorageManager.shared.clearUsers()
                     let now = Date()
@@ -71,8 +55,7 @@ class LoginViewModel {
                         model: model,
                         check_in_date: checkInDate,
                         check_in_time: checkInTime,
-                        companyName: companyName,
-                    )
+                        companyName: companyName)
                     
                     completion(true)
                 } else {
@@ -107,13 +90,6 @@ class LoginViewModel {
             isAllSuccess = isAllSuccess && success
             group.leave()
         }
-
-        group.enter()
-        getPlanOwsData { success in
-            isAllSuccess = isAllSuccess && success
-            group.leave()
-        }
-
         group.enter()
         getAppPresentations { success in
             isAllSuccess = isAllSuccess && success
@@ -127,16 +103,15 @@ class LoginViewModel {
 
     // MARK: - get Master Data
     func getMasterData(completion: @escaping (Bool) -> Void) {
-        
         let user = LocalStorageManager.shared.getLoggedUser()
-        
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.masterDataURL
-        print("url >>\(url)")
+        let now = Date()
         
+        let url = "\(baseURL + URLs.masterDataURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")&lineId=\(user?.lineIds ?? "")&divId=\(user?.divIds ?? "")"
+        print("url >>\(url)")
+
         // MARK: - Headers
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user?.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",
@@ -160,7 +135,7 @@ class LoginViewModel {
                 print("DEBUG: switch success with model: \(model)")
                 // Save master data locally
                 LocalStorageManager.shared.saveMasterData(model: model)
-                if model.data != nil {
+                if model.Data != nil {
                     completion(true)
                 } else {
                     completion(false)
@@ -172,17 +147,11 @@ class LoginViewModel {
     }
     // MARK: - get Accounts Doctors
     func getAccountsDoctors(completion: @escaping (Bool) -> Void) {
-        
-        guard let user = LocalStorageManager.shared.getLoggedUser() else {
-            completion(false)
-            return
-        }
-        
+        let user = LocalStorageManager.shared.getLoggedUser()
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.accountsDoctorsURL
+        let url = "\(baseURL + URLs.accountsDoctorsURL)&lineId=\(user?.lineIds ?? "")&divId=\(user?.divIds ?? "")"
         
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",
@@ -256,18 +225,19 @@ class LoginViewModel {
             }
         }
     }
+     
     // MARK: - get plan Visits data
+    //(empty data please check the data entry)
     func getPlanVisitsData(completion: @escaping (Bool) -> Void) {
         
         let user = LocalStorageManager.shared.getLoggedUser()
-        
+        let now = Date()
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.planVisitsURL
+        let url = "\(baseURL + URLs.planVisitsURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")"
         print("url >>\(url)")
         
         // MARK: - Headers
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user?.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",
@@ -302,63 +272,14 @@ class LoginViewModel {
         }
     }
     
-    // MARK: - get Plan Ows Data
-    func getPlanOwsData(completion: @escaping (Bool) -> Void) {
-        
-        guard let user = LocalStorageManager.shared.getLoggedUser() else {
-            completion(false)
-            return
-        }
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.planOwsURL
-        
-        let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user.access_token ?? "")",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "lang": "ar",
-            "device-id": AppInfo.shared.deviceID,
-            "timezone": "Africa/Cairo"
-        ]
-        
-        loadingBehavior.accept(true)
-        
-        NetworkLayer.shared.fetchData(
-            method: .get,
-            url: url,
-            parameters: [:],
-            headers: headers
-        ) { [weak self] (result: Result<PlanOwsDataModel>) in
-            guard let self = self else { return }
-            self.loadingBehavior.accept(false)
-            switch result {
-            case .success(let model):
-                // Save  Plan Ows Data locally
-                LocalStorageManager.shared.savePlanOwsData(model: model.data ?? [])
-                if model.data != nil {
-                    completion(true)
-                } else {
-                    completion(false)
-                }
-            case .failure(let error):
-                print("Error fetching doctors: \(error)")
-                completion(false)
-            }
-        }
-    }
-    
     // MARK: - get app presentations
     func getAppPresentations(completion: @escaping (Bool) -> Void) {
         
-        guard let user = LocalStorageManager.shared.getLoggedUser() else {
-            completion(false)
-            return
-        }
+        let user = LocalStorageManager.shared.getLoggedUser()
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.appPresentationsURL
+        let url = "\(baseURL + URLs.appPresentationsURL)&teamId=\(user?.lineIds ?? "")"
         
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",

@@ -6,15 +6,13 @@ target 'Puplo Pro' do
   use_frameworks!
 
   # Pods for Puplo Pro
-pod 'Alamofire'
+ pod 'Alamofire'
  pod 'IQKeyboardManagerSwift'
  pod 'RxSwift'
  pod 'RxCocoa'
  pod 'RxDataSources'
  pod 'Kingfisher'
  pod 'lottie-ios'
- pod 'GoogleMaps'
- pod 'GooglePlaces'
  pod 'Koyomi'
  pod 'DropDown'
  pod 'SSZipArchive'

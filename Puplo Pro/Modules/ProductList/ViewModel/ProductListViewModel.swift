@@ -24,7 +24,7 @@ final class ProductListViewModel {
     func loadProducts() {
         loadingBehavior.accept(true)
         DispatchQueue.global(qos: .userInitiated).async {
-            let items = LocalStorageManager.shared.getMasterData()?.data?.products ?? []
+            let items = LocalStorageManager.shared.getMasterData()?.Data?.products ?? []
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 self.productsRelay.accept(items)
                 self.loadingBehavior.accept(false)

@@ -22,7 +22,7 @@ class CellAddManager: UICollectionViewCell {
     var didSelectItem: ((Lines) -> Void)?
 
     private var managerData: [Lines]? {
-        LocalStorageManager.shared.getMasterData()?.data?.managers
+        LocalStorageManager.shared.getMasterData()?.Data?.managers
     }
 
     // MARK: - Lifecycle

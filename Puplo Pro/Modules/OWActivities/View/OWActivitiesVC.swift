@@ -382,8 +382,8 @@ private extension OWActivitiesVC {
             .subscribe(onNext: { [weak self] item in
                 guard let self else { return }
                 self.officeWorkLabel.text = item.name
-                self.ow_type_id = item.id ?? 0
-                print("officeWork.id >>\(item.id ?? 0)")
+                self.ow_type_id = Int(item.id ?? "") ?? 0
+                print("officeWork.id >>\(item.id ?? "")")
                 self.collapseOfficeWork()
             })
             .disposed(by: disposeBag)

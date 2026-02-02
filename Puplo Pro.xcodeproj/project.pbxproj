@@ -105,7 +105,6 @@
 				E26B12C22ECB4345001EB24D /* Frameworks */,
 				E26B12C32ECB4345001EB24D /* Resources */,
 				90095DB14D6736762E9C9EA0 /* [CP] Embed Pods Frameworks */,
-				42DC12BFF1021E861A3D46C0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -164,27 +163,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		42DC12BFF1021E861A3D46C0 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Puplo Pro/Pods-Puplo Pro-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Puplo Pro/Pods-Puplo Pro-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Puplo Pro/Pods-Puplo Pro-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		90095DB14D6736762E9C9EA0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -193,13 +171,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Puplo Pro/Pods-Puplo Pro-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Puplo Pro/Pods-Puplo Pro-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

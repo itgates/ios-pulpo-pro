@@ -144,17 +144,16 @@ class LoginVC: BaseView {
             guard let self else { return }
             if success {
                 self.loadMasterData()
-                
             } else {
                 self.handleLoginFailure()
             }
         }
     }
     private func handleLoginFailure() {
+        endLoading()
         showAlert(
             alertTitle: "Error",
-            alertMessage: "Invalid username or password."
-        )
+            alertMessage: "Invalid username or password.")
 
         loginButton.isEnabled = true
         loginButton.alpha = 1.0
@@ -163,9 +162,12 @@ class LoginVC: BaseView {
     private func loadMasterData() {
         viewModel.fetchAllData { [weak self] success in
             guard let self, success else { return }
-            self.showTopAlert(message: "Successfully login") {
+            if success {
+                self.showTopAlert(message: "Successfully login")
                 self.endLoading()
                 self.navigationHomeVC()
+            } else {
+                self.endLoading()
             }
         }
     }

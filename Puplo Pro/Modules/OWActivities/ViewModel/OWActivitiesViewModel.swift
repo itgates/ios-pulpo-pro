@@ -44,8 +44,8 @@ class OWActivitiesViewModel {
         }
         oWActivitiesAMModelSubject.accept(items)
         
-        guard let data = officeWork?.data else { return }
-        officeWorkTypesModelSubject.accept(data.officeWorkTypes ?? [])
+        guard let data = officeWork?.Data else { return }
+        officeWorkTypesModelSubject.accept(data.office_work_types ?? [])
     }
     // MARK: - Helpers (Lookup)
     func shiftName(for shiftId: Int) -> String? {
@@ -56,7 +56,7 @@ class OWActivitiesViewModel {
 
     func officeWorkName(for owTypeId: Int) -> String? {
         return officeWorkTypesModelSubject.value
-            .first { $0.id == owTypeId }?
+            .first { Int($0.id ?? "") == owTypeId }?
             .name
     }
 
@@ -79,7 +79,7 @@ class OWActivitiesViewModel {
     // MARK: - fetch Data Applay
     func fetchDataApplay(OWS: [OWSModel], completion: @escaping (Bool,String) -> Void) {
 
-        let user = LocalStorageManager.shared.getLoggedUser()
+//        let user = LocalStorageManager.shared.getLoggedUser()
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
         let url = baseURL + URLs.saveOwURL
         
@@ -105,7 +105,7 @@ class OWActivitiesViewModel {
 
         // MARK: - Headers
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user?.access_token ?? "")",
+//            "Authorization": "Bearer \(user?.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",

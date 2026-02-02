@@ -65,7 +65,7 @@ extension UIViewController {
 
     // ✅ Generic validation
     func hasValidSelection<T: SelectableItem>(_ items: [T]) -> Bool {
-        items.contains { $0.idValue != 0 }
+        items.contains { $0.idValue != "" }
     }
      func periodToTabIndex(_ period: Period) -> TabIndex {
         switch period {

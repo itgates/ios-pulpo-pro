@@ -26,7 +26,7 @@ class CellPlanningVisits: UITableViewCell {
     private let disposeBag = DisposeBag()
     // Closure
     var onMapTapped: (() -> Void)?
-    let officeWorkTypes = LocalStorageManager.shared.getMasterData()?.data?.officeWorkTypes
+    let officeWorkTypes = LocalStorageManager.shared.getMasterData()?.Data?.office_work_types
     // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -67,7 +67,7 @@ class CellPlanningVisits: UITableViewCell {
         iMDepartmentLabel.rx.text.onNext("Date: \(model.date ?? "")")
        
         let name = officeWorkTypes?
-            .first(where: { $0.id == model.ow_type_id })?
+            .first(where: { Int($0.id ?? "") == model.ow_type_id })?
             .name ?? ""
         hosptalLabel.rx.text.onNext("\(name): ")
         

@@ -31,7 +31,7 @@ class CellGifts: UICollectionViewCell {
     private let giftsDataRelay = BehaviorRelay<[Lines]>(value: [])
     
     private var giftsData: [Lines]? {
-        LocalStorageManager.shared.getMasterData()?.data?.giveways
+        LocalStorageManager.shared.getMasterData()?.Data?.giveaways
     }
     
     private var count: Int = 1 {

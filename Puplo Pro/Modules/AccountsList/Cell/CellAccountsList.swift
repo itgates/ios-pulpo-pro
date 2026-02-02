@@ -27,11 +27,11 @@ class CellAccountsList: UITableViewCell {
         // Initialization code
         bindActions()
     }
-    func configure(with model: Accoutns) {
-        idLabel.rx.text.onNext("\(model.id ?? 0)")
+    func configure(with model: Accounts) {
+        idLabel.rx.text.onNext("\(model.id ?? "")")
         
-        latLabel.rx.text.onNext(model.ll)
-        lngLabel.rx.text.onNext(model.lg)
+        latLabel.rx.text.onNext(model.team_ll)
+        lngLabel.rx.text.onNext(model.team_lg)
         
         let shift = AccountShift(rawValue: model.type_id ?? 0)
         

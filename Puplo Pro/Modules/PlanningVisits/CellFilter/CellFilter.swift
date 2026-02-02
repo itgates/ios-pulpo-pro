@@ -28,7 +28,7 @@ class CellFilter: UITableViewCell {
     }
     
     var masterData = LocalStorageManager.shared.getMasterData()
-    var didSelectItem: ((String,Int) -> Void)?
+    var didSelectItem: ((String,String) -> Void)?
     private var tableObservation: NSKeyValueObservation?
 
     // MARK: - Lifecycle
@@ -44,7 +44,7 @@ class CellFilter: UITableViewCell {
         nameLabel.text = model.name
         selectNameLabel.text = model.selectedValue ?? "Select \(model.name)"
 
-        guard let data = masterData?.data else { return }
+        guard let data = masterData?.Data else { return }
         
         switch model.name {
         case "Division":
@@ -54,7 +54,7 @@ class CellFilter: UITableViewCell {
             masterDataRelay.accept(data.bricks ?? [])
             
         case "Account Type":
-            masterDataRelay.accept(data.accountTypes ?? [])
+            masterDataRelay.accept(data.account_types ?? [])
             
         case "Class":
             masterDataRelay.accept(data.classes ?? [])
@@ -88,7 +88,7 @@ private extension CellFilter {
                 guard let self = self else { return }
                 
                 let name = item.name ?? ""
-                let id = item.id ?? 0
+                let id = item.id ?? ""
                 self.selectNameLabel.text = name
                 self.didSelectItem?(name,id)
             })

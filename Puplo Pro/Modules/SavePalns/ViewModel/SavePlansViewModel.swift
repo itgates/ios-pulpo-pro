@@ -121,7 +121,7 @@ final class SavePlansViewModel {
 
         let url = baseURL + URLs.planURL
         let parameters = buildParams(from: plans)
-        let headers = buildHeaders(token: user.access_token ?? "")
+        let headers = buildHeaders()
         print("parameters >>\(parameters)")
         print("baseURL >>\(baseURL)")
         loadingBehavior.accept(true)
@@ -162,9 +162,9 @@ final class SavePlansViewModel {
         return ["plans": plansArray]
     }
 
-    private func buildHeaders(token: String) -> HTTPHeaders {
+    private func buildHeaders() -> HTTPHeaders {
         [
-            "Authorization": "Bearer \(token)",
+//            "Authorization": "Bearer \(token)",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",

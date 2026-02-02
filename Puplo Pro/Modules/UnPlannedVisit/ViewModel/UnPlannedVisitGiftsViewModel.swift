@@ -18,7 +18,7 @@ final class UnPlannedVisitGiftsViewModel {
     var allGiftsSelected: Observable<Bool> {
         gifts
             .map { currentGifts in
-                guard let masterGifts = LocalStorageManager.shared.getMasterData()?.data?.giveways,
+                guard let masterGifts = LocalStorageManager.shared.getMasterData()?.Data?.giveaways,
                       !masterGifts.isEmpty else {
                     return false
                 }
@@ -38,7 +38,7 @@ final class UnPlannedVisitGiftsViewModel {
         var list = gifts.value
 
         let newGift = Lines(
-            id: 0,
+            id: "0",
             name: name,
             count: count
         )

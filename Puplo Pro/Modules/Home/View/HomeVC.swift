@@ -31,10 +31,6 @@ final class HomeVC: BaseView {
     @IBOutlet private weak var userNameLabel: UILabel!
     @IBOutlet private weak var userTypeLabel: UILabel!
     
-    @IBOutlet private weak var stackTappedCheckIn: UIStackView!
-    @IBOutlet private weak var checkInLabel: UILabel!
-    @IBOutlet private weak var circelCheckIn: UILabel!
-    
     @IBOutlet private weak var dateLabel: UILabel!
     @IBOutlet private weak var timeLabel: UILabel!
     
@@ -49,17 +45,11 @@ final class HomeVC: BaseView {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-//        addGemstoneNavigation(
-//                    title: "I. \(user?.company_name ?? "")",
-//                    showBack: false)
         setNeedsStatusBarAppearanceUpdate()
         setupUI()
         setupBindings()
         observeCollectionHeight()
         subscribeToLoading()
-        viewModel.syncOfflineActionsIfNeeded { [weak self] in
-            self?.loadUserData()
-        }
         viewModel.fetchData()
     }
     override func viewDidLayoutSubviews() {
@@ -85,7 +75,6 @@ private extension HomeVC {
     func setupUI() {
         setupHeader()
         setupUserDataView()
-        setupCheckInButton()
         registerCollectionCells()
         loadUserData()
     }
@@ -104,17 +93,7 @@ private extension HomeVC {
         viewContentUserData.clipsToBounds = true
         
         makeCircular(userImageView)
-        makeCircular(circelCheckIn)
     }
-    
-    func setupCheckInButton() {
-        style(view: stackTappedCheckIn,cornerRadius: stackTappedCheckIn.frame.height / 2, borderWidth: 1,borderColor: UIColor.white)
-        
-        stackTappedCheckIn.onTap { [weak self] in
-            self?.handleCheckInTap()
-        }
-    }
-    
     func registerCollectionCells() {
         collectionView.registerCell(cellClass: CellCollectionViewHome.self)
     }
@@ -146,14 +125,6 @@ private extension HomeVC {
             .disposed(by: disposeBag)
         Observable
             .zip(collectionView.rx.itemSelected, collectionView.rx.modelSelected(HomeModel.self))
-            .filter { [weak self] _ in
-                let checkState = LocalStorageManager.shared.getCheckIn()
-                if checkState != "checked_in" {
-                    self?.showAlert(alertTitle: "Error", alertMessage: "You must check in first.")
-                    return false
-                }
-                return true
-            }
             .bind { [weak self] _, model in
                 self?.navigateIfPossible(for: model)
             }
@@ -168,53 +139,14 @@ private extension HomeVC {
         guard let user = LocalStorageManager.shared.getLoggedUser() else { return }
         
         userNameLabel.text = user.fullname
-        userTypeLabel.text = Constants.userTypePrefix + (user.menuroles ?? "")
+        userTypeLabel.text = Constants.userTypePrefix + (user.mobile ?? "")
         dateLabel.text = "Date \(user.check_in_date ?? "")"
         timeLabel.text = "Time \(user.check_in_time ?? "")"
         
-        if let urlString = user.url, let url = URL(string: urlString) {
-            userImageView.kf.setImage(with: url)
-        }
-        
-        updateCheckInUI()
-    }
-    
-    func updateCheckInUI() {
-        let checkState = LocalStorageManager.shared.getCheckIn()
-        
-        let isCheckedIn = (checkState == "checked_in")
-        
-        circelCheckIn.backgroundColor = isCheckedIn ? .green : .gray
-        checkInLabel.text = isCheckedIn ? "Check out" : "Check in"
-    }
-}
-
-// MARK: - Actions
-private extension HomeVC {
-    
-//    func handleCheckInTap() {
-//        subscribeToLoading()
-//        viewModel.checkInOut { [weak self] done, _ in
-//            guard let self else { return }
-//            done ? loadUserData() :
-//                showAlert(alertTitle: "Error", alertMessage: "Failed to process request.")
+//        if let urlString = user.url, let url = URL(string: urlString) {
+//            userImageView.kf.setImage(with: url)
 //        }
-//    }
-    func handleCheckInTap() {
-        viewModel.checkInOut { [weak self] success, message in
-            guard let self else { return }
-
-            if success {
-                self.loadUserData()
-            } else {
-                self.showAlert(
-                    alertTitle: "Error",
-                    alertMessage: message.isEmpty ? "Failed to process request." : message
-                )
-            }
-        }
     }
-
 }
 
 // MARK: - Observe Collection Height
@@ -231,15 +163,6 @@ private extension HomeVC {
 // MARK: - UICollectionViewDelegateFlowLayout
 extension HomeVC: UICollectionViewDelegateFlowLayout {
     
-//    func collectionView(
-//        _ collectionView: UICollectionView,
-//        layout collectionViewLayout: UICollectionViewLayout,
-//        sizeForItemAt indexPath: IndexPath
-//    ) -> CGSize {
-//        
-//        let width = (collectionView.frame.width - Constants.collectionSpacing) / 4
-//        return CGSize(width: width, height: Constants.collectionItemHeight)
-//    }
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,

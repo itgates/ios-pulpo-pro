@@ -25,6 +25,6 @@ class CellProductList: UITableViewCell {
     // MARK: - Configuration
     func configureCell(model: Lines) {
         productNameLabel.text = model.name ?? ""
-        idLabel.text = "\(model.id ?? 0)"
+        idLabel.text = "\(model.id ?? "")"
     }
 }

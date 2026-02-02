@@ -9,8 +9,6 @@ import UIKit
 import IQKeyboardManagerSwift
 import CoreData
 import CoreLocation
-import GoogleMaps
-import GooglePlaces
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -32,20 +30,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
         
-        GMSServices.provideAPIKey("AIzaSyCr-qeqsO7QlkOMXdIU8xiyooVP7EezO9Q")
-        GMSPlacesClient.provideAPIKey("AIzaSyCr-qeqsO7QlkOMXdIU8xiyooVP7EezO9Q")
+//        GMSServices.provideAPIKey("AIzaSyCr-qeqsO7QlkOMXdIU8xiyooVP7EezO9Q")
+//        GMSPlacesClient.provideAPIKey("AIzaSyCr-qeqsO7QlkOMXdIU8xiyooVP7EezO9Q")
         
         rootVC()
         // clear data 1783633
-//        LocalStorageManager.shared.setUnPlannedVisitOffline(false)
-//        LocalStorageManager.shared.clearVisitItemData()
-//        LocalStorageManager.shared.clearManagerData()
-//        LocalStorageManager.shared.clearGiftsData()
-//        LocalStorageManager.shared.clearProductsData()
-//        LocalStorageManager.shared.clearSelectedImageVisitData()
-//        LocalStorageManager.shared.clearVisitStartLocation()
-//        LocalStorageManager.shared.clearNewPlanData()
-//        LocalStorageManager.shared.clearActualVisitData()
+        LocalStorageManager.shared.setUnPlannedVisitOffline(false)
+        LocalStorageManager.shared.clearVisitItemData()
+        LocalStorageManager.shared.clearManagerData()
+        LocalStorageManager.shared.clearGiftsData()
+        LocalStorageManager.shared.clearProductsData()
+        LocalStorageManager.shared.clearSelectedImageVisitData()
+        LocalStorageManager.shared.clearVisitStartLocation()
+        LocalStorageManager.shared.clearNewPlanData()
+        LocalStorageManager.shared.clearActualVisitData()
         return true
     }
     

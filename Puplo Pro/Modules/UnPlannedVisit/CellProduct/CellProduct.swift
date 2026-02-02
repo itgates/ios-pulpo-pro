@@ -68,16 +68,16 @@ final class CellProduct: UICollectionViewCell {
     }
     
     private var productsData: [Lines]? {
-        LocalStorageManager.shared.getMasterData()?.data?.products
+        LocalStorageManager.shared.getMasterData()?.Data?.products
     }
     private var feedBackData: [Lines]? {
-        LocalStorageManager.shared.getMasterData()?.data?.visitFeedBack
+        LocalStorageManager.shared.getMasterData()?.Data?.visitFeedBack
     }
     private var marketFeedBackData: [Lines]? {
-        LocalStorageManager.shared.getMasterData()?.data?.marketFeedbacks
+        LocalStorageManager.shared.getMasterData()?.Data?.marketFeedbacks
     }
     private var followUpsData: [Lines]? {
-        LocalStorageManager.shared.getMasterData()?.data?.followUps
+        LocalStorageManager.shared.getMasterData()?.Data?.followUps
     }
     
     private var presentationsData: [Presentations] {
@@ -157,14 +157,14 @@ final class CellProduct: UICollectionViewCell {
             
             let selectedItem = items[index]
             print("Name: \(selectedItem.name ?? "")")
-            print("ID: \(selectedItem.id ?? 0)")
+            print("ID: \(selectedItem.id ?? "")")
             
             if let warning = self.didSelectItem?(items[index], type) {
             } else {
                 field.text = title
                 if field == productNameTextField {
                     let filteredPresentations = presentationsData.filter {
-                        $0.product_id == selectedItem.id
+                        $0.product_id == Int(selectedItem.id ?? "")
                     }
                     let hasData = !filteredPresentations.isEmpty
                     collectionViewPresentations.isHidden = !hasData

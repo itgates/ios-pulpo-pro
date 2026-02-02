@@ -122,7 +122,7 @@ private extension DataCenterVC {
         case master
         case accounts
         case planVisits
-        case planOws
+//        case planOws
         case appPresentations
     }
     
@@ -133,8 +133,8 @@ private extension DataCenterVC {
             case 1: return .master
             case 2: return .accounts
             case 3: return .planVisits
-            case 4: return .planOws
-            case 5: return .appPresentations
+//            case 4: return .planOws
+            case 4: return .appPresentations
             default: return .master
             }
         }()
@@ -184,18 +184,18 @@ private extension DataCenterVC {
                                    alertMessage: "Failed to download Plan Visits data. Please try again.")
                 }
             }
-        case .planOws:
-            subscribeToLoading()
-            viewModel.getPlanOwsData { [weak self] done in
-                guard let self else { return }
-                if done {
-                    self.showAlert(alertTitle: "Done",
-                                   alertMessage: "Plan OWS data has been downloaded successfully.")
-                } else {
-                    self.showAlert(alertTitle: "Error",
-                                   alertMessage: "Failed to download Plan OWS data. Please try again.")
-                }
-            }
+//        case .planOws:
+//            subscribeToLoading()
+//            viewModel.getPlanOwsData { [weak self] done in
+//                guard let self else { return }
+//                if done {
+//                    self.showAlert(alertTitle: "Done",
+//                                   alertMessage: "Plan OWS data has been downloaded successfully.")
+//                } else {
+//                    self.showAlert(alertTitle: "Error",
+//                                   alertMessage: "Failed to download Plan OWS data. Please try again.")
+//                }
+//            }
         case .appPresentations:
             subscribeToLoading()
             viewModel.getAppPresentations { [weak self] done in
@@ -224,7 +224,7 @@ private extension DataCenterVC {
             ("Master Data", viewModel.getMasterData),
             ("Accounts Doctors", viewModel.getAccountsDoctors),
             ("Plan Visits", viewModel.getPlanVisitsData),
-            ("Plan OWS", viewModel.getPlanOwsData),
+//            ("Plan OWS", viewModel.getPlanOwsData),
             ("App Presentations", viewModel.getAppPresentations)
         ]
         

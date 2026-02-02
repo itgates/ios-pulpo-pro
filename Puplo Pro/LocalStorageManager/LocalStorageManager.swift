@@ -79,13 +79,13 @@ final class LocalStorageManager {
     // MARK: - User (Core Data)
     func saveUser(model: LoginModel, check_in_date: String, check_in_time: String,companyName: String) {
         let userEntity = UserEntity(context: context)
-        userEntity.user_id = "\(model.user?.id ?? 0)"
-        userEntity.access_token = model.access_token
-        userEntity.email = model.user?.email
-        userEntity.fullname = model.user?.fullname
-        userEntity.mobile = model.userDetails?.mobile
-        userEntity.menuroles = model.user?.menuroles
-        userEntity.url = model.user?.url
+        userEntity.user_id = "\(model.data?.first?.userId ?? "")"
+//        userEntity.access_token = "\(model.data?.first?.userId ?? "")"
+//        userEntity.email = model.data?.first?.name
+        userEntity.fullname = model.data?.first?.username
+        userEntity.mobile = model.data?.first?.mobile
+        userEntity.divIds = model.data?.first?.divIds
+        userEntity.lineIds = model.data?.first?.lineIds
         userEntity.check_in_date = check_in_date
         userEntity.check_in_time = check_in_time
         userEntity.offline_id = "11"

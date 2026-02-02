@@ -8,8 +8,10 @@
 import Foundation
 struct PlanVisitsModel : Codable {
     let status : Int?
+    let status_Message : String?
     let data : [PlanVisitsData]?
 }
+
 struct PlanVisitsData : Codable {
     let id : Int?
     let line_id : Int?

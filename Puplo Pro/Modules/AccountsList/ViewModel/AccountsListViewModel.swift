@@ -34,10 +34,10 @@ final class AccountsListViewModel {
         
         let filtered = allAccounts.filter { account in
             
-            if let id = filter.division?.id, account.div_id != id { return false }
-            if let id = filter.brick?.id, Int(account.brick_id ?? "") != id { return false }
-            if let id = filter.accountType?.id, account.type_id != id { return false }
-            if let id = filter.classType?.id, account.class_id != id { return false }
+            if let id = Int(filter.division?.id ?? ""), account.div_id != id { return false }
+            if let id = filter.brick?.id, account.brick_id ?? "" != id { return false }
+            if let id = Int(filter.accountType?.id ?? ""), account.type_id != id { return false }
+            if let id = Int(filter.classType?.id ?? ""), account.class_id != id { return false }
             
             return true
         }

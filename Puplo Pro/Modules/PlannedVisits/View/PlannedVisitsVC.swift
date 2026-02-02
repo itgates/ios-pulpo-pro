@@ -239,13 +239,13 @@ private extension PlannedVisitsVC {
         }
     }
     private func handleVisit(_ model: PlanVisitsData) {
-        guard let masterData = LocalStorageManager.shared.getMasterData()?.data else { return }
+        guard let masterData = LocalStorageManager.shared.getMasterData()?.Data else { return }
 
-        let divisionName = masterData.divisions?.first(where: { $0.id == model.division_id })?.name ?? ""
+        let divisionName = masterData.divisions?.first(where: { Int($0.id ?? "") == model.division_id })?.name ?? ""
 
-        let brickName = masterData.bricks?.first(where: { $0.id == Int(model.brick_id ?? "") })?.name ?? ""
+        let brickName = masterData.bricks?.first(where: { Int($0.id ?? "") == Int(model.brick_id ?? "") })?.name ?? ""
 
-        let accountTypeID = masterData.accountTypes?.first(where: { $0.name == model.account_type })?.id ?? 0
+        let accountTypeID = masterData.account_types?.first(where: { $0.name == model.account_type })?.id ?? ""
 
         let visitName = model.visit_type_id == 1 ? "Single" : "Double"
 
@@ -261,13 +261,13 @@ private extension PlannedVisitsVC {
             date: model.date,
             time: model.time,
             planID: model.id,
-            division: Lines(id: model.division_id, name: divisionName,line_id: model.line_id, ll: model.ll, lg: model.lg),
-            brick: Lines(id: Int(model.brick_id ?? "") ?? 0, name: brickName,line_id: model.line_id, ll: model.ll, lg: model.lg),
+            division: Lines(id: String(model.division_id ?? 0), name: divisionName,line_id: model.line_id, ll: model.ll, lg: model.lg),
+            brick: Lines(id: model.brick_id ?? "", name: brickName,line_id: model.line_id, ll: model.ll, lg: model.lg),
             accountType: Lines(id: accountTypeID, name: model.account_type,line_id: model.line_id, ll: model.ll, lg: model.lg),
-            account: Lines(id: model.account_id, name: model.account,line_id: model.line_id, ll: model.ll, lg: model.lg),
-            doctor: Lines(id: model.doctor_id, name: model.doctor,line_id: model.line_id, ll: model.ll, lg: model.lg),
-            visitType: Lines(id: model.visit_type_id, name: visitName,line_id: model.line_id, ll: model.ll, lg: model.lg),
-            shiftType: Lines(id: model.shift_id, name: shiftName,line_id: model.line_id, ll: model.ll, lg: model.lg),
+            account: Lines(id: String(model.account_id ?? 0), name: model.account,line_id: model.line_id, ll: model.ll, lg: model.lg),
+            doctor: Lines(id: String(model.doctor_id ?? 0), name: model.doctor,line_id: model.line_id, ll: model.ll, lg: model.lg),
+            visitType: Lines(id: String(model.visit_type_id ?? 0), name: visitName,line_id: model.line_id, ll: model.ll, lg: model.lg),
+            shiftType: Lines(id: String(model.shift_id ?? 0), name: shiftName,line_id: model.line_id, ll: model.ll, lg: model.lg),
         )
 
         LocalStorageManager.shared.saveVisitItemData(model: [visitItem])

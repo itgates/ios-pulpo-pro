@@ -20,7 +20,7 @@ final class StatisticsViewModel {
 
     init() {
         productsCount = Observable
-            .just(LocalStorageManager.shared.getMasterData()?.data?.products?.count ?? 0)
+            .just(LocalStorageManager.shared.getMasterData()?.Data?.products?.count ?? 0)
             .map { "\($0)" }
             .asDriver(onErrorJustReturn: "0")
 
@@ -40,7 +40,7 @@ final class StatisticsViewModel {
             .asDriver(onErrorJustReturn: "0")
 
         settingsCount = Observable
-            .just(LocalStorageManager.shared.getMasterData()?.data?.settings?.count ?? 0)
+            .just(LocalStorageManager.shared.getMasterData()?.Data?.settings?.count ?? 0)
             .map { "\($0)" }
             .asDriver(onErrorJustReturn: "0")
     }

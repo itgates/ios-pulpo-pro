@@ -162,16 +162,16 @@ final class UnPlannedVisitNotesViewModel {
             let model = ActualVisitModel(
                 id: UUID().uuidString,
                 
-                accountID: visit.account?.id ?? 0,
+                accountID: Int(visit.account?.id ?? ""),
                 palnID: visit.planID ?? 0,
-                doctorID: visit.doctor?.id ?? 0,
-                accountTypeID: visit.accountType?.id ?? 0,
-                divisionID: visit.division?.id ?? 0,
-                brickID: visit.brick?.id ?? 0,
+                doctorID: Int(visit.doctor?.id ?? ""),
+                accountTypeID: Int(visit.accountType?.id ?? ""),
+                divisionID: Int(visit.division?.id ?? ""),
+                brickID: Int(visit.brick?.id ?? ""),
                 lineId: visit.account?.line_id ?? 0,
                 comment: visit.comment ?? "",
-                visitTypeId: visit.visitType?.id ?? 0,
-                shiftTypeId: visit.shiftType?.id ?? 0,
+                visitTypeId: Int(visit.visitType?.id ?? ""),
+                shiftTypeId: Int(visit.shiftType?.id ?? ""),
                 shiftId: visit.accountType?.shift_id ?? 0,
                 
                 offline_id: offlineId,
@@ -206,16 +206,16 @@ final class UnPlannedVisitNotesViewModel {
     private func mapProducts(_ items: [ProductItem]) -> [ProductVisitModel] {
         items.map {
             ProductVisitModel(
-                productId: $0.product?.id ?? 0,
+                productId: Int($0.product?.id ?? "") ?? 0,
                 name: $0.product?.name ?? "",
                 count: $0.count,
                 comment: $0.comment ?? "",
                 stock: $0.stock ?? "",
                 payment: $0.payment ?? "",
                 order: $0.order ?? "",
-                followup_id: $0.followUp?.id ?? 0,
-                market_feedback_id: $0.market?.id ?? 0,
-                vFeedback_id: $0.feedback?.id,
+                followup_id: Int($0.followUp?.id ?? ""),
+                market_feedback_id: Int($0.market?.id ?? ""),
+                vFeedback_id: Int($0.feedback?.id ?? ""),
                 presentations: $0.presentations
             )
         }
@@ -224,7 +224,7 @@ final class UnPlannedVisitNotesViewModel {
     private func mapGifts(_ items: [Lines]) -> [GiftVisitModel] {
         items.map {
             GiftVisitModel(
-                giftId: $0.id ?? 0,
+                giftId: Int($0.id ?? ""),
                 name: $0.name ?? "",
                 count: Int($0.count ?? "") ?? 0
             )
@@ -234,7 +234,7 @@ final class UnPlannedVisitNotesViewModel {
     private func mapManagers(_ items: [Lines]) -> [ManagerVisitModel] {
         items.map {
             ManagerVisitModel(
-                empId: $0.id ?? 0,
+                empId: Int($0.id ?? "") ?? 0,
                 name: $0.name ?? ""
             )
         }
@@ -355,7 +355,7 @@ final class UnPlannedVisitNotesViewModel {
             ]
             print("params >>\(params)")
             let headers: HTTPHeaders = [
-                "Authorization": "Bearer \(user.access_token ?? "")",
+//                "Authorization": "Bearer \(user.access_token ?? "")",
                 "Content-Type": "application/json",
                 "Accept": "application/json",
                 "lang": "ar",
@@ -477,7 +477,7 @@ final class UnPlannedVisitNotesViewModel {
         let url = baseURL + URLs.attachmentsURL
         
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user.access_token ?? "")",
+//            "Authorization": "Bearer \(user.access_token ?? "")",
             "Accept": "application/json"
         ]
         

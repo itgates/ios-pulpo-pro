@@ -49,7 +49,7 @@ class OfflineRequestManager {
         print("params >> \(params)")
         
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user.access_token ?? "")",
+//            "Authorization": "Bearer \(user.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",
@@ -115,7 +115,7 @@ class OfflineRequestManager {
         print("params >> \(params)")
         
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user.access_token ?? "")",
+//            "Authorization": "Bearer \(user.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",
@@ -291,7 +291,7 @@ class OfflineRequestManager {
         print("📦 Upload Visits Params:", params)
         
         let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(user.access_token ?? "")",
+//            "Authorization": "Bearer \(user.access_token ?? "")",
             "Content-Type": "application/json",
             "Accept": "application/json",
             "lang": "ar",

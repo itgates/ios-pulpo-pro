@@ -7,23 +7,59 @@
 
 import Foundation
 struct MasterDataModel : Codable {
-    let data : MasterData?
+    let Data : MasterData?
 }
 struct MasterData : Codable {
-    let lines : [Lines]?
-    let divisions : [Lines]?
     let bricks : [Lines]?
-    let accountTypes : [Lines]?
-    let products : [Lines]?
-    let spcialities : [Lines]?
-    let classes : [Lines]?
     let visitFeedBack : [Lines]?
-    let managers : [Lines]?
-    let officeWorkTypes : [Lines]?
-    let giveways : [Lines]?
-    let settings : [Lines]?
     let marketFeedbacks : [Lines]?
     let followUps : [Lines]?
+    let account_types : [Lines]?
+    let lines : [Lines]?
+    let specialties : [Lines]?
+    let divisions : [Lines]?
+    let giveaways : [Lines]?
+    let office_work_types : [Lines]?
+    let products : [Lines]?
+    let managers : [Lines]?
+    let classes : [Lines]?
+    let settings : [Settingss]?
+    let forms : [Lines]?
+    let actions : [Lines]?
+    let comments : [Lines]?
+    let vacation_types : [Lines]?
+}
+struct Settingss : Codable {
+    let id : String?
+    let attribute_name : String?
+    let attribute_value : String?
+}
+
+//struct Lines: Codable {
+//    var id: String?
+//    var name: String?
+//    var line_id: Int? = 0
+//    var line_division_id: Int? = 0
+//    var shift_id: Int? = 1
+//    var team_id: String?
+//    var ter_id: String?
+//    var count: String? = ""
+//    var ll: String? = ""
+//    var lg: String? = ""
+//}
+struct Lines: Codable {
+    var id: String?
+    var name: String?
+    var team_id: String?
+    var ter_id: String?
+    
+    var line_id: Int? = 0
+    var line_division_id: Int? = 0
+    var shift_id: Int? = 1
+    var count: String? = ""
+    var ll: String? = ""
+    var lg: String? = ""
+    // other optional properties
 }
 struct VisitItem: Codable {
     var date: String?
@@ -50,20 +86,9 @@ struct ProductItem: Codable {
     var stock: String?
     var order: String?
 }
-
-struct Lines : Codable {
-    let id : Int?
-    var name : String?
-    var line_id: Int? = 0
-    var line_division_id: Int? = 0
-    var shift_id: Int? = 1
-    var count: String? = ""
-    var ll: String? = ""
-    var lg: String? = ""
-}
 extension Lines: SelectableItem {
-    var idValue: Int {
-        return id ?? 0
+    var idValue: String {
+        return id ?? ""
     }
 }
 
@@ -78,7 +103,7 @@ extension Optional where Wrapped == String {
 
 extension Optional where Wrapped == Lines {
     var isSelected: Bool {
-        return self?.id ?? 0 != 0
+        return self?.id ?? "" != ""
     }
 }
 

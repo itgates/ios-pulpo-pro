@@ -63,14 +63,14 @@ final class CellUnPlannedVisit: UICollectionViewCell {
     
     // MARK: - Static Data
     private let shiftData: [Lines] = [
-        Lines(id: 1, name: "AM"),
-        Lines(id: 2, name: "PM"),
-        Lines(id: 3, name: "Full Day")
+        Lines(id: "1", name: "AM"),
+        Lines(id: "2", name: "PM"),
+        Lines(id: "3", name: "Full Day")
     ]
 
     private let visitTypeData: [Lines] = [
-        Lines(id: 1, name: "Single"),
-        Lines(id: 2, name: "Double")
+        Lines(id: "1", name: "Single"),
+        Lines(id: "2", name: "Double")
     ]
 
     // MARK: - Lifecycle
@@ -165,6 +165,7 @@ private extension CellUnPlannedVisit {
         }
 
         stackTappedBrick.onTap { [weak self] in
+            print(" masterData?.Data?.bricks >>\(self?.masterData?.Data?.bricks ?? [])")
             self?.show(.brick, anchor: self?.stackTappedBrick)
         }
 
@@ -212,10 +213,10 @@ private extension CellUnPlannedVisit {
                 currentItems = []
                 break
             }
-            currentItems = brickData.filter {
-                $0.line_division_id == divisionID
+            currentItems = brickData.filter { brick in
+                print("team_id >>\(brick.team_id ?? "") divisionID >>\(divisionID)")        // for debugging
+                return brick.team_id == String(divisionID)
             }
-
         case .accountType:
             currentItems = accountTypeData
 
@@ -224,14 +225,14 @@ private extension CellUnPlannedVisit {
                 currentItems = []
                 break
             }
-            currentItems = accountsForBrick(brickID)
+            currentItems = accountsForBrick(Int(brickID) ?? 0)
 
         case .doctor:
             guard let accountID = model?.account?.id else {
                 currentItems = []
                 break
             }
-            currentItems = doctorsForAccount(accountID)
+            currentItems = doctorsForAccount(Int(accountID) ?? 0)
 
         case .visitType:
             currentItems = visitTypeData
@@ -259,7 +260,7 @@ private extension CellUnPlannedVisit {
         commentTextField.text = model?.comment
     }
     func updateUI(field: ItemSelectionType, item: Lines) {
-
+      
         switch field {
 
         case .division:
@@ -359,11 +360,12 @@ private extension CellUnPlannedVisit {
 private extension CellUnPlannedVisit {
 
     var divisionData: [Lines] {
-        masterData?.data?.divisions?
+        masterData?.Data?.divisions?
             .map {
                 Lines(
                     id: $0.id,
                     name: $0.name,
+                    team_id: $0.team_id,
                     line_id: $0.line_id,
                     line_division_id: $0.line_division_id
                 )
@@ -371,18 +373,19 @@ private extension CellUnPlannedVisit {
     }
 
     var brickData: [Lines] {
-        masterData?.data?.bricks?
+        masterData?.Data?.bricks?
             .map {
                 Lines(
                     id: $0.id,
                     name: $0.name,
-                    line_division_id: $0.line_division_id
+                    team_id: $0.team_id,
+                    ter_id: $0.ter_id,
                 )
             } ?? []
     }
 
     var accountTypeData: [Lines] {
-        masterData?.data?.accountTypes?
+        masterData?.Data?.account_types?
             .map { Lines(id: $0.id, name: $0.name) } ?? []
     }
     func accountsForBrick(_ brickID: Int) -> [Lines] {
@@ -397,7 +400,7 @@ private extension CellUnPlannedVisit {
             }
             .map {
                 Lines(
-                    id: $0.id,
+                    id: String($0.id ?? 0),
                     name: $0.name ?? "",
                     line_id: $0.line_id ?? 0,
                     ll: $0.ll ?? "",
@@ -410,7 +413,7 @@ private extension CellUnPlannedVisit {
         LocalStorageManager.shared.getAccountsDoctors()?
             .data?.doctors?
             .filter { $0.account_id == accountID }
-            .map { Lines(id: $0.id, name: $0.name) } ?? []
+            .map { Lines(id: String($0.id ?? 0), name: $0.name) } ?? []
     }
 }
 
