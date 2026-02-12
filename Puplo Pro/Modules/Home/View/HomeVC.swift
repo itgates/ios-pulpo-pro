@@ -14,7 +14,7 @@ import Kingfisher
 private enum Constants {
     static let headerCornerRadius: CGFloat = 20
     static let userDataCornerRadius: CGFloat = 10
-    static let userTypePrefix = "Type: "
+    static let userPhonePrefix = "Phone: "
     static let collectionItemHeight: CGFloat = 120
     static let collectionSpacing: CGFloat = 50
 }
@@ -29,7 +29,7 @@ final class HomeVC: BaseView {
     @IBOutlet private weak var viewContentUserData: UIView!
     @IBOutlet private weak var userImageView: UIImageView!
     @IBOutlet private weak var userNameLabel: UILabel!
-    @IBOutlet private weak var userTypeLabel: UILabel!
+    @IBOutlet private weak var userPhoneLabel: UILabel!
     
     @IBOutlet private weak var dateLabel: UILabel!
     @IBOutlet private weak var timeLabel: UILabel!
@@ -138,10 +138,11 @@ private extension HomeVC {
     func loadUserData() {
         guard let user = LocalStorageManager.shared.getLoggedUser() else { return }
         
-        userNameLabel.text = user.fullname
-        userTypeLabel.text = Constants.userTypePrefix + (user.mobile ?? "")
-        dateLabel.text = "Date \(user.check_in_date ?? "")"
-        timeLabel.text = "Time \(user.check_in_time ?? "")"
+        userNameLabel.rx.text.onNext(user.fullname)
+        userPhoneLabel.rx.text.onNext(Constants.userPhonePrefix + (user.mobile ?? ""))
+        
+        dateLabel.rx.text.onNext("Date \(user.check_in_date ?? "")")
+        timeLabel.rx.text.onNext("Time \(user.check_in_time ?? "")")
         
 //        if let urlString = user.url, let url = URL(string: urlString) {
 //            userImageView.kf.setImage(with: url)
@@ -170,7 +171,7 @@ extension HomeVC: UICollectionViewDelegateFlowLayout {
     ) -> CGSize {
 
         let width = (collectionView.frame.width - Constants.collectionSpacing) / 4
-        let height = view.bounds.height * 0.15   // 18% من الشاشة
+        let height = view.bounds.height * 0.15
 
         return CGSize(width: width, height: height)
     }

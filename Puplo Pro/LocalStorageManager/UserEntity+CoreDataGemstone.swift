@@ -17,9 +17,6 @@ extension UserEntity {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<UserEntity> {
         return NSFetchRequest<UserEntity>(entityName: "UserEntity")
     }
-//    @NSManaged public var access_token: String?
-//    @NSManaged public var api_path: String?
-//    @NSManaged public var email: String?
     @NSManaged public var fullname: String?
     @NSManaged public var password: String?
     @NSManaged public var mobile: String?

@@ -14,7 +14,7 @@ struct URLs {
     
     /// Pin endpoint used for authentication or initial validation
     static let pinEndpoint = "/itg_pulpoultra/android/index.php"
-    // "https://ultra.pulpopharma.net/itg_pulpoultra_demo/androidnew/index.php?FN=CheckLogin&username=your_username&password=your_password
+
     /// Login endpoint used for authentication or initial validation
     static let loginEndpoint = "/index.php?FN=CheckLogin"
     
@@ -27,14 +27,11 @@ struct URLs {
     /// savePlan endpoint used for authentication or initial validation
     static let savePlan = "/index.php?FN=save-plan"
     
-    /// save plan-ows endpoint used for authentication or initial validation
-//    static let savePlanOws = "/index.php?FN=plan-ows"
-        
     /// save plan-visits endpoint used for authentication or initial validation
-    static let savePlanVisits = "/index.php?FN=GetUpcomingPlannedVisits"
+    static let plannedVisits = "/index.php?FN=GetUpcomingPlannedVisits"
     
     /// save app-presentations  endpoint used for authentication or initial validation
-    static let saveAppPresentations = "/index.php?FN=GetPresentations"
+    static let appPresentations = "/index.php?FN=GetPresentations"
     
     /// saveOw  endpoint used for authentication or initial validation
     static let saveOw = "/index.php?FN=save-ow"
@@ -65,17 +62,13 @@ struct URLs {
     static var planURL: String {
         return savePlan
     }
-    /// Full URL for the save Plan ows  request
-//    static var planOwsURL: String {
-//        return savePlanOws
-//    }
     /// Full URL for the save Plan Visits  request
-    static var planVisitsURL: String {
-        return savePlanVisits
+    static var plannedVisitsURL: String {
+        return plannedVisits
     }
     /// Full URL for the save App Presentations  request
     static var appPresentationsURL: String {
-        return saveAppPresentations
+        return appPresentations
     }
     /// Full URL for the saveOw  request
     static var saveOwURL: String {

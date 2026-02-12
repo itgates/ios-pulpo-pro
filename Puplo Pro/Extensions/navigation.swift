@@ -34,28 +34,19 @@ extension UIViewController {
         let viewController = vcType.init()
         navigationController?.pushViewController(viewController, animated: true)
     }
-    func navigationSavePalnsVC(model:[PlanningVisitsData]) {
-        let savePalnsVC = SavePlansVC()
-        savePalnsVC.planningVisits = model
-        self.navigationController?.pushViewController(savePalnsVC, animated: true)
-    }
-    func slidesWebViewVC(slides: [Slides]) {
+//    func navigationSavePalnsVC(model:[PlanningVisitsData]) {
+//        let savePalnsVC = SavePlansVC()
+//        savePalnsVC.planningVisits = model
+//        self.navigationController?.pushViewController(savePalnsVC, animated: true)
+//    }
+//    func slidesWebViewVC(slides: [Slides]) {
 //        let vc = SlidesWebViewVC()
 //        vc.slidesArray = slides
-//        self.navigationController?.pushViewController(vc, animated: true)
-//        
-//        let vc = SlidesWebViewVC()
 //        let nav = OrientationNavigationController(rootViewController: vc)
 //        nav.modalPresentationStyle = .fullScreen
 //        present(nav, animated: true)
-
-        let vc = SlidesWebViewVC()
-        vc.slidesArray = slides
-        let nav = OrientationNavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true)
-
-    }
+//
+//    }
     func closePopUp() {
         // Animate disappearance
         UIView.animate(withDuration: 0.25,

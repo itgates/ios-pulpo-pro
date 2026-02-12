@@ -32,6 +32,7 @@ class PinVC: BaseView {
         setupUI()
         setupStyles()
         setupBindings()
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -121,7 +122,7 @@ class PinVC: BaseView {
     private func fetchData(pin: String) {
         setApplyButton(button: self.confirmButton, enabled: false)
         subscribeToLoading()
-        pinViewModel.loginUser(pin: pin) { done, companyName, message in
+        pinViewModel.loginUser(pin: pin) { done,companyName, message in
             if done {
                 self.navigationLoginVC(companyName: companyName)
             } else {

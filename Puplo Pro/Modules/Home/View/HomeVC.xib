@@ -20,7 +20,7 @@
                 <outlet property="timeLabel" destination="mx7-Zl-SL8" id="0ZQ-xT-t2H"/>
                 <outlet property="userImageView" destination="QAW-5N-4rO" id="q5L-tC-eRr"/>
                 <outlet property="userNameLabel" destination="Gly-5o-gec" id="qkS-c9-X4a"/>
-                <outlet property="userTypeLabel" destination="huD-jM-H8g" id="IWF-WQ-RDe"/>
+                <outlet property="userPhoneLabel" destination="huD-jM-H8g" id="MTx-gL-DqC"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="viewBackgroundHeader" destination="WgS-ff-LCP" id="LTh-zj-zAd"/>
                 <outlet property="viewContentUserData" destination="i3w-Jx-8wl" id="2tl-NY-e7A"/>
@@ -130,7 +130,7 @@
                                                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                     <nil key="highlightedColor"/>
                                                                                 </label>
-                                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Type: Medical Rep" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="huD-jM-H8g">
+                                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Phone:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="huD-jM-H8g">
                                                                                     <rect key="frame" x="0.0" y="45" width="261" height="18"/>
                                                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                                                     <color key="textColor" red="0.79607843137254897" green="0.88235294117647056" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

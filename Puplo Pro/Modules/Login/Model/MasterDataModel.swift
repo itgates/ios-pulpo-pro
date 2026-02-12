@@ -2,151 +2,75 @@
 //  MasterDataModel.swift
 //  Puplo Pro
 //
-//  Created by Ahmed on 25/11/2025.
+//  Created by Ahmed on 03/02/2026.
 //
 
 import Foundation
-struct MasterDataModel : Codable {
-    let Data : MasterData?
+
+struct MasterDataModel: Codable {
+    let Status: Int?
+    let Status_Message: String?
+    let Data: MasterData?
 }
-struct MasterData : Codable {
-    let bricks : [Lines]?
-    let visitFeedBack : [Lines]?
-    let marketFeedbacks : [Lines]?
-    let followUps : [Lines]?
-    let account_types : [Lines]?
-    let lines : [Lines]?
-    let specialties : [Lines]?
-    let divisions : [Lines]?
-    let giveaways : [Lines]?
-    let office_work_types : [Lines]?
-    let products : [Lines]?
-    let managers : [Lines]?
-    let classes : [Lines]?
-    let settings : [Settingss]?
-    let forms : [Lines]?
-    let actions : [Lines]?
-    let comments : [Lines]?
-    let vacation_types : [Lines]?
+struct MasterData: Codable {
+    let account_types: [Account_types]?
+    let lines: [IdNameModel]?
+    let specialties: [IdNameModel]?
+    let divisions: [Divisions]?
+    let giveaways: [IdNameModel]?
+    let office_work_types: [IdNameModel]?
+    let products: [IdNameModel]?
+    let bricks: [Bricks]?
+    let managers: [IdNameModel]?
+    let classes: [IdNameModel]?
+    let settings: [Settings]?
+    let forms: [String]?
+    let actions: [String]?
+    let comments: [IdNameModel]?
+    let vacation_types: [IdNameModel]?
 }
-struct Settingss : Codable {
-    let id : String?
-    let attribute_name : String?
-    let attribute_value : String?
+struct Account_types: Codable {
+    let id: String?
+    let name: String?
+    let tbl: String?
+    let shortcut: String?
+    let sorting: String?
+    let cat_id: String?
+    let accepted_distance: String?
+    let created_at: String?
+    let sheet_id: String?
 }
-
-//struct Lines: Codable {
-//    var id: String?
-//    var name: String?
-//    var line_id: Int? = 0
-//    var line_division_id: Int? = 0
-//    var shift_id: Int? = 1
-//    var team_id: String?
-//    var ter_id: String?
-//    var count: String? = ""
-//    var ll: String? = ""
-//    var lg: String? = ""
-//}
-struct Lines: Codable {
-    var id: String?
-    var name: String?
-    var team_id: String?
-    var ter_id: String?
-    
-    var line_id: Int? = 0
-    var line_division_id: Int? = 0
-    var shift_id: Int? = 1
-    var count: String? = ""
-    var ll: String? = ""
-    var lg: String? = ""
-    // other optional properties
+struct Bricks: Codable {
+    let id: String?
+    let name: String?
+    let notes: String?
+    let team_id: String?
+    let ter_id: String?
 }
-struct VisitItem: Codable {
-    var date: String?
-    var time: String?
-    var planID: Int?
-    var division: Lines?
-    var brick: Lines?
-    var accountType: Lines?
-    var account: Lines?
-    var doctor: Lines?
-    var visitType: Lines?
-    var shiftType: Lines?
-    var comment: String?
+struct Divisions: Codable {
+    let id: String?
+    let team_id: String?
+    let name: String?
+    let notes: String?
+    let parent_id: String?
+    let type_id: String?
+    let date_from: String?
+    let date_to: String?
+    let contribution_rate: String?
+    let hidden: String?
+    let sorting: String?
+    let shared: String?
+    let related_id: String?
+    let is_kol: String?
+    let sheet_id: String?
+    let created_at: String?
 }
-struct ProductItem: Codable {
-    var product: Lines?
-    var feedback: Lines?
-    var market: Lines?
-    var followUp: Lines?
-    var presentations: [Presentations]?
-    var count: String
-    var comment: String?
-    var payment: String?
-    var stock: String?
-    var order: String?
+struct IdNameModel: Codable {
+    let id: String?
+    let name: String?
 }
-extension Lines: SelectableItem {
-    var idValue: String {
-        return id ?? ""
-    }
-}
-
-extension Optional where Wrapped == String {
-    var isFilled: Bool {
-        guard let value = self?.trimmingCharacters(in: .whitespacesAndNewlines) else {
-            return false
-        }
-        return !value.isEmpty
-    }
-}
-
-extension Optional where Wrapped == Lines {
-    var isSelected: Bool {
-        return self?.id ?? "" != ""
-    }
-}
-
-extension ProductItem {
-
-    var isValid: Bool {
-
-        let selectionsValid =
-            product.isSelected &&
-            feedback.isSelected &&
-            market.isSelected &&
-            followUp.isSelected
-
-        let textFieldsValid =
-            //comment.isFilled &&
-            payment.isFilled &&
-            stock.isFilled &&
-            order.isFilled
-
-        let countValid =
-            !count.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-
-        return selectionsValid && textFieldsValid && countValid
-    }
-}
-extension VisitItem {
-
-    var isValid: Bool {
-
-        let selectionsValid =
-        division.isSelected &&
-        brick.isSelected &&
-        accountType.isSelected &&
-        account.isSelected &&
-        doctor.isSelected &&
-        visitType.isSelected &&
-        shiftType.isSelected
-
-//        let textFieldsValid =
-//            date.isFilled &&
-//            time.isFilled &&
-//            comment.isFilled
-
-        return selectionsValid //&& textFieldsValid
-    }
+struct Settings: Codable {
+    let id: String?
+    let attribute_name: String?
+    let attribute_value: String?
 }

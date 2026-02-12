@@ -2,7 +2,7 @@
 //  DataCenterVC.swift
 //  Puplo Pro
 //
-//  Created by Ahmed on 24/11/2025.
+//  Created by Ahmed on 12/02/2026.
 //
 
 import UIKit
@@ -174,7 +174,7 @@ private extension DataCenterVC {
             }
         case .planVisits:
             subscribeToLoading()
-            viewModel.getPlanVisitsData { [weak self] done in
+            viewModel.getPlannedVisits { [weak self] done in
                 guard let self else { return }
                 if done {
                     self.showAlert(alertTitle: "Done",
@@ -184,18 +184,6 @@ private extension DataCenterVC {
                                    alertMessage: "Failed to download Plan Visits data. Please try again.")
                 }
             }
-//        case .planOws:
-//            subscribeToLoading()
-//            viewModel.getPlanOwsData { [weak self] done in
-//                guard let self else { return }
-//                if done {
-//                    self.showAlert(alertTitle: "Done",
-//                                   alertMessage: "Plan OWS data has been downloaded successfully.")
-//                } else {
-//                    self.showAlert(alertTitle: "Error",
-//                                   alertMessage: "Failed to download Plan OWS data. Please try again.")
-//                }
-//            }
         case .appPresentations:
             subscribeToLoading()
             viewModel.getAppPresentations { [weak self] done in
@@ -223,8 +211,7 @@ private extension DataCenterVC {
         let apis: [(name: String, call: (@escaping (Bool) -> Void) -> Void)] = [
             ("Master Data", viewModel.getMasterData),
             ("Accounts Doctors", viewModel.getAccountsDoctors),
-            ("Plan Visits", viewModel.getPlanVisitsData),
-//            ("Plan OWS", viewModel.getPlanOwsData),
+            ("Plan Visits", viewModel.getPlannedVisits),
             ("App Presentations", viewModel.getAppPresentations)
         ]
         

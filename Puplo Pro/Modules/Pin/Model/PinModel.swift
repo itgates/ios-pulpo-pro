@@ -1,6 +1,6 @@
 //
 //  PinModel.swift
-//  Puplo Pro
+//  Gemstone Pro
 //
 //  Created by Ahmed on 17/11/2025.
 //
