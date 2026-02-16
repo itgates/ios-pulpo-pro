@@ -34,7 +34,7 @@ struct URLs {
     static let appPresentations = "/index.php?FN=GetPresentations"
     
     /// saveOw  endpoint used for authentication or initial validation
-    static let saveOw = "/index.php?FN=save-ow"
+    static let saveOw = "/_visit.php"
     
     /// saveActuals  endpoint used for authentication or initial validation
     static let saveActuals = "/index.php?FN=save-actuals"

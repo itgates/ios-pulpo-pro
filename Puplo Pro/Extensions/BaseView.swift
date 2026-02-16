@@ -45,10 +45,43 @@ class BaseView: UIViewController, UITextFieldDelegate{
     @objc private func appDidBecomeActive() {
         LocationPermissionManager.shared.checkLocationPermission(from: self)
     }
+   
     private func executeOfflineRequestsIfNeeded() {
-        
-    }
+        guard Reachability.isConnectedToNetwork() else { return }
+        let offlineOWS = LocalStorageManager.shared.getOWActivitiesData() ?? []
+        print("offlineOWS.count >>>\(offlineOWS.count)")
+        guard !offlineOWS.isEmpty else {
+            return
+        }
 
+        let dispatchGroup = DispatchGroup()
+        var requestStatuses: [String] = []
+        
+        // MARK: - Offline OW & Activities
+        if !offlineOWS.isEmpty {
+            dispatchGroup.enter()
+            viewModel.fetchDataApplay(OWS: offlineOWS) { done, message in
+                if done {
+                    LocalStorageManager.shared.clearOWActivitiesModel()
+                    requestStatuses.append("OW & Activities: Success ✅")
+                } else {
+                    requestStatuses.append("OW & Activities: Error - \(message) ❌")
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            let finalMessage = requestStatuses.joined(separator: "\n")
+            self.showAlert(
+                alertTitle: "Offline Sync Status",
+                alertMessage: finalMessage
+            )
+        }
+    }
+    
+    
+    
     func setApplyButton(button: UIButton ,enabled: Bool) {
         button.isEnabled = enabled
         button.alpha = enabled ? 1.0 : 0.6

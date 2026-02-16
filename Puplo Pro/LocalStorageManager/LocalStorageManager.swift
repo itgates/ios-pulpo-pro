@@ -11,10 +11,12 @@ import CoreLocation
 
 // MARK: - UserDefaults Keys
 private enum UserDefaultsKeys {
-    static let masterData = "master_data_model"
-    static let accountsDoctors = "accounts_doctors_model"
-    static let planVisits = "plan_visits_model"
-    static let appPresentations = "app_Presentations_model"
+    static let masterDataKey = "master_data_model"
+    static let accountsDoctorsKey = "accounts_doctors_model"
+    static let planVisitsKey = "plan_visits_model"
+    static let appPresentationsKey = "app_Presentations_model"
+    static let oWActivitiesKey = "oW_activities_model"
+    static let visitStartLocation = "visit_start_location"
 }
 
 // MARK: - LocalStorageManager
@@ -154,62 +156,119 @@ final class LocalStorageManager {
 
     // MARK: - Master Data (UserDefaults)
     func saveMasterData(_ model: MasterDataModel) {
-        saveCodable(model, key: UserDefaultsKeys.masterData)
+        saveCodable(model, key: UserDefaultsKeys.masterDataKey)
         log("✔ Master data saved")
     }
 
     func getMasterData() -> MasterDataModel? {
-        loadCodable(MasterDataModel.self, key: UserDefaultsKeys.masterData)
+        loadCodable(MasterDataModel.self, key: UserDefaultsKeys.masterDataKey)
     }
 
     func clearMasterData() {
-        removeValue(for: UserDefaultsKeys.masterData)
+        removeValue(for: UserDefaultsKeys.masterDataKey)
         log("✔ Master data cleared")
     }
     
     // MARK: - Accounts Doctors (UserDefaults)
     func saveAccountsDoctors(_ model: AccountsDoctorsModel) {
-        saveCodable(model, key: UserDefaultsKeys.accountsDoctors)
+        saveCodable(model, key: UserDefaultsKeys.accountsDoctorsKey)
         log("✔ AccountsDoctors data saved")
     }
 
     func getAccountsDoctors() -> AccountsDoctorsModel? {
-        loadCodable(AccountsDoctorsModel.self, key: UserDefaultsKeys.accountsDoctors)
+        loadCodable(AccountsDoctorsModel.self, key: UserDefaultsKeys.accountsDoctorsKey)
     }
 
     func clearAccountsDoctors() {
-        removeValue(for: UserDefaultsKeys.accountsDoctors)
+        removeValue(for: UserDefaultsKeys.accountsDoctorsKey)
         log("✔ AccountsDoctors data cleared")
     }
 
     // MARK: - plan Visits (UserDefaults)
     func savePlanVisits(_ model: PlannedVisitsModel) {
-        saveCodable(model, key: UserDefaultsKeys.planVisits)
+        saveCodable(model, key: UserDefaultsKeys.planVisitsKey)
         log("✔ plan Visits data saved")
     }
 
     func getPlanVisits() -> PlannedVisitsModel? {
-        loadCodable(PlannedVisitsModel.self, key: UserDefaultsKeys.planVisits)
+        loadCodable(PlannedVisitsModel.self, key: UserDefaultsKeys.planVisitsKey)
     }
 
     func clearPlanVisits() {
-        removeValue(for: UserDefaultsKeys.planVisits)
+        removeValue(for: UserDefaultsKeys.planVisitsKey)
         log("✔ Plan Visits data cleared")
     }
     
     // MARK: - App PresentationsModel (UserDefaults)
     func saveAppPresentationsModel(_ model: AppPresentationsModel) {
-        saveCodable(model, key: UserDefaultsKeys.appPresentations)
+        saveCodable(model, key: UserDefaultsKeys.appPresentationsKey)
         log("✔ App Presentations data saved")
     }
 
     func getAppPresentationsModel() -> AppPresentationsModel? {
-        loadCodable(AppPresentationsModel.self, key: UserDefaultsKeys.appPresentations)
+        loadCodable(AppPresentationsModel.self, key: UserDefaultsKeys.appPresentationsKey)
     }
 
     func clearAppPresentationsModel() {
-        removeValue(for: UserDefaultsKeys.appPresentations)
+        removeValue(for: UserDefaultsKeys.appPresentationsKey)
         log("✔ App Presentations data cleared")
+    }
+    
+    // MARK: - OW Activities (UserDefaults)
+//    func saveOWActivitiesModel(_ model: [OWSModel]) {
+//        saveCodable(model, key: UserDefaultsKeys.oWActivitiesKey)
+//        log("✔ OW Activities data saved")
+//    }
+//
+//    func getOWActivitiesData() -> [OWSModel]? {
+//        loadCodable([OWSModel].self, key: UserDefaultsKeys.oWActivitiesKey)
+//    }
+//
+//    func clearOWActivitiesModel() {
+//        removeValue(for: UserDefaultsKeys.oWActivitiesKey)
+//        log("✔ OW Activities data cleared")
+//    }
+//    
+//
+    // MARK: - OW Activities (UserDefaults)
+    func saveOWActivitiesModel(_ model: [OWSModel]) {
+        var oldData = getOWActivitiesData() ?? []
+        oldData.append(contentsOf: model)
+        saveCodable(oldData, key: UserDefaultsKeys.oWActivitiesKey)
+        log("✔ OW Activities data appended & saved successfully")
+    }
+
+    func getOWActivitiesData() -> [OWSModel]? {
+        loadCodable([OWSModel].self, key: UserDefaultsKeys.oWActivitiesKey)
+    }
+
+    func clearOWActivitiesModel() {
+        removeValue(for: UserDefaultsKeys.oWActivitiesKey)
+        log("✔ OW Activities data cleared")
+    }
+    // MARK: - Visit Start Location (UserDefaults)
+    func saveVisitStartLocation(lat: Double, lng: Double) {
+        let location = VisitStartLocation(
+            latitude: lat,
+            longitude: lng,
+            timestamp: Date())
+
+        saveCodable(location, key: UserDefaultsKeys.visitStartLocation)
+        log("✔ Visit start location saved")
+    }
+
+    func getVisitStartLocation() -> CLLocation? {
+        guard let loc = loadCodable(VisitStartLocation.self,
+                                    key: UserDefaultsKeys.visitStartLocation) else {
+            return nil
+        }
+        
+        return CLLocation(latitude: loc.latitude, longitude: loc.longitude)
+    }
+
+    func clearVisitStartLocation() {
+        removeValue(for: UserDefaultsKeys.visitStartLocation)
+        log("✔ Visit start location cleared")
     }
 }
 

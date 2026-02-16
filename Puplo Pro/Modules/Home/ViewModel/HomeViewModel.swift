@@ -31,10 +31,10 @@ class HomeViewModel {
                 ("Planning visits", "Planning",nil),
                 ("Planned Visits", "Planned",nil),
                 ("Unplanned Visit", "Unplanned",nil),
-                ("OW & Activities", "OW",nil),
+                ("OW & Activities", "OW",OWActivitiesVC.self),
                 ("My Location", "Location",nil),
                 ("Data Center", "Data",DataCenterVC.self),
-                ("Reports", "Reports",nil),
+                ("Reports", "Reports",ReportsVC.self),
             ]
             
             let items: [HomeModel] = schedulData.compactMap { data in
