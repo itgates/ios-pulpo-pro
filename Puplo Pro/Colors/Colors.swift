@@ -12,6 +12,7 @@ import UIKit
 let mainColor = hexStringToUIColor(hex: "FF6A5AD3")
 let secondaryColor = hexStringToUIColor(hex: "FFA095E1")
 let baseColor = hexStringToUIColor(hex: "6A64D9")
+let borderColor = hexStringToUIColor(hex: "F8D3CE")
 
 func hexStringToUIColor (hex:String) -> UIColor {
     var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()

@@ -93,4 +93,79 @@ class OfflineRequestManager {
             completion(false, "JSON Encoding Error")
         }
     }
+    
+    // MARK: - save Plans
+    func savePlans(completion: @escaping (Bool, String,[(offlineID: Int, onlineID: Int)]) -> Void) {
+        guard
+            let user = LocalStorageManager.shared.getLoggedUser(),
+            let baseURL = LocalStorageManager.shared.getAPIPath()
+        else {
+            completion(false, "Unauthorized", [])
+            return
+        }
+        let plans = LocalStorageManager.shared.getNewPlanData() ?? []
+        let url = baseURL + URLs.planURL
+        let paramsArray = buildParams(from: plans, user_id: user.user_id ?? "")
+        let headers = buildHeaders()
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: paramsArray, options: [])
+            loadingBehavior.accept(true)
+            NetworkLayer.shared.fetchData(
+                method: .post,
+                url: url,
+                parameters: [:],
+                body: jsonData,
+                headers: headers
+            ) { [weak self] (result: Result<SavePlanResponse>) in
+                self?.loadingBehavior.accept(false)
+                switch result {
+                case .success(let model):
+                    let idsMap: [(offlineID: Int, onlineID: Int)] =
+                        model.Data?.compactMap {
+                            guard
+                                let offlineID = $0.offline_id,
+                                let onlineID = Int($0.planned_id ?? "")
+                            else { return nil }
+                            
+                            return (offlineID, onlineID)
+                        } ?? []
+                    print("model >>\(model)")
+                    completion(true, model.Status_Message ?? "", idsMap)
+                case .failure:
+                    completion(false, "Something went wrong", [])
+                }
+            }
+        } catch {
+            completion(false, "Invalid JSON body", [])
+        }
+    }
+    // MARK: - Helpers
+    private func buildParams(from plans: [SaveNewPlanModel],user_id: String) -> [[String: Any]] {
+        
+        return plans.map {
+            [
+                "div_id": $0.divID ?? 0,
+                "id": 0,
+                "insertion_date": $0.insertionDate ?? "",
+                "item_doc_id": $0.accountDoctorID ?? 0,
+                "item_id": $0.accountID ?? 0,
+                "offline_id": $0.offlineID ?? 0,
+                "team_id": 1,
+                "type_id": $0.accountTypeID ?? 0,
+                "user_id": user_id,
+                "vdate": $0.visitDate ?? "",
+                "vtime": $0.visitTime ?? ""
+            ]
+        }
+    }
+    private func buildHeaders() -> HTTPHeaders {
+        [
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "lang": "ar",
+            "device-id": AppInfo.shared.deviceID,
+            "timezone": "Africa/Cairo"
+        ]
+    }
 }

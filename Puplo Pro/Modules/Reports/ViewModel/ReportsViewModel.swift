@@ -26,11 +26,11 @@ class ReportsViewModel {
         
         let reportsData: [(name: String, imageName: String, vc: UIViewController.Type?)] = [
             ("Statistics", "Statistics", nil),
-            ("Product", "Product", nil),
+            ("Product", "Product", ProductListVC.self),
             ("Account", "Account", nil),
             ("Actual Visit", "Visit", nil),
             ("Planned Visit", "Paln", nil),
-            ("New Plan", "newPlan", nil),
+            ("New Plan", "newPlan", NewPlanVC.self),
             ("Plan Approval", "PlanApproval", nil),
             //("Database tables", "databaseTable", nil)
         ]

@@ -25,7 +25,7 @@ struct URLs {
     static let accountsDoctors = "/index.php?FN=GetAllAccountTypeTeamAndDoctorDetails"
 
     /// savePlan endpoint used for authentication or initial validation
-    static let savePlan = "/index.php?FN=save-plan"
+    static let savePlan = "/_planned.php"
     
     /// save plan-visits endpoint used for authentication or initial validation
     static let plannedVisits = "/index.php?FN=GetUpcomingPlannedVisits"

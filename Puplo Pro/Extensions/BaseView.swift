@@ -49,11 +49,17 @@ class BaseView: UIViewController, UITextFieldDelegate{
     private func executeOfflineRequestsIfNeeded() {
         guard Reachability.isConnectedToNetwork() else { return }
         let offlineOWS = LocalStorageManager.shared.getOWActivitiesData() ?? []
+        let offlinePlans = LocalStorageManager.shared.getOfflinePlans() ?? []
+        
         print("offlineOWS.count >>>\(offlineOWS.count)")
-        guard !offlineOWS.isEmpty else {
+
+        guard
+            !offlineOWS.isEmpty ||
+            !offlinePlans.isEmpty
+        else {
             return
         }
-
+        
         let dispatchGroup = DispatchGroup()
         var requestStatuses: [String] = []
         
@@ -66,6 +72,32 @@ class BaseView: UIViewController, UITextFieldDelegate{
                     requestStatuses.append("OW & Activities: Success ✅")
                 } else {
                     requestStatuses.append("OW & Activities: Error - \(message) ❌")
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        // MARK: - Offline Plans
+        if !offlinePlans.isEmpty {
+            dispatchGroup.enter()
+            viewModel.savePlans { done, message, idsMap  in
+                if done {
+                    var storedVisits = LocalStorageManager.shared.getNewPlanData() ?? []
+
+                    for index in storedVisits.indices {
+                        guard !storedVisits[index].isUploaded else { continue }
+
+                        if let offlineID = storedVisits[index].offlineID,
+                           let matched = idsMap.first(where: { $0.offlineID == offlineID }) {
+                            storedVisits[index].isUploaded = true
+                            storedVisits[index].onlineID = "\(matched.onlineID)"
+                        }
+                    }
+                    LocalStorageManager.shared.saveNewPlanData(storedVisits)
+                    LocalStorageManager.shared.clearOfflinePlans()
+                    requestStatuses.append("Planning Visits: Success ✅")
+                } else {
+                    requestStatuses.append("Planning Visits: Error - \(message) ❌")
                 }
                 dispatchGroup.leave()
             }

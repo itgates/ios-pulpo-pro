@@ -28,11 +28,11 @@ class HomeViewModel {
         loadingBehavior.accept(true)
         DispatchQueue.global(qos: .userInitiated).async {
             let schedulData: [(dayName: String, imageName: String,vc: UIViewController.Type?)] = [
-                ("Planning visits", "Planning",nil),
+                ("Planning visits", "Planning",PlanningVisitsVC.self),
                 ("Planned Visits", "Planned",nil),
                 ("Unplanned Visit", "Unplanned",nil),
                 ("OW & Activities", "OW",OWActivitiesVC.self),
-                ("My Location", "Location",nil),
+                ("My Location", "Location",MapVC.self),
                 ("Data Center", "Data",DataCenterVC.self),
                 ("Reports", "Reports",ReportsVC.self),
             ]

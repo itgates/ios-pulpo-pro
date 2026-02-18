@@ -12,10 +12,10 @@ struct AccountsDoctorsModel: Codable {
     let Data: AccountsDoctorsData?
 }
 struct AccountsDoctorsData: Codable {
-    let Accounts: [Account]?
-    let Doctors: [Doctor]?
+    let Accounts: [Accounts]?
+    let Doctors: [Doctors]?
 }
-struct Account: Codable {
+struct Accounts: Codable {
     let id: String?
     let t_team_id: String?
     let t_div_id: String?
@@ -30,7 +30,7 @@ struct Account: Codable {
     let mobile: String?
     let tbl: String?
 }
-struct Doctor: Codable {
+struct Doctors: Codable {
     let id: String?
     let doc_acc_id: String?
     let d_account_id: String?

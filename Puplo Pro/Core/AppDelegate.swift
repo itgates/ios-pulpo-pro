@@ -42,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        LocalStorageManager.shared.clearProductsData()
 //        LocalStorageManager.shared.clearSelectedImageVisitData()
 //        LocalStorageManager.shared.clearVisitStartLocation()
-//        LocalStorageManager.shared.clearNewPlanData()
+        LocalStorageManager.shared.clearNewPlanData()
 //        LocalStorageManager.shared.clearActualVisitData()
         return true
     }

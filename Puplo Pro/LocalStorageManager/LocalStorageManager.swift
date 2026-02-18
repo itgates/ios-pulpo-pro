@@ -8,7 +8,11 @@ import Foundation
 import UIKit
 import CoreData
 import CoreLocation
-
+struct UserLocation: Codable {
+    let latitude: Double
+    let longitude: Double
+    let timestamp: Date
+}
 // MARK: - UserDefaults Keys
 private enum UserDefaultsKeys {
     static let masterDataKey = "master_data_model"
@@ -17,8 +21,14 @@ private enum UserDefaultsKeys {
     static let appPresentationsKey = "app_Presentations_model"
     static let oWActivitiesKey = "oW_activities_model"
     static let visitStartLocation = "visit_start_location"
+    static let lastLocation = "last_user_location"
+    static let offlinePlansKey = "offline_plans_model"
+    static let newPlanKey       = "new_plan_model"
+    
+    static let accountsDoctorsAMKey = "accounts_doctors_am"
+    static let accountsDoctorsPMKey = "accounts_doctors_pm"
+    static let accountsDoctorsOtherKey = "accounts_doctors_other"
 }
-
 // MARK: - LocalStorageManager
 final class LocalStorageManager {
 
@@ -184,6 +194,66 @@ final class LocalStorageManager {
         log("✔ AccountsDoctors data cleared")
     }
 
+    // MARK: - Accounts Doctors AM
+    func saveAccountsDoctorsAM(_ model: [PlanningVisitsData]) {
+        saveCodable(model, key: UserDefaultsKeys.accountsDoctorsAMKey)
+        log("✔ AccountsDoctors AM saved")
+    }
+
+    func getAccountsDoctorsAM() -> [PlanningVisitsData]? {
+        loadCodable([PlanningVisitsData].self, key: UserDefaultsKeys.accountsDoctorsAMKey)
+    }
+
+    func clearAccountsDoctorsAM() {
+        removeValue(for: UserDefaultsKeys.accountsDoctorsAMKey)
+        log("✔ AccountsDoctors AM cleared")
+    }
+
+
+    // MARK: - Accounts Doctors PM
+    func saveAccountsDoctorsPM(_ model: [PlanningVisitsData]) {
+        saveCodable(model, key: UserDefaultsKeys.accountsDoctorsPMKey)
+        log("✔ AccountsDoctors PM saved")
+    }
+
+    func getAccountsDoctorsPM() -> [PlanningVisitsData]? {
+        loadCodable([PlanningVisitsData].self, key: UserDefaultsKeys.accountsDoctorsPMKey)
+    }
+
+    func clearAccountsDoctorsPM() {
+        removeValue(for: UserDefaultsKeys.accountsDoctorsPMKey)
+        log("✔ AccountsDoctors PM cleared")
+    }
+
+
+    // MARK: - Accounts Doctors Other
+    func saveAccountsDoctorsOther(_ model: [PlanningVisitsData]) {
+        saveCodable(model, key: UserDefaultsKeys.accountsDoctorsOtherKey)
+        log("✔ AccountsDoctors Other saved")
+    }
+
+    func getAccountsDoctorsOther() -> [PlanningVisitsData]? {
+        loadCodable([PlanningVisitsData].self, key: UserDefaultsKeys.accountsDoctorsOtherKey)
+    }
+
+    func clearAccountsDoctorsOther() {
+        removeValue(for: UserDefaultsKeys.accountsDoctorsOtherKey)
+        log("✔ AccountsDoctors Other cleared")
+    }
+    
+    // MARK: - new Plan (UserDefaults)
+    func saveNewPlanData(_ model: [SaveNewPlanModel]) {
+        saveCodable(model, key: UserDefaultsKeys.newPlanKey)
+        log("✔ NewPlan saved")
+    }
+    func getNewPlanData() -> [SaveNewPlanModel]? {
+        loadCodable([SaveNewPlanModel].self, key: UserDefaultsKeys.newPlanKey)
+    }
+    func clearNewPlanData() {
+        removeValue(for: UserDefaultsKeys.newPlanKey)
+        log("✔ NewPlan cleared")
+    }
+    
     // MARK: - plan Visits (UserDefaults)
     func savePlanVisits(_ model: PlannedVisitsModel) {
         saveCodable(model, key: UserDefaultsKeys.planVisitsKey)
@@ -213,23 +283,7 @@ final class LocalStorageManager {
         removeValue(for: UserDefaultsKeys.appPresentationsKey)
         log("✔ App Presentations data cleared")
     }
-    
-    // MARK: - OW Activities (UserDefaults)
-//    func saveOWActivitiesModel(_ model: [OWSModel]) {
-//        saveCodable(model, key: UserDefaultsKeys.oWActivitiesKey)
-//        log("✔ OW Activities data saved")
-//    }
-//
-//    func getOWActivitiesData() -> [OWSModel]? {
-//        loadCodable([OWSModel].self, key: UserDefaultsKeys.oWActivitiesKey)
-//    }
-//
-//    func clearOWActivitiesModel() {
-//        removeValue(for: UserDefaultsKeys.oWActivitiesKey)
-//        log("✔ OW Activities data cleared")
-//    }
-//    
-//
+
     // MARK: - OW Activities (UserDefaults)
     func saveOWActivitiesModel(_ model: [OWSModel]) {
         var oldData = getOWActivitiesData() ?? []
@@ -237,15 +291,29 @@ final class LocalStorageManager {
         saveCodable(oldData, key: UserDefaultsKeys.oWActivitiesKey)
         log("✔ OW Activities data appended & saved successfully")
     }
-
     func getOWActivitiesData() -> [OWSModel]? {
         loadCodable([OWSModel].self, key: UserDefaultsKeys.oWActivitiesKey)
     }
-
     func clearOWActivitiesModel() {
         removeValue(for: UserDefaultsKeys.oWActivitiesKey)
         log("✔ OW Activities data cleared")
     }
+    
+    // MARK: - Plans (UserDefaults)
+    func saveOfflinePlans(_ model: [SavePlanData]) {
+        var oldData = getOfflinePlans() ?? []
+        oldData.append(contentsOf: model)
+        saveCodable(oldData, key: UserDefaultsKeys.offlinePlansKey)
+        log("✔ Offline Plans data appended & saved successfully")
+    }
+    func getOfflinePlans() -> [SavePlanData]? {
+        loadCodable([SavePlanData].self, key: UserDefaultsKeys.offlinePlansKey)
+    }
+    func clearOfflinePlans() {
+        removeValue(for: UserDefaultsKeys.offlinePlansKey)
+        log("✔ Offline Plans data cleared")
+    }
+    
     // MARK: - Visit Start Location (UserDefaults)
     func saveVisitStartLocation(lat: Double, lng: Double) {
         let location = VisitStartLocation(
@@ -270,5 +338,25 @@ final class LocalStorageManager {
         removeValue(for: UserDefaultsKeys.visitStartLocation)
         log("✔ Visit start location cleared")
     }
+    
+    // MARK: - User Location (UserDefaults)
+    func saveUserLocation(_ location: CLLocation) {
+        let loc = UserLocation(
+            latitude: location.coordinate.latitude,
+            longitude: location.coordinate.longitude,
+            timestamp: Date()
+        )
+        saveCodable(loc, key: UserDefaultsKeys.lastLocation)
+        log("✔ User location saved")
+    }
+
+    func getUserLocation() -> CLLocation? {
+        guard let loc = loadCodable(UserLocation.self, key: UserDefaultsKeys.lastLocation) else {
+            return nil
+        }
+        return CLLocation(latitude: loc.latitude, longitude: loc.longitude)
+    }
+    
+   
 }
 
