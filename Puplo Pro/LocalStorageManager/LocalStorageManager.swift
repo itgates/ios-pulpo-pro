@@ -24,6 +24,13 @@ private enum UserDefaultsKeys {
     static let lastLocation = "last_user_location"
     static let offlinePlansKey = "offline_plans_model"
     static let newPlanKey       = "new_plan_model"
+    static let visitItemKey = "visitItem_data_key"
+    static let managerDataKey = "manager_data_key"
+    static let giftsDataKey = "gifts_data_key"
+    static let productsDataKey = "products_data_key"
+    static let selectedImageVisitDataKey = "selectedImageVisit_data_key"
+    static let applayUnPlannedVisitOffline = "applay_unplanned_visit_offline"
+    static let actualVisitKey = "actual_visit_model"
     
     static let accountsDoctorsAMKey = "accounts_doctors_am"
     static let accountsDoctorsPMKey = "accounts_doctors_pm"
@@ -314,6 +321,82 @@ final class LocalStorageManager {
         log("✔ Offline Plans data cleared")
     }
     
+    // MARK: - Visit Item (UserDefaults)
+    func saveVisitItemData(_ model: [VisitItem]) {
+        saveCodable(model, key: UserDefaultsKeys.visitItemKey)
+        log("✔ VisitItemData saved")
+    }
+    func getVisitItemData() -> [VisitItem]? {
+        loadCodable([VisitItem].self, key: UserDefaultsKeys.visitItemKey)
+    }
+    func clearVisitItemData() {
+        removeValue(for: UserDefaultsKeys.visitItemKey)
+        log("✔ VisitItemData cleared")
+    }
+    // MARK: - save Manager Data (UserDefaults)
+    func saveManagerData(_ model: [IdNameModel]) {
+        saveCodable(model, key: UserDefaultsKeys.managerDataKey)
+        log("✔ App ManagerData Model saved successfully")
+    }
+    func getManagerData() -> [IdNameModel]? {
+        loadCodable([IdNameModel].self, key: UserDefaultsKeys.managerDataKey)
+    }
+    func clearManagerData() {
+        removeValue(for: UserDefaultsKeys.managerDataKey)
+        log("✔ ManagerData cleared")
+    }
+    
+    // MARK: - Gifts Data (UserDefaults)
+    func saveGiftsData(_ model: [IdNameModel]) {
+        saveCodable(model, key: UserDefaultsKeys.giftsDataKey)
+        log("✔ App giftsData Model saved successfully")
+    }
+    func getGiftsData() -> [IdNameModel]? {
+        loadCodable([IdNameModel].self, key: UserDefaultsKeys.giftsDataKey)
+    }
+    func clearGiftsData() {
+        removeValue(for: UserDefaultsKeys.giftsDataKey)
+        log("✔ giftsData cleared")
+    }
+    
+    // MARK: - Products Data (UserDefaults)
+    func saveProductsData(_ model: [ProductItem]) {
+        saveCodable(model, key: UserDefaultsKeys.productsDataKey)
+        log("✔ App productsData Model saved successfully")
+    }
+    func getProductsData() -> [ProductItem]? {
+        loadCodable([ProductItem].self, key: UserDefaultsKeys.productsDataKey)
+    }
+    func clearProductsData() {
+        removeValue(for: UserDefaultsKeys.productsDataKey)
+        log("✔ productsData cleared")
+    }
+    
+    // MARK: - save Selected Image Visit(UserDefaults)
+    func saveSelectedImageVisitData(_ model: [SelectedImage]) {
+        saveCodable(model, key: UserDefaultsKeys.selectedImageVisitDataKey)
+        log("✔ App SelectedImageVisit Model saved successfully")
+    }
+    func getSelectedImageVisitData() -> [SelectedImage]? {
+        loadCodable([SelectedImage].self, key: UserDefaultsKeys.selectedImageVisitDataKey)
+    }
+    func clearSelectedImageVisitData() {
+        removeValue(for: UserDefaultsKeys.selectedImageVisitDataKey)
+        log("✔ SelectedImageVisit cleared")
+    }
+    // MARK: - save Selected Image Visit(UserDefaults)
+    func saveActualVisitData(_ model: [ActualVisitModel]) {
+        saveCodable(model, key: UserDefaultsKeys.actualVisitKey)
+        log("✔ App actualVisit Model saved successfully")
+    }
+    func getActualVisitData() -> [ActualVisitModel]? {
+        loadCodable([ActualVisitModel].self, key: UserDefaultsKeys.actualVisitKey)
+    }
+    func clearActualVisitData() {
+        removeValue(for: UserDefaultsKeys.actualVisitKey)
+        log("✔ actualVisit cleared")
+    }
+    
     // MARK: - Visit Start Location (UserDefaults)
     func saveVisitStartLocation(lat: Double, lng: Double) {
         let location = VisitStartLocation(
@@ -357,6 +440,19 @@ final class LocalStorageManager {
         return CLLocation(latitude: loc.latitude, longitude: loc.longitude)
     }
     
-   
+    // MARK: - UnPlanned Visit Offline Flag
+    func setUnPlannedVisitOffline(_ value: Bool) {
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.applayUnPlannedVisitOffline)
+        log("✔ UnPlannedVisitOffline flag set to \(value)")
+    }
+
+    func isUnPlannedVisitOffline() -> Bool {
+        return UserDefaults.standard.bool(forKey: UserDefaultsKeys.applayUnPlannedVisitOffline)
+    }
+
+    func clearUnPlannedVisitOffline() {
+        UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.applayUnPlannedVisitOffline)
+        log("✔ UnPlannedVisitOffline flag cleared")
+    }
 }
 

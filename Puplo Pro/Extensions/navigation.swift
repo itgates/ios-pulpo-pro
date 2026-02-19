@@ -39,6 +39,13 @@ extension UIViewController {
         savePalnsVC.planningVisits = model
         self.navigationController?.pushViewController(savePalnsVC, animated: true)
     }
+    func slidesWebViewVC(slides: [Slides]) {
+        let vc = SlidesWebViewVC()
+        vc.slidesArray = slides
+        let nav = OrientationNavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
+    }
     func closePopUp() {
         // Animate disappearance
         UIView.animate(withDuration: 0.25,

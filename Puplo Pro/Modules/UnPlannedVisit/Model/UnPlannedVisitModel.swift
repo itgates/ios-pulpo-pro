@@ -1,0 +1,171 @@
+//
+//  UnPlannedVisitModel.swift
+//  Gemstone Pro
+//
+//  Created by Ahmed on 04/12/2025.
+//
+
+import Foundation
+import UIKit
+
+// MARK: - Table Models
+struct NotesRow {
+    let title: String
+    let value: String
+}
+
+/// Represents a section inside notes table
+struct NotesSection {
+    let header: String
+    let rows: [NotesRow]
+}
+
+// MARK: - Collection Model
+struct SelectedImage: Codable {
+    let id: UUID
+    let imageData: Data
+    let path: String?
+    
+    // MARK: - Initializers
+    
+    /// Create from UIImage
+    init(image: UIImage, path: String? = nil) {
+        self.id = UUID()
+        guard let data = image.pngData() else {
+            fatalError("Failed to convert UIImage to Data")
+        }
+        self.imageData = data
+        self.path = path
+    }
+    
+    /// Create manually with id, imageData, path
+    init(id: UUID, imageData: Data, path: String?) {
+        self.id = id
+        self.imageData = imageData
+        self.path = path
+    }
+    
+    /// Retrieve UIImage from stored Data
+    var image: UIImage {
+        UIImage(data: imageData) ?? UIImage()
+    }
+}
+
+// MARK: - Uploaded Attachment Response
+struct UploadResponse: Codable {
+    let message: String
+    let data: [UploadedAttachment]
+}
+
+struct UploadedAttachment: Codable {
+    let id: String
+    let path: String
+    let url: String
+}
+struct VisitBaseData {
+    let accountTypeID: Int
+    let accountID: Int
+    let planId: Int
+    let divisionID: Int
+    let brickID: Int
+    let doctorID: Int
+    let comment: String
+    let lineId: Int
+    let shiftTypeId: Int
+    let visitTypeId: Int
+    let shiftId: Int
+    let latAccount: String
+    let longAccount: String
+}
+struct ProductItem: Codable {
+    var product: IdNameModel?
+    var feedback: String?
+    var market: String?
+    var followUp: String?
+    var presentations: [Presentations]?
+    var count: String
+    var comment: String?
+    var payment: String?
+    var stock: String?
+    var order: String?
+}
+struct VisitItem: Codable {
+    var date: String?
+    var time: String?
+    var planID: String?
+    var division: IdNameModel?
+    var brick: IdNameModel?
+    var accountType: IdNameModel?
+    var account: IdNameModel?
+    var doctor: IdNameModel?
+    var visitType: IdNameModel?
+    var shiftType: IdNameModel?
+    var comment: String?
+}
+extension IdNameModel: SelectableItem {
+    var idValue: String {
+        return id ?? ""
+    }
+}
+
+extension Optional where Wrapped == String {
+    var isFilled: Bool {
+        guard let value = self?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+            return false
+        }
+        return !value.isEmpty
+    }
+}
+
+extension Optional where Wrapped == IdNameModel {
+    var isSelected: Bool {
+        return self?.id ?? "" != ""
+    }
+}
+
+extension ProductItem {
+    
+    var isValid: Bool {
+        
+        let selectionsValid =
+        product.isSelected //&&
+        //            feedback.isSelected &&
+        //            market.isSelected &&
+        //            followUp.isSelected
+        
+        let textFieldsValid =
+        //comment.isFilled &&
+        feedback.isFilled &&
+        market.isFilled &&
+        followUp.isFilled &&
+        payment.isFilled &&
+        stock.isFilled &&
+        order.isFilled
+        
+        let countValid =
+        !count.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        
+        return selectionsValid && textFieldsValid && countValid
+    }
+}
+extension VisitItem {
+    
+    var isValid: Bool {
+        
+        let selectionsValid =
+        division.isSelected &&
+        brick.isSelected &&
+        accountType.isSelected &&
+        account.isSelected &&
+        doctor.isSelected &&
+        visitType.isSelected &&
+        shiftType.isSelected
+        
+        //        let textFieldsValid =
+        //            date.isFilled &&
+        //            time.isFilled &&
+        //            comment.isFilled
+        
+        return selectionsValid //&& textFieldsValid
+    }
+}

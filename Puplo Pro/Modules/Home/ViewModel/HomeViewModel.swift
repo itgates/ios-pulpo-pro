@@ -30,7 +30,7 @@ class HomeViewModel {
             let schedulData: [(dayName: String, imageName: String,vc: UIViewController.Type?)] = [
                 ("Planning visits", "Planning",PlanningVisitsVC.self),
                 ("Planned Visits", "Planned",nil),
-                ("Unplanned Visit", "Unplanned",nil),
+                ("Unplanned Visit", "Unplanned",UnPlannedVisitVC.self),
                 ("OW & Activities", "OW",OWActivitiesVC.self),
                 ("My Location", "Location",MapVC.self),
                 ("Data Center", "Data",DataCenterVC.self),
