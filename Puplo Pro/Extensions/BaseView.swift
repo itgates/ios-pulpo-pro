@@ -50,12 +50,34 @@ class BaseView: UIViewController, UITextFieldDelegate{
         guard Reachability.isConnectedToNetwork() else { return }
         let offlineOWS = LocalStorageManager.shared.getOWActivitiesData() ?? []
         let offlinePlans = LocalStorageManager.shared.getOfflinePlans() ?? []
+     
+        
+        let visitItem = LocalStorageManager.shared.getVisitItemData() ?? []
+        let managerData = LocalStorageManager.shared.getManagerData() ?? []
+        let giftsData = LocalStorageManager.shared.getGiftsData() ?? []
+        let productsData = LocalStorageManager.shared.getProductsData() ?? []
+        let issetUnPlannedVisitOffline = LocalStorageManager.shared.isUnPlannedVisitOffline()
+
+        let actualVisits = LocalStorageManager.shared.getActualVisitData() ?? []
+        let hasPendingUnplannedVisits = actualVisits.contains { !$0.isUploaded }
         
         print("offlineOWS.count >>>\(offlineOWS.count)")
 
+        let hasUnplannedVisitData =
+            !visitItem.isEmpty ||
+            !managerData.isEmpty ||
+            !giftsData.isEmpty ||
+            !productsData.isEmpty
+
+        let shouldSendUnPlannedVisit =
+            issetUnPlannedVisitOffline &&
+            hasUnplannedVisitData &&
+            hasPendingUnplannedVisits
+
         guard
+            !offlinePlans.isEmpty ||
             !offlineOWS.isEmpty ||
-            !offlinePlans.isEmpty
+            shouldSendUnPlannedVisit
         else {
             return
         }
@@ -86,11 +108,10 @@ class BaseView: UIViewController, UITextFieldDelegate{
 
                     for index in storedVisits.indices {
                         guard !storedVisits[index].isUploaded else { continue }
-
                         if let offlineID = storedVisits[index].offlineID,
                            let matched = idsMap.first(where: { $0.offlineID == offlineID }) {
                             storedVisits[index].isUploaded = true
-                            storedVisits[index].onlineID = "\(matched.onlineID)"
+                            storedVisits[index].onlineID = matched.onlineID
                         }
                     }
                     LocalStorageManager.shared.saveNewPlanData(storedVisits)
@@ -103,6 +124,46 @@ class BaseView: UIViewController, UITextFieldDelegate{
             }
         }
         
+        // MARK: - Offline UnPlanned Visit (SAFE)
+        if shouldSendUnPlannedVisit {
+            dispatchGroup.enter()
+            viewModel.saveUnPlannedVisitAPI { done, message, idsMap in
+                if done {
+                    var storedVisits = LocalStorageManager.shared.getActualVisitData() ?? []
+
+                    for index in storedVisits.indices {
+                        guard !storedVisits[index].isUploaded else { continue }
+
+                        
+                        print("idsMap.first?.offlineID  >> \(idsMap.first?.offlineID ?? "")")
+                        print("storedVisits[index].offlineID  >> \(storedVisits[index].offline_id ?? "")")
+                        
+                        
+                        if let offlineID = storedVisits[index].offline_id,
+                           let matched = idsMap.first(where: { $0.offlineID == offlineID }) {
+
+                            storedVisits[index].isUploaded = true
+                            storedVisits[index].online_id = "\(matched.onlineID)"
+                        }
+                    }
+                   
+                    LocalStorageManager.shared.saveActualVisitData(storedVisits)
+
+                    LocalStorageManager.shared.clearVisitItemData()
+                    LocalStorageManager.shared.clearManagerData()
+                    LocalStorageManager.shared.clearGiftsData()
+                    LocalStorageManager.shared.clearProductsData()
+                    LocalStorageManager.shared.clearSelectedImageVisitData()
+                    LocalStorageManager.shared.clearUnPlannedVisitOffline()
+                    LocalStorageManager.shared.clearVisitStartLocation()
+
+                    requestStatuses.append("UnPlanned Visit: Success ✅")
+                } else {
+                    requestStatuses.append("UnPlanned Visit: Error - \(message) ❌")
+                }
+                dispatchGroup.leave()
+            }
+        }
         dispatchGroup.notify(queue: .main) {
             let finalMessage = requestStatuses.joined(separator: "\n")
             self.showAlert(

@@ -24,7 +24,7 @@
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BF4-g8-8Tc">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BF4-g8-8Tc">
                     <rect key="frame" x="16" y="143" width="361" height="62"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hwC-ud-XLM">
@@ -83,7 +83,7 @@
                     </constraints>
                 </view>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="QnR-TT-KQo">
-                    <rect key="frame" x="0.0" y="210" width="393" height="514"/>
+                    <rect key="frame" x="0.0" y="128" width="393" height="596"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </tableView>
@@ -140,17 +140,17 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="BF4-g8-8Tc" secondAttribute="trailing" constant="16" id="0zS-na-YGm"/>
                 <constraint firstItem="QnR-TT-KQo" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="7Rv-iG-gfa"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="QnR-TT-KQo" secondAttribute="trailing" id="GH5-x9-wub"/>
-                <constraint firstItem="QnR-TT-KQo" firstAttribute="top" secondItem="BF4-g8-8Tc" secondAttribute="bottom" constant="5" id="JTU-W4-JgY"/>
                 <constraint firstItem="3jO-LU-1CW" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="QU3-Ds-w8t"/>
                 <constraint firstItem="jBz-iM-J0T" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.433333" id="QsE-Lx-zfb"/>
                 <constraint firstItem="jBz-iM-J0T" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.0586854" id="RaE-bp-dvW"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="3jO-LU-1CW" secondAttribute="bottom" id="baL-Qj-grw"/>
+                <constraint firstItem="QnR-TT-KQo" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="10" id="iVF-Bf-uD7"/>
                 <constraint firstItem="BF4-g8-8Tc" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="25" id="nES-Fn-RoG"/>
                 <constraint firstItem="3jO-LU-1CW" firstAttribute="top" secondItem="QnR-TT-KQo" secondAttribute="bottom" constant="10" id="uM0-Uc-hKc"/>
                 <constraint firstItem="BF4-g8-8Tc" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="wqc-Wa-kQq"/>
                 <constraint firstItem="3jO-LU-1CW" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="xdi-3q-R3s"/>
             </constraints>
-            <point key="canvasLocation" x="-11" y="124"/>
+            <point key="canvasLocation" x="-11.450381679389313" y="123.94366197183099"/>
         </view>
     </objects>
     <resources>

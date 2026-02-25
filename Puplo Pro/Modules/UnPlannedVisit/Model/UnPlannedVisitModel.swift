@@ -7,7 +7,37 @@
 
 import Foundation
 import UIKit
-
+struct UnPlannedVisitAResponse : Codable {
+    let Status : Int?
+    let Status_Message : String?
+    let Data : [UnPlannedVisitAData]?
+}
+struct UnPlannedVisitAData: Codable {
+    let planned_id: String?
+    let visit_id: String?
+    let offline_id: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case planned_id
+        case visit_id
+        case offline_id
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        planned_id = try? container.decode(String.self, forKey: .planned_id)
+        offline_id = try? container.decode(String.self, forKey: .offline_id)
+        
+        if let stringValue = try? container.decode(String.self, forKey: .visit_id) {
+            visit_id = stringValue
+        } else if let intValue = try? container.decode(Int.self, forKey: .visit_id) {
+            visit_id = String(intValue)
+        } else {
+            visit_id = nil
+        }
+    }
+}
 // MARK: - Table Models
 struct NotesRow {
     let title: String
@@ -92,7 +122,7 @@ struct ProductItem: Codable {
 struct VisitItem: Codable {
     var date: String?
     var time: String?
-    var planID: String?
+    var planID: String? = "0"
     var division: IdNameModel?
     var brick: IdNameModel?
     var accountType: IdNameModel?

@@ -31,7 +31,8 @@ private enum UserDefaultsKeys {
     static let selectedImageVisitDataKey = "selectedImageVisit_data_key"
     static let applayUnPlannedVisitOffline = "applay_unplanned_visit_offline"
     static let actualVisitKey = "actual_visit_model"
-    
+    static let plannedVisitsKey = "planned_visits_model"
+   
     static let accountsDoctorsAMKey = "accounts_doctors_am"
     static let accountsDoctorsPMKey = "accounts_doctors_pm"
     static let accountsDoctorsOtherKey = "accounts_doctors_other"
@@ -262,19 +263,19 @@ final class LocalStorageManager {
     }
     
     // MARK: - plan Visits (UserDefaults)
-    func savePlanVisits(_ model: PlannedVisitsModel) {
-        saveCodable(model, key: UserDefaultsKeys.planVisitsKey)
-        log("✔ plan Visits data saved")
-    }
-
-    func getPlanVisits() -> PlannedVisitsModel? {
-        loadCodable(PlannedVisitsModel.self, key: UserDefaultsKeys.planVisitsKey)
-    }
-
-    func clearPlanVisits() {
-        removeValue(for: UserDefaultsKeys.planVisitsKey)
-        log("✔ Plan Visits data cleared")
-    }
+//    func savePlanVisits(_ model: PlannedVisitsModel) {
+//        saveCodable(model, key: UserDefaultsKeys.planVisitsKey)
+//        log("✔ plan Visits data saved")
+//    }
+//
+//    func getPlanVisits() -> PlannedVisitsModel? {
+//        loadCodable(PlannedVisitsModel.self, key: UserDefaultsKeys.planVisitsKey)
+//    }
+//
+//    func clearPlanVisits() {
+//        removeValue(for: UserDefaultsKeys.planVisitsKey)
+//        log("✔ Plan Visits data cleared")
+//    }
     
     // MARK: - App PresentationsModel (UserDefaults)
     func saveAppPresentationsModel(_ model: AppPresentationsModel) {
@@ -395,6 +396,19 @@ final class LocalStorageManager {
     func clearActualVisitData() {
         removeValue(for: UserDefaultsKeys.actualVisitKey)
         log("✔ actualVisit cleared")
+    }
+    
+    // MARK: - Planned Visits  (UserDefaults)
+    func savePlannedVisitsData(_ model: [PlannedVisitsData]) {
+        saveCodable(model, key: UserDefaultsKeys.plannedVisitsKey)
+        log("✔ App Planned Visits Model saved successfully")
+    }
+    func getPlannedVisitsData() -> [PlannedVisitsData]? {
+        loadCodable([PlannedVisitsData].self, key: UserDefaultsKeys.plannedVisitsKey)
+    }
+    func clearPlannedVisitsData() {
+        removeValue(for: UserDefaultsKeys.plannedVisitsKey)
+        log("✔ Planned Visits cleared")
     }
     
     // MARK: - Visit Start Location (UserDefaults)

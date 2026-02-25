@@ -155,10 +155,10 @@ final class UnPlannedVisitNotesViewModel {
         
         let now = Date()
         let offlineId = String(Date().timeIntervalSince1970)
-        
+
         LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
             guard let self = self else { return }
-            
+
             let model = ActualVisitModel(
                 id: UUID().uuidString,
                 
@@ -197,11 +197,11 @@ final class UnPlannedVisitNotesViewModel {
                 managerVisit: self.mapManagers(managers),
                 imageVisit: self.mapImages(images)
             )
-            
+            print("offline_id >> \(model.offline_id ?? "")")
+            print("model >> \(model)")
             self.persistActualVisit(model)
         }
     }
-    
     // MARK: - Mappers
     private func mapProducts(_ items: [ProductItem]) -> [ProductVisitModel] {
         items.map {
@@ -257,7 +257,7 @@ final class UnPlannedVisitNotesViewModel {
         print("✅ Actual Visit saved locally")
     }
     
-    // MARK: - API Save (REMOTE)
+    // MARK: - API Save (REMOTE) - BODY DATA VERSION
     private func saveUnPlannedVisitAPI(
         completion: @escaping (Bool, String, Int) -> Void
     ) {
@@ -270,22 +270,18 @@ final class UnPlannedVisitNotesViewModel {
         }
         
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = baseURL + URLs.saveActualsURL
+        let url = baseURL + URLs.saveOw
         
         let productsData = LocalStorageManager.shared.getProductsData() ?? []
         let giftsData = LocalStorageManager.shared.getGiftsData() ?? []
         let managerData = LocalStorageManager.shared.getManagerData() ?? []
-        let imagesData = LocalStorageManager.shared.getSelectedImageVisitData() ?? []
         let startLocation = LocalStorageManager.shared.getVisitStartLocation()
         
-        let products = buildProductsPayload(productsData)
-        let giveaways = buildGiftsPayload(giftsData)
-        let members = buildMembersPayload(managerData)
-        let attachments = buildAttachments(imagesData)
+        let products = buildProductsPayloadNEW(productsData)
+        let giveaways = buildGiftsPayloadNEW(giftsData)
+        let members = buildMembersPayloadNEW(managerData)
         
-        let attachReferenceId = UUID().uuidString
         let now = Date()
-        let offlineId = Int(Date().timeIntervalSince1970)
         
         LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
             guard let self = self else { return }
@@ -300,135 +296,175 @@ final class UnPlannedVisitNotesViewModel {
                 lng2: endLng
             )
             
-            var visitDict: [String: Any] = [:]
-            
-            // MARK: - IDs
-            visitDict["id"] = 0
-            visitDict["offline_id"] = offlineId
-            visitDict["plan_id"] = visit.planID ?? 0
-            visitDict["account_id"] = visit.account?.id ?? 0
-            visitDict["account_dr_id"] = visit.doctor?.id ?? 0
-            visitDict["account_type_id"] = visit.accountType?.id ?? 0
-            visitDict["div_id"] = visit.division?.id ?? 0
-            visitDict["brick_id"] = visit.brick?.id ?? 0
-            visitDict["line_id"] = visit.account?.line_id ?? 0
-            
-            // MARK: - Date & Time
-            visitDict["visit_date"] = now.formattedDate
-            visitDict["visit_time"] = now.formattedTime.to24HourFormat
-            visitDict["insertion_date"] = now.formattedDate
-            visitDict["insertion_time"] = now.formattedTime.to24HourFormat
-            visitDict["visit_duration"] = "00:02:18"
-            visitDict["visit_deviation"] = visitDeviation
-            
-            // MARK: - Notes & Relations
-            visitDict["notes_aw_comment"] = visit.comment ?? ""
-            visitDict["giveaways"] = giveaways
-            visitDict["products"] = products
-            visitDict["members"] = members
-            visitDict["attachments"] = attachments
-            visitDict["attach_reference_id"] = attachReferenceId
-            
-            // MARK: - Visit Info
-            visitDict["no_of_doctors"] = 1
-            visitDict["visit_type_id"] = visit.visitType?.id ?? 0
-            visitDict["selected_shift"] = visit.shiftType?.id ?? 0
-            visitDict["shift"] = visit.accountType?.shift_id ?? 0
-            
-            // MARK: - Location
-            visitDict["ll_start"] = startLocation?.coordinate.latitude ?? endLat
-            visitDict["lg_start"] = startLocation?.coordinate.longitude ?? endLng
-            visitDict["ll"] = endLat
-            visitDict["lg"] = endLng
-            visitDict["is_fake_start_location"] = false
-            visitDict["is_fake_end_location"] = false
-            
-            // MARK: - Device
-            visitDict["os_type"] = "IOS"
-            visitDict["os_version"] = UIDevice.current.systemVersion
-            visitDict["device_brand"] = UIDevice.current.model
-            visitDict["appVersion"] = AppInfo.shared.appVersion
-            visitDict["visited_doctors"] = [""]
-            
-            let params: [String: Any] = [
-                "visits": [visitDict]
-            ]
-            print("params >>\(params)")
-            let headers: HTTPHeaders = [
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "lang": "ar",
-                "device-id": AppInfo.shared.deviceID,
-                "timezone": "Africa/Cairo"
+            let visitDict: [String: Any] = [
+                "ampm": visit.shiftType?.id ?? "1",
+                "comments": visit.comment ?? "",
+                "date_added": now.formattedDate,
+                "appVersion": AppInfo.shared.appVersion,
+                "osVersion": UIDevice.current.systemVersion,
+                "deviceBrand": UIDevice.current.model,
+                "osType": "iOS",
+                "div_id": visit.division?.id ?? 0,
+                "giveaway_info": giveaways,
+                "id": 0,
+                "insertion_date": now.formattedDate,
+                "insertion_time": now.formattedTime.to24HourFormat,
+                "is_fake_end_location": false,
+                "is_fake_start_location": false,
+                "is_sync": 0,
+                "item_doc_id": visit.doctor?.id ?? 0,
+                "item_id": visit.account?.id ?? 0,
+                "member_info": members,
+                "members": "\(members.count)",
+                "no_of_doctors": 1,
+                "offline_id": "11",
+                "product_info": products,
+                "selected_shift": visit.shiftType?.id ?? 0,
+                "sync_date": now.formattedDate,
+                "sync_time": now.formattedTime.to24HourFormat,
+                "team_id": user.lineIds ?? "",
+                "type_id": visit.visitType?.id ?? 0,
+                "user_id": user.user_id ?? 0,
+                "vdate": now.formattedDate,
+                "visit_address": "",
+                "visit_deviation": visitDeviation,
+                "visit_duration": "00:02:00",
+                "vplanned_id": visit.planID ?? "0",
+                "vtime": now.formattedTime.to24HourFormat,
+                "ll_start": startLocation?.coordinate.latitude ?? endLat,
+                "lg_start": startLocation?.coordinate.longitude ?? endLng,
+                "ll": endLat,
+                "lg": endLng
             ]
             
-            self.loadingBehavior.accept(true)
+            let visitArray = [visitDict]
             
-            NetworkLayer.shared.fetchData(
-                method: .post,
-                url: url,
-                parameters: params,
-                headers: headers
-            ) { (result: Result<SavePlanResponse>) in
-                self.loadingBehavior.accept(false)
-                switch result {
-                case .success(let model):
-                    completion(true, model.Status_Message ?? "", Int(model.Data?.first?.planned_id ?? "") ?? 0)
-                    print("model >>\(model)")
-                case .failure:
-                    completion(false, "Network Error", 0)
+            print("NEW BODY >>> \(visitArray)")
+            
+            do {
+                let bodyData = try JSONSerialization.data(withJSONObject: visitArray, options: [])
+                
+                self.loadingBehavior.accept(true)
+                
+                NetworkLayer.shared.fetchData(
+                    method: .post,
+                    url: url,
+                    parameters: [:],
+                    body: bodyData,
+                    headers: [
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "lang": "ar",
+                        "device-id": AppInfo.shared.deviceID,
+                        "timezone": "Africa/Cairo"
+                    ]
+                ) { (result: Result<UnPlannedVisitAResponse>) in
+                    self.loadingBehavior.accept(false)
+                    switch result {
+                    case .success(let model):
+                        completion(true, model.Status_Message ?? "",Int(model.Data?.first?.visit_id ?? "") ?? 0)
+                        print("model >>> \(model)")
+                    case .failure(let error):
+                        completion(false, error.localizedDescription, 0)
+                    }
                 }
+            } catch {
+                completion(false, "JSON Encoding Error", 0)
             }
         }
     }
-    
-    private func buildProductsPayload(_ productsData: [ProductItem]) -> [[String: Any]] {
-        return productsData.map { item in
-            var dict: [String: Any] = [:]
-            dict["product_id"] = item.product?.id ?? ""
-            dict["samples"] = item.count
-            dict["notes"] = item.comment ?? ""
-            dict["stock"] = item.stock ?? ""
-            dict["payment"] = item.payment ?? ""
-            dict["order"] = item.order ?? ""
-            dict["followup_id"] = item.followUp ?? ""
-            dict["market_feedback_id"] = item.market ?? ""
-            dict["vFeedback_id"] = item.feedback ?? ""
+    private func buildProductsPayloadNEW(_ productsData: [ProductItem]) -> [[String: Any]] {
         
-            if let presentations = item.presentations {
+        return productsData.map { item in
+            
+            var dict: [String: Any] = [:]
+            
+            // MARK: - Basic
+            dict["product_id"] = item.product?.id ?? 0
+            dict["samples"] = Int(item.count) ?? 0
+            dict["notes"] = item.comment ?? ""
+            
+            // MARK: - Order & Stock
+            dict["current_stock"] = Int(item.stock ?? "") ?? 0
+            dict["current_order"] = Int(item.order ?? "") ?? 0
+            dict["quotation_payment_method"] = Int(item.payment ?? "") ?? 0
+            
+            // MARK: - Feedback
+            dict["followup"] = item.followUp ?? ""
+            dict["mfeedback"] = item.market ?? ""
+            dict["feedback_id"] = Int(item.feedback ?? "") ?? 0
+            
+            // MARK: - Demo
+            dict["is_demo"] = 0
+            dict["demo_date"] = Date().formattedDate
+            
+            // MARK: - Extra Fields (Required by Backend)
+            dict["average"] = 0
+            dict["last_order_quantity"] = 0
+            dict["quotation"] = ""
+            dict["followup_comments"] = ""
+            dict["followup_date"] = ""
+            dict["followup_result"] = ""
+            
+            // MARK: - Presentations
+            if let presentations = item.presentations, !presentations.isEmpty {
+                
                 dict["presentations"] = presentations.map { presentation in
-                    return [
-                        "no_of_entry_times": "1",//presentation.no_of_entry_times,
-                        "presentation_id": presentation.presentation_id ?? "",
-                        "ratings": presentation.ratings?.map { [
-                            "rating": $0.rating ?? "",
-                            "slide_id": $0.slide_id ?? ""
-                        ]} ?? [],
-                        "slides": presentation.slides?.map { [
-                            "end_time": $0.end_time ?? "",
-                            "rating": $0.rating ?? "",
-                            "slide_id": $0.slide_id ?? "",
-                            "start_time": $0.start_time ?? ""
-                        ]} ?? []
-                    ]
+                    
+                    var presentationDict: [String: Any] = [:]
+                    
+                    presentationDict["no_of_entry_times"] = Int(1)
+                    presentationDict["presentation_id"] = Int(presentation.presentation_id ?? "") ?? 0
+                    
+                    // MARK: - Ratings
+                    if let ratings = presentation.ratings, !ratings.isEmpty {
+                        presentationDict["ratings"] = ratings.map { rating in
+                            return [
+                                "rating": Int(rating.rating ?? "") ?? 0,
+                                "slide_id": Int(rating.slide_id ?? "") ?? 0
+                            ]
+                        }
+                    } else {
+                        presentationDict["ratings"] = []
+                    }
+                    
+                    // MARK: - Slides
+                    if let slides = presentation.slides, !slides.isEmpty {
+                        presentationDict["slides"] = slides.map { slide in
+                            return [
+                                "slide_id": Int(slide.id ?? "") ?? 0,
+                                "start_time": slide.start_time ?? "",
+                                "end_time": slide.end_time ?? "",
+                                "rating": slide.rating ?? 0
+                            ]
+                        }
+                    } else {
+                        presentationDict["slides"] = []
+                    }
+                    
+                    return presentationDict
                 }
+                
+            } else {
+                dict["presentations"] = []
             }
             return dict
         }
     }
-
-    private func buildGiftsPayload(_ giftsData: [IdNameModel]) -> [[String: Any]] {
-        return giftsData.map {
+    private func buildGiftsPayloadNEW(_ giftsData: [IdNameModel]) -> [[String: Any]] {
+        
+        return giftsData.map { gift in
             [
-                "giveaway_id": $0.id ?? 0,
-                "units": Int($0.count ?? "") ?? 0
+                "gift_id": gift.id ?? 0,
+                "noofunits": Int(gift.count ?? "") ?? 0
             ]
         }
     }
-    private func buildMembersPayload(_ managerData: [IdNameModel]) -> [[String: Any]] {
-        return managerData.map {
+    private func buildMembersPayloadNEW(_ managerData: [IdNameModel]) -> [[String: Any]] {
+        
+        return managerData.map { manager in
             [
-                "emp_id": $0.id ?? ""
+                "emp_id": manager.id ?? 0
             ]
         }
     }

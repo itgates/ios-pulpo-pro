@@ -9,7 +9,7 @@ import Foundation
 struct ActualVisitModel: Codable {
     let id: String                 // UUID local
     var accountID: String? = nil
-    var palnID: String? = nil
+    var palnID: String? = "0"
     var doctorID: String? = nil
     var accountTypeID: String? = nil
     var divisionID: String? = nil
@@ -19,7 +19,7 @@ struct ActualVisitModel: Codable {
     var visitTypeId: String? = nil
     var shiftTypeId: String? = "2"
     var shiftId: String? = nil
-    var offline_id: String? = nil             // مهم جدًا
+    var offline_id: String? = nil
     var online_id: String? = nil
 
     var division_name: String? = nil

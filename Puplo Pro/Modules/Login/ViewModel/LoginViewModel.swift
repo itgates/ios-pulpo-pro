@@ -292,7 +292,7 @@ class LoginViewModel {
             switch result {
             case .success(let model):
                 // Save  Plan Visits Data locally
-                LocalStorageManager.shared.savePlanVisits(model)
+                LocalStorageManager.shared.savePlannedVisitsData(model.Data ?? [])
                 if model.Data != nil {
                     completion(true)
                 } else {

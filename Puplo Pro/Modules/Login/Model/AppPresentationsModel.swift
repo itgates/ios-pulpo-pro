@@ -47,7 +47,7 @@ struct Slides : Codable {
     var start_time : String?
     var end_time : String?
     let rating : Int?
-    let slide_id : String?
+//    let slide_id : String?
 }
 struct RatingPresentations : Codable {
     let rating : String?

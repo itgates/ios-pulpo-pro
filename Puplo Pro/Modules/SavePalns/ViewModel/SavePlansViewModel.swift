@@ -73,7 +73,7 @@ final class SavePlansViewModel {
             }
             return SaveNewPlanModel(
                 id: UUID().uuidString,
-                onlineID: matchedResponse?.planned_id ?? "",
+                onlineID: matchedResponse?.planned_id ?? 0,
                 offlineID: plan.offline_id,
 
                 accountID: plan.account_id,

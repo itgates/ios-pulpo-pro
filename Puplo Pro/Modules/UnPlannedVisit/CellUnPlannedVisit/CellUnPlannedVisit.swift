@@ -358,19 +358,6 @@ private extension CellUnPlannedVisit {
 // MARK: - Data Helpers
 private extension CellUnPlannedVisit {
 
-//    var divisionData: [IdNameModel] {
-//        
-//        masterData?.Data?.divisions?
-//            .map {
-//                IdNameModel(
-//                    id: $0.id,
-//                    name: $0.name,
-//                    line_id: "",//$0.line_id,
-//                    line_division_id: ""//$0.line_division_id
-//                )
-//            } ?? []
-//    }
-
     var divisionData: [IdNameModel] {
         
         guard
@@ -409,7 +396,7 @@ private extension CellUnPlannedVisit {
                 IdNameModel(
                     id: $0.id,
                     name: $0.name,
-                    ter_id: $0.ter_id //$0.line_division_id
+                    ter_id: $0.ter_id
                 )
             } ?? []
     }

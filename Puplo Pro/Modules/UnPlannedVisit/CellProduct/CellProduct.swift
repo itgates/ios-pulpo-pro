@@ -74,19 +74,6 @@ final class CellProduct: UICollectionViewCell {
     private var productsData: [IdNameModel]? {
         LocalStorageManager.shared.getMasterData()?.Data?.products
     }
-//    private var feedBackData: [IdNameModel]? {
-//        []
-////        LocalStorageManager.shared.getMasterData()?.Data?.visitFeedBack
-//    }
-//    private var marketFeedBackData: [IdNameModel]? {
-//        []
-////        LocalStorageManager.shared.getMasterData()?.Data?.marketFeedbacks
-//    }
-//    private var followUpsData: [IdNameModel]? {
-//        []
-////        LocalStorageManager.shared.getMasterData()?.Data?.followUps
-//    }
-    
     private var presentationsData: [Presentations] {
         LocalStorageManager.shared.getAppPresentationsModel()?.Data?.Presentations ?? []
     }
@@ -126,9 +113,6 @@ final class CellProduct: UICollectionViewCell {
     // MARK: - Gestures
     private func setupGestures() {
         bind(stackSelectProduct, productsData, .product, productNameTextField)
-//        bind(stackSelectFeedBack, feedBackData, .feedback, feedbackTextField)
-//        bind(stackSelectMarket, marketFeedBackData, .market, marketTextField)
-//        bind(stackSelectFollowUps, followUpsData, .followUp, followUpsTextField)
     }
     
     private func bind(

@@ -25,13 +25,13 @@ class ReportsViewModel {
     func fetchData() {
         
         let reportsData: [(name: String, imageName: String, vc: UIViewController.Type?)] = [
-            ("Statistics", "Statistics", nil),
+            ("Statistics", "Statistics", StatisticsVC.self),
             ("Product", "Product", ProductListVC.self),
-            ("Account", "Account", nil),
-            ("Actual Visit", "Visit", nil),
-            ("Planned Visit", "Paln", nil),
+            ("Account", "Account", AccountsListVC.self),
+            ("Actual Visit", "Visit", ActualVisitVC.self),
+            ("Planned Visit", "Paln", PlannedVisitListVC.self),
             ("New Plan", "newPlan", NewPlanVC.self),
-            ("Plan Approval", "PlanApproval", nil),
+//            ("Plan Approval", "PlanApproval", nil),
             //("Database tables", "databaseTable", nil)
         ]
 

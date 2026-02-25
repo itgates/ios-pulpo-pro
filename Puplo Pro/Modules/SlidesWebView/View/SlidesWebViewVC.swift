@@ -65,7 +65,7 @@ final class SlidesWebViewVC: BaseView {
         guard idx >= 0, idx < slidesArray.count else { return nil }
         return idx
     }
-    private func apiBaseURL() -> String { LocalStorageManager.shared.getAPIPath() ?? "" }
+    private func apiBaseURL() -> String {"https://pulpo-cira.cloud/crm/edetailing_files/"}// LocalStorageManager.shared.getAPIPath() ?? "" }
 
     // MARK: - Rating UI
     private func updateRateButtonAppearance() {
@@ -85,7 +85,7 @@ final class SlidesWebViewVC: BaseView {
         if let pid = presentationID, let idx = presentations.firstIndex(where: { Int($0.presentation_id ?? "") == pid }) {
             targetIndex = idx
         }
-        let slideID = slidesArray[currentIdx].slide_id
+        let slideID = slidesArray[currentIdx].id
         let ratings = presentations[targetIndex].ratings ?? []
         let isRated: Bool
         if let sid = slideID {
@@ -266,8 +266,9 @@ private extension SlidesWebViewVC {
                 guard let self = self else { return }
                 self.selectedIndex.accept(index)
                 // Commit previous and start new timing
+                print("slide.slide_type >>\(slide.slide_type ?? "")")
                 self.commitTimingAndStartNew(for: index)
-                slide.slide_type == "image" ? self.showImageSlide(at: index) : self.showHTMLSlide(slide, at: index)
+                slide.slide_type == "Image" ? self.showImageSlide(at: index) : self.showHTMLSlide(slide, at: index)
                 self.updateRateButtonAppearance()
             }
             .disposed(by: disposeBag)
@@ -279,7 +280,9 @@ private extension SlidesWebViewVC {
                 cellIdentifier: String(describing: CellPhotos.self),
                 cellType: CellPhotos.self
             )) { [self] _, model, cell in
-                cell.configure(with: apiBaseURL() + (model.slide_path ?? ""))
+                let url = apiBaseURL() + ("\(model.structure ?? "")/\(model.file_path ?? "")")
+                print("url >>>>>>\(url)")
+                cell.configure(with: url)
             }
             .disposed(by: disposeBag)
     }
@@ -325,7 +328,9 @@ private extension SlidesWebViewVC {
             return
         }
         guard let path = slide.slide_path else { return }
-        let zipURLString = apiBaseURL() + path
+        let url = apiBaseURL() + ("\(slide.structure ?? "")/\(path)")
+        
+        let zipURLString = apiBaseURL() + url
         guard let zipURL = URL(string: zipURLString) else { return }
         print("zipURL >>>\(zipURL)")
         downloadAndLoadHTML(from: zipURL, index: index)
@@ -439,7 +444,7 @@ extension SlidesWebViewVC: WKScriptMessageHandler {
                 guard let self = self else { return }
                 self.selectedIndex.accept(idx)
                 let slide = self.slidesArray[idx]
-                slide.slide_type == "image" ? self.showImageSlide(at: idx) : self.showHTMLSlide(slide, at: idx)
+                slide.slide_type == "Image" ? self.showImageSlide(at: idx) : self.showHTMLSlide(slide, at: idx)
             }
         } else {
             print("No matching slide found for href: \(href)")
@@ -524,7 +529,7 @@ private extension SlidesWebViewVC {
         if let pid = presentationID, let idx = presentations.firstIndex(where: { Int($0.presentation_id ?? "") == pid }) { targetIndex = idx }
         var currentIdx = selectedIndex.value
         if let explicit = currentSlideIndex { currentIdx = explicit }
-        let slideID = (currentIdx >= 0 && currentIdx < slidesArray.count) ? slidesArray[currentIdx].slide_id : nil
+        let slideID = (currentIdx >= 0 && currentIdx < slidesArray.count) ? slidesArray[currentIdx].id : nil
         let newRating = RatingPresentations(rating: "\(stars)", slide_id: slideID)
         var ratings = presentations[targetIndex].ratings ?? []
         ratings.append(newRating)

@@ -27,6 +27,11 @@ class CellPlanningVisits: UITableViewCell {
     // Closure
     var onMapTapped: (() -> Void)?
     let officeWorkTypes = LocalStorageManager.shared.getMasterData()?.Data?.office_work_types
+    
+    var accountName: String = ""
+    var doctorName: String = ""
+    var onLat: String = ""
+    var onLong: String = ""
     // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -41,44 +46,75 @@ class CellPlanningVisits: UITableViewCell {
         hosptalLabel.rx.text.onNext(model.hosptal)
         AMAccountLabel.rx.text.onNext(" (\(model.account_type ?? ""))")
     }
-//    func configureCellPlanned(model: PlanVisitsData) {
-//        viewCircel.rx.isHidden.onNext(true)
-//        AMAccountLabel.textColor = .orange
-//        checkImage.image = UIImage(named: "pin")
-//        idLabel.rx.text.onNext("id: \(model.id ?? 0)")
-//        
-//        iMDepartmentLabel.rx.text.onNext("Doctor: (\(model.doctor ?? ""))")
-//        AMAccountLabel.rx.text.onNext("(\(model.account ?? ""))")
-//       
-//        if model.shift_id == 1 {
-//            hosptalLabel.rx.text.onNext("\(model.account_type ?? ""):")
-//        } else if model.shift_id == 2 {
-//            hosptalLabel.rx.text.onNext("\(model.account_type ?? ""):")
-//        }else {
-//            hosptalLabel.rx.text.onNext("\(model.account_type ?? ""):")
-//        }
-//       
-//    }
-//    func configureCellOWS(model: PlanOwsData) {
-//        viewCircel.rx.isHidden.onNext(true)
-//        checkImage.rx.isHidden.onNext(true)
-//
-//        idLabel.rx.text.onNext("id: \(model.id ?? "")")
-//        iMDepartmentLabel.rx.text.onNext("Date: \(model.date ?? "")")
-//       
-//        let name = officeWorkTypes?
-//            .first(where: { $0.id == model.ow_type_id })?
-//            .name ?? ""
-//        hosptalLabel.rx.text.onNext("\(name): ")
-//        
-//        if model.shift_id == "2" {
-//            AMAccountLabel.rx.text.onNext("(AM)")
-//        } else if model.shift_id == "1" {
-//            AMAccountLabel.rx.text.onNext("(PM)")
-//        } else {
-//            AMAccountLabel.rx.text.onNext("(Other)")
-//        }
-//    }
+    func configureCellPlanned(model: PlannedVisitsData) {
+
+        viewCircel.rx.isHidden.onNext(true)
+        AMAccountLabel.textColor = .orange
+        checkImage.image = UIImage(named: "pin")
+        idLabel.rx.text.onNext("id: \(model.id ?? "")")
+
+        // ✅ Doctor Name
+        let doctors = LocalStorageManager.shared.getAccountsDoctors()?.Data?.Doctors ?? []
+
+        let doctor = doctors.first {
+            $0.id?.trimmingCharacters(in: .whitespacesAndNewlines)
+            ==
+            model.item_doc_id?.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        let doctorName = doctor?.name ?? "Unknown"
+        iMDepartmentLabel.rx.text.onNext("Doctor: \(doctorName)")
+        self.doctorName =  doctorName
+        
+        // ✅ Account Type Name
+        let accountTypes = LocalStorageManager.shared.getMasterData()?.Data?.account_types ?? []
+
+        let accountTypeName = accountTypes
+            .first {
+                $0.id?.trimmingCharacters(in: .whitespacesAndNewlines)
+                ==
+                model.account_type?.trimmingCharacters(in: .whitespacesAndNewlines)
+            }?
+            .name ?? "Unknown"
+
+        hosptalLabel.rx.text.onNext("\(accountTypeName):")
+
+        // ✅ Fetch Account Object (IMPORTANT)
+        let accounts = LocalStorageManager.shared.getAccountsDoctors()?.Data?.Accounts ?? []
+
+        let account = accounts.first {
+            $0.id?.trimmingCharacters(in: .whitespacesAndNewlines)
+            ==
+            model.item_id?.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        let accountName = account?.name ?? "Unknown"
+        AMAccountLabel.rx.text.onNext("(\(accountName))")
+
+        // ✅ Save Lat & Lng inside cell properties
+        self.onLat = account?.team_ll ?? ""
+        self.onLong = account?.team_lg ?? ""
+        self.accountName =  accountName
+    }
+    func configureCellOWS(model: PlanOwsData) {
+        viewCircel.rx.isHidden.onNext(true)
+        checkImage.rx.isHidden.onNext(true)
+
+        idLabel.rx.text.onNext("id: \(model.id ?? "")")
+        iMDepartmentLabel.rx.text.onNext("Date: \(model.date ?? "")")
+       
+        let name = officeWorkTypes?
+            .first(where: { $0.id == model.ow_type_id })?
+            .name ?? ""
+        hosptalLabel.rx.text.onNext("\(name): ")
+        
+        if model.shift_id == "2" {
+            AMAccountLabel.rx.text.onNext("(AM)")
+        } else if model.shift_id == "1" {
+            AMAccountLabel.rx.text.onNext("(PM)")
+        } else {
+            AMAccountLabel.rx.text.onNext("(Other)")
+        }
+    }
 
     
     func setupUI() {
