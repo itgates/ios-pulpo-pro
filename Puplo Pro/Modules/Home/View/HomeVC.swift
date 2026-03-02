@@ -139,7 +139,10 @@ private extension HomeVC {
         guard let user = LocalStorageManager.shared.getLoggedUser() else { return }
         
         userNameLabel.rx.text.onNext(user.fullname)
-        userPhoneLabel.rx.text.onNext(Constants.userPhonePrefix + (user.mobile ?? ""))
+        guard let mobile = user.mobile, !mobile.isEmpty else {
+            userPhoneLabel.rx.isHidden.onNext(true)
+            return }
+        userPhoneLabel.rx.text.onNext(Constants.userPhonePrefix + mobile)
         
         dateLabel.rx.text.onNext("Date \(user.check_in_date ?? "")")
         timeLabel.rx.text.onNext("Time \(user.check_in_time ?? "")")

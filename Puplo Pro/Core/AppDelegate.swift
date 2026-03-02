@@ -44,6 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        LocalStorageManager.shared.clearVisitStartLocation()
 //        LocalStorageManager.shared.clearNewPlanData()
 //        LocalStorageManager.shared.clearActualVisitData()
+//        LocalStorageManager.shared.clearOfficeWorkModel()
         return true
     }
     

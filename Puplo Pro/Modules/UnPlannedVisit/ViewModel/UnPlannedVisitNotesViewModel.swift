@@ -106,7 +106,28 @@ final class UnPlannedVisitNotesViewModel {
         return NotesSection(header: "Products Details", rows: rows)
     }
     
-    
+    func validateActualVisit() -> String? {
+        
+        guard let visit = LocalStorageManager.shared.getVisitItemData()?.first else {
+            return nil
+        }
+        
+        let today = Date().formattedDate
+        
+        let visits = LocalStorageManager.shared.getActualVisitData() ?? []
+        
+       // Same doctor + same day
+        let isDuplicate = visits.contains {
+            $0.doctorID == visit.doctor?.id &&
+            $0.visit_date == today
+        }
+        
+        if isDuplicate {
+            return "You can't visit the same doctor more than once in the same day."
+        }
+        
+        return nil
+    }
     // MARK: - Public Save
     func saveUnPlannedVisit(completion: @escaping (Bool, String) -> Void) {
         

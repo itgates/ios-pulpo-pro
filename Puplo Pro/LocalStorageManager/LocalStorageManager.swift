@@ -19,7 +19,8 @@ private enum UserDefaultsKeys {
     static let accountsDoctorsKey = "accounts_doctors_model"
     static let planVisitsKey = "plan_visits_model"
     static let appPresentationsKey = "app_Presentations_model"
-    static let oWActivitiesKey = "oW_activities_model"
+    static let officeWorkKey = "officeWorkKey"
+    static let oWActivitiesKey = "oWActivitiesKey"
     static let visitStartLocation = "visit_start_location"
     static let lastLocation = "last_user_location"
     static let offlinePlansKey = "offline_plans_model"
@@ -305,6 +306,21 @@ final class LocalStorageManager {
     func clearOWActivitiesModel() {
         removeValue(for: UserDefaultsKeys.oWActivitiesKey)
         log("✔ OW Activities data cleared")
+    }
+    
+    // MARK: - Office Work (UserDefaults)
+    func saveOfficeWorkModel(_ model: [OWSModel]) {
+        var oldData = getOfficeWorkData() ?? []
+        oldData.append(contentsOf: model)
+        saveCodable(oldData, key: UserDefaultsKeys.officeWorkKey)
+        log("✔ Office Work data appended & saved successfully")
+    }
+    func getOfficeWorkData() -> [OWSModel]? {
+        loadCodable([OWSModel].self, key: UserDefaultsKeys.officeWorkKey)
+    }
+    func clearOfficeWorkModel() {
+        removeValue(for: UserDefaultsKeys.officeWorkKey)
+        log("✔ Office Work data cleared")
     }
     
     // MARK: - Plans (UserDefaults)

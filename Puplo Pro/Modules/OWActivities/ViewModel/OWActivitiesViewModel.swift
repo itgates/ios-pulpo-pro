@@ -5,151 +5,6 @@
 //
 //  Created by Ahmed on 12/02/2026.
 //
-//import Foundation
-//import RxSwift
-//import RxCocoa
-//import UIKit
-//import Alamofire
-//class OWActivitiesViewModel {
-//
-//    // MARK: - Properties
-//    let loadingBehavior = BehaviorRelay<Bool>(value: false)
-//    // Visibility states (kept private)
-//    private let isCollectionViewHidden = BehaviorRelay<Bool>(value: false)
-//
-//    private let oWActivitiesAMModelSubject = BehaviorRelay<[IdNameModel]>(value: [])
-//    var oWActivitiesAMModelObservable: Observable<[IdNameModel]> {
-//        oWActivitiesAMModelSubject.asObservable()
-//    }
-//
-//    private let officeWorkTypesModelSubject = BehaviorRelay<[IdNameModel]>(value: [])
-//    var officeWorkTypesModelObservable: Observable<[IdNameModel]> {
-//        officeWorkTypesModelSubject.asObservable()
-//    }
-//
-//    var officeWork = LocalStorageManager.shared.getMasterData()
-//
-//
-//    // MARK: - Fetch Data
-//    func fetchData() {
-//
-//        let reportsData: [(name: String, id: String)] = [
-//            ("AM", "1"),
-//            ("PM", "2"),
-//            ("Full Day", "4")
-//        ]
-//
-//        let items: [IdNameModel] = reportsData.compactMap { data in
-//            return IdNameModel(id: data.id, name: data.name)
-//        }
-//        oWActivitiesAMModelSubject.accept(items)
-//
-//        guard let data = officeWork?.Data else { return }
-//        officeWorkTypesModelSubject.accept(data.office_work_types ?? [])
-//    }
-//    // MARK: - Helpers (Lookup)
-//    func shiftName(for shiftId: String) -> String? {
-//        return oWActivitiesAMModelSubject.value
-//            .first { $0.id == shiftId }?
-//            .name
-//    }
-//    func officeWorkName(for owTypeId: String) -> String? {
-//        return officeWorkTypesModelSubject.value
-//            .first { $0.id == owTypeId }?
-//            .name
-//    }
-//    func applayWithNetworkCheck(OWS: [OWSModel], completion: @escaping (Bool, String) -> Void) {
-//        print("OWS.count >>>\(OWS.count)")
-//        if Reachability.isConnectedToNetwork() {
-//            fetchDataApplay(OWS: OWS) { done, message in
-//                if done {
-//                    LocalStorageManager.shared.clearOWActivitiesModel()
-//                }
-//                completion(done, message)
-//            }
-//        } else {
-//            LocalStorageManager.shared.saveOWActivitiesModel(OWS)
-//            completion(true, "تم حفظ البيانات محليًا. سيتم رفعها عند الاتصال بالإنترنت.")
-//        }
-//    }
-//
-//    // MARK: - fetch Data Applay
-//    func fetchDataApplay(OWS: [OWSModel],
-//                         completion: @escaping (Bool,String) -> Void) {
-//
-//        let user = LocalStorageManager.shared.getLoggedUser()
-//        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-//        let url = baseURL + URLs.saveOwURL
-//
-//
-//
-//        let visitArray: [[String: Any]] = OWS.map { model in
-//            return [
-////                "androidId": "7026570c4eaa5789",
-////                "androidVersion": "12",
-////                "appVersion": AppInfo.shared.appVersion,
-////                "deviceBrand": AppInfo.shared.deviceModel,
-////                "deviceModel": "Redmi Note 9S",
-//                "appVersion": AppInfo.shared.appVersion,
-//                "osVersion": AppInfo.shared.osVersion,
-//                "deviceBrand": AppInfo.shared.deviceModel,
-//                "osType": "iOS",
-//                "type_id": model.ow_type_id,
-//                "vdate": model.date,
-//                "date_added": model.date,
-//                "vtime": model.time,
-//                "ampm": model.shift_id,
-//                "comments": model.notes,
-//                "user_id": user?.user_id ?? "",
-//                "visit_duration": "00:00:08",
-//                "visit_deviation": 0,
-//                "lg": "",
-//                "lg_start": "",
-//                "ll": "",
-//                "ll_start": "",
-//            ]
-//        }
-//        print("visitArray >>>\(visitArray)")
-//        do {
-//            let bodyData = try JSONSerialization.data(withJSONObject: visitArray, options: [])
-//            print("bodyData >>>\(bodyData)")
-//            NetworkLayer.shared.fetchData(
-//                method: .post,
-//                url: url,
-//                parameters: [:],
-//                body: bodyData,
-//                headers: [
-//                    "Content-Type": "application/json",
-//                    "Accept": "application/json",
-//                    "lang": "ar",
-//                    "device-id": AppInfo.shared.deviceID,
-//                    "timezone": "Africa/Cairo"
-//                ]
-//            ) { [weak self] (result: Result<OWActivitiesResponse>) in
-//                self?.loadingBehavior.accept(false)
-//                switch result {
-//                case .success(let model):
-//                    completion(true, model.Status_Message ?? "")
-//                    print("model >>>\(model)")
-//                case .failure(let error):
-//                    completion(false, error.localizedDescription)
-//                }
-//            }
-//        } catch {
-//            completion(false, "JSON Encoding Error")
-//        }
-//    }
-//}
-//
-
-
-
-//
-//  OWActivitiesViewModel.swift
-//  Puplo Pro
-//
-//  Created by Ahmed on 12/02/2026.
-//
 import Foundation
 import RxSwift
 import RxCocoa
@@ -203,17 +58,66 @@ class OWActivitiesViewModel {
             .first { $0.id == owTypeId }?
             .name
     }
+    func validateOfficeWorkShift(newShiftId: String, date: String) -> String? {
+        
+        let todayWorks = LocalStorageManager.shared.getOfficeWorkData() ?? []
+        
+        print("🗓 Selected Date:", date)
+        print("📦 All Office Works:", todayWorks)
+        
+        let sameDayWorks = todayWorks.filter {
+            $0.date == date
+        }
+        
+        print("📆 Same Day Works:", sameDayWorks)
+        
+        let hasAM = sameDayWorks.contains { $0.shift_id == "1" }
+        let hasPM = sameDayWorks.contains { $0.shift_id == "2" }
+        let hasFullDay = sameDayWorks.contains { $0.shift_id == "4" }
+        
+        print("🔍 hasAM:", hasAM, "| hasPM:", hasPM, "| hasFullDay:", hasFullDay)
+        print("🆕 Selected Shift:", newShiftId)
+        
+        // لو فيه Full day قبل كده → امنع أي حاجة
+        if hasFullDay {
+            print("❌ Blocked: Full Day already exists")
+            return "مينفعش تضيف أي Office Work تاني النهارده بعد اختيار Full Day"
+        }
+        
+        // المستخدم بيختار Full day
+        if newShiftId == "4" && !sameDayWorks.isEmpty {
+            print("❌ Blocked: Trying to add Full Day with existing shifts")
+            return "مينفعش تضيف Full Day مع أي شيفت تاني في نفس اليوم"
+        }
+        
+        // تكرار AM
+        if newShiftId == "1" && hasAM {
+            print("❌ Blocked: Duplicate AM")
+            return "مينفعش تضيف AM أكتر من مرة في نفس اليوم"
+        }
+        
+        // تكرار PM
+        if newShiftId == "2" && hasPM {
+            print("❌ Blocked: Duplicate PM")
+            return "مينفعش تضيف PM أكتر من مرة في نفس اليوم"
+        }
+        
+        print("✅ Office Work validation passed")
+        return nil
+    }
     func applayWithNetworkCheck(OWS: [OWSModel], completion: @escaping (Bool, String) -> Void) {
         print("OWS.count >>>\(OWS.count)")
         if Reachability.isConnectedToNetwork() {
             fetchDataApplay(OWS: OWS) { done, message in
                 if done {
+                    LocalStorageManager.shared.saveOfficeWorkModel(OWS)
                     LocalStorageManager.shared.clearOWActivitiesModel()
                 }
                 completion(done, message)
             }
         } else {
             LocalStorageManager.shared.saveOWActivitiesModel(OWS)
+            LocalStorageManager.shared.saveOfficeWorkModel(OWS)
             completion(true, "تم حفظ البيانات محليًا. سيتم رفعها عند الاتصال بالإنترنت.")
         }
     }

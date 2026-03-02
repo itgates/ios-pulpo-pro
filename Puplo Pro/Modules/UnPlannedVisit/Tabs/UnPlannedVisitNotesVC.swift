@@ -161,6 +161,13 @@ private extension UnPlannedVisitNotesVC {
             updateEndVisitButtonState()
             return
         }
+        
+        if let errorMessage = viewModel.validateActualVisit() {
+            showAlert(alertTitle: "Error", alertMessage: errorMessage)
+            updateEndVisitButtonState()
+            return
+        }
+        
         subscribeToLoading()
         viewModel.saveUnPlannedVisit { [weak self] done, message in
             guard let self else { return }
