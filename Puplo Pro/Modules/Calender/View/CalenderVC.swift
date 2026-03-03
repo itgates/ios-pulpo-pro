@@ -127,22 +127,9 @@ private extension CalenderVC {
 // MARK: - Koyomi Delegate
 extension CalenderVC: KoyomiDelegate {
 
-//    func koyomi(_ koyomi: Koyomi, didSelect date: Date?, forItemAt indexPath: IndexPath) {
-//        guard let date = date else { return }
-//        
-//        let selected = formatter.string(from: date)
-//        let todayString = formatter.string(from: today)
-//
-//        // Don't allow selecting days before today
-//        if selected < todayString { return }
-//
-//        selectedDate = selected
-//        calender.selectedStyleColor = baseColor
-//    }
     func koyomi(_ koyomi: Koyomi, didSelect date: Date?, forItemAt indexPath: IndexPath) {
         guard let date = date else { return }
 
-        // لو مفعّل selectAllDates نسيب الاختيار عادي
         if selectAllDates {
             selectedDate = formatter.string(from: date)
             calender.selectedStyleColor = baseColor
@@ -159,27 +146,6 @@ extension CalenderVC: KoyomiDelegate {
         calender.selectedStyleColor = baseColor
     }
 
-//    func koyomi(_ koyomi: Koyomi,
-//                shouldSelectDates date: Date?,
-//                to toDate: Date?,
-//                withPeriodLength length: Int) -> Bool {
-//
-//        guard let date = date else { return false }
-//        let selected = formatter.string(from: date)
-//        let todayString = formatter.string(from: today)
-//
-//        // Allow only today if selected before current day
-//        if date < today {
-//            if selected == todayString {
-//                selectedDate = selected
-//                return true
-//            }
-//            return false
-//        }
-//
-//        selectedDate = selected
-//        return true
-//    }
     func koyomi(_ koyomi: Koyomi,
                 shouldSelectDates date: Date?,
                 to toDate: Date?,
@@ -187,13 +153,11 @@ extension CalenderVC: KoyomiDelegate {
 
         guard let date = date else { return false }
 
-        // لو مفعّل selectAllDates نسمح بأي يوم
         if selectAllDates {
             selectedDate = formatter.string(from: date)
             return true
         }
 
-        // المنطق القديم
         let selected = formatter.string(from: date)
         let todayString = formatter.string(from: today)
 

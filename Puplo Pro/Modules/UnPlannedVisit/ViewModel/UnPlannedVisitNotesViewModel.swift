@@ -154,7 +154,7 @@ final class UnPlannedVisitNotesViewModel {
             )
             
             LocalStorageManager.shared.setUnPlannedVisitOffline(true)
-            completion(true, "تم حفظ الزيارة محليًا وسيتم رفعها عند الاتصال بالإنترنت")
+            completion(true, "The data has been saved locally. It will be uploaded once an internet connection is available.")
         }
     }
     

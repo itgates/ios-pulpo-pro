@@ -15,6 +15,7 @@ class HomeViewModel {
     let loadingBehavior = BehaviorRelay<Bool>(value: false)
     let alert = PublishSubject<String>()
     var isCheckIn: Bool = true
+    let isUnplannedEnabled = BehaviorRelay<Bool>(value: true)
     
     // Visibility states (kept private)
     private let isCollectionViewHidden = BehaviorRelay<Bool>(value: false)
@@ -48,4 +49,22 @@ class HomeViewModel {
             }
         }
     }
+     func canOpenUnplanned() -> Bool {
+        
+        guard let lines = LocalStorageManager.shared
+            .getMasterData()?
+            .Data?
+            .lines,
+              let limitString = lines.first?.unplanned_limit,
+              let limit = Int(limitString) else {
+            return true
+        }
+        
+        let visitsCount = LocalStorageManager.shared
+            .getActualVisitData()?
+            .count ?? 0
+        print("limit\(limit) visitsCount \(visitsCount)")
+        return visitsCount < limit
+    }
 }
+

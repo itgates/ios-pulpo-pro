@@ -38,7 +38,7 @@ class LocationPermissionManager: NSObject, CLLocationManagerDelegate {
     private func showLocationAlert(from vc: UIViewController) {
         let alert = UIAlertController(
             title: "Location Required",
-            message: "Location must be activated to use the application.",
+            message: "Enable location to improve visit accuracy. You can continue using the app without it.",
             preferredStyle: .alert
         )
 

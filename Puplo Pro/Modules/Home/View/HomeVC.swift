@@ -123,10 +123,25 @@ private extension HomeVC {
                 cell.configureCell(model: model)
             }
             .disposed(by: disposeBag)
+        
         Observable
-            .zip(collectionView.rx.itemSelected, collectionView.rx.modelSelected(HomeModel.self))
+            .zip(collectionView.rx.itemSelected,
+                 collectionView.rx.modelSelected(HomeModel.self))
             .bind { [weak self] _, model in
-                self?.navigateIfPossible(for: model)
+                
+                guard let self = self else { return }
+                
+                if model.name == "Unplanned Visit" {
+                    if !self.viewModel.canOpenUnplanned() {
+                        self.showAlert( alertTitle: "Error", alertMessage: "You exceeded the allowed unplanned visits limit.")
+                        return
+                    }
+                }
+                
+                if let vcType = model.vc {
+                    let vc = vcType.init()
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
             }
             .disposed(by: disposeBag)
     }

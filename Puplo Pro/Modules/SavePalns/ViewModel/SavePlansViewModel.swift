@@ -57,7 +57,7 @@ final class SavePlansViewModel {
             responseData: [],
             isUploaded: false
         )
-        completion(true, "تم حفظ البيانات محليًا. سيتم رفعها عند الاتصال بالإنترنت.")
+        completion(true, "The data has been saved locally. It will be uploaded once an internet connection is available.")
     }
 
     // MARK: - Local Storage

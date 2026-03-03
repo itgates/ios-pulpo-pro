@@ -78,28 +78,24 @@ class OWActivitiesViewModel {
         print("🔍 hasAM:", hasAM, "| hasPM:", hasPM, "| hasFullDay:", hasFullDay)
         print("🆕 Selected Shift:", newShiftId)
         
-        // لو فيه Full day قبل كده → امنع أي حاجة
         if hasFullDay {
             print("❌ Blocked: Full Day already exists")
-            return "مينفعش تضيف أي Office Work تاني النهارده بعد اختيار Full Day"
+            return "You cannot add any additional office work today after selecting Full Day."
         }
         
-        // المستخدم بيختار Full day
         if newShiftId == "4" && !sameDayWorks.isEmpty {
             print("❌ Blocked: Trying to add Full Day with existing shifts")
-            return "مينفعش تضيف Full Day مع أي شيفت تاني في نفس اليوم"
+            return "You cannot select Full Day together with any other shift on the same day."
         }
         
-        // تكرار AM
         if newShiftId == "1" && hasAM {
             print("❌ Blocked: Duplicate AM")
-            return "مينفعش تضيف AM أكتر من مرة في نفس اليوم"
+            return "You cannot add AM more than once on the same day."
         }
         
-        // تكرار PM
         if newShiftId == "2" && hasPM {
             print("❌ Blocked: Duplicate PM")
-            return "مينفعش تضيف PM أكتر من مرة في نفس اليوم"
+            return "You cannot add PM more than once on the same day."
         }
         
         print("✅ Office Work validation passed")
@@ -118,7 +114,7 @@ class OWActivitiesViewModel {
         } else {
             LocalStorageManager.shared.saveOWActivitiesModel(OWS)
             LocalStorageManager.shared.saveOfficeWorkModel(OWS)
-            completion(true, "تم حفظ البيانات محليًا. سيتم رفعها عند الاتصال بالإنترنت.")
+            completion(true, "The data has been saved locally. It will be uploaded once an internet connection is available.")
         }
     }
     
