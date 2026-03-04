@@ -49,7 +49,7 @@ class HomeViewModel {
             }
         }
     }
-     func canOpenUnplanned() -> Bool {
+    func canOpenUnplanned() -> Bool {
         
         guard let lines = LocalStorageManager.shared
             .getMasterData()?
@@ -57,14 +57,35 @@ class HomeViewModel {
             .lines,
               let limitString = lines.first?.unplanned_limit,
               let limit = Int(limitString) else {
+            print("⚠️ limit not found")
             return true
         }
         
-        let visitsCount = LocalStorageManager.shared
-            .getActualVisitData()?
-            .count ?? 0
-        print("limit\(limit) visitsCount \(visitsCount)")
-        return visitsCount < limit
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let todayString = formatter.string(from: Date())
+        
+        print("📅 Today: \(todayString)")
+        print("🎯 Limit: \(limit)")
+        
+        let allVisits = LocalStorageManager.shared.getActualVisitData() ?? []
+        
+        print("📦 All Visits Count: \(allVisits.count)")
+        
+        allVisits.forEach {
+            print("Visit date: \($0.visit_date ?? "nil")")
+        }
+        
+        let visitsCountToday = allVisits
+            .filter { $0.visit_date == todayString }
+            .count
+        
+        print("🔥 Visits Today: \(visitsCountToday)")
+        
+        let canOpen = visitsCountToday < limit
+        print("✅ Can Open: \(canOpen)")
+        
+        return canOpen
     }
 }
 

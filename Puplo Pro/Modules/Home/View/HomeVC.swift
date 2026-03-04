@@ -1,3 +1,4 @@
+
 //
 //  HomeVC.swift
 //  Puplo Pro
@@ -137,11 +138,7 @@ private extension HomeVC {
                         return
                     }
                 }
-                
-                if let vcType = model.vc {
-                    let vc = vcType.init()
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
+                self.navigateIfPossible(for: model)
             }
             .disposed(by: disposeBag)
     }

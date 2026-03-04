@@ -43,6 +43,7 @@ class CellGifts: UICollectionViewCell {
         bindButtons()
         setupStackGestures()
         setupDropDown()
+        let lines = LocalStorageManager.shared.getMasterData()?.Data?.settings
     }
 
     // MARK: - Binding Buttons

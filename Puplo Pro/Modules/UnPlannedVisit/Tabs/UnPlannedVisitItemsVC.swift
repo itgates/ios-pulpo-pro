@@ -13,7 +13,6 @@ class UnPlannedVisitItemsVC: BaseView {
     
     // MARK: - Outlets
     @IBOutlet private weak var collectionView: UICollectionView!
-    @IBOutlet private weak var heightCollectionView: NSLayoutConstraint!
     @IBOutlet private weak var addProductButton: UIButton!
     
     // MARK: - Properties
@@ -21,14 +20,12 @@ class UnPlannedVisitItemsVC: BaseView {
     private let viewModel = UnPlannedVisitItemsViewModel()
     private var expandedIndex: Int?
     private var cellHeights: [Int: CGFloat] = [:]
-    private var collectionViewObservation: NSKeyValueObservation?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         bindUI()
         registerCollectionCells()
-        observeCollectionHeights()
         bindAddGiveawayCollectionView()
         
     }
@@ -54,6 +51,13 @@ private extension UnPlannedVisitItemsVC {
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .bind(with: self) { vc, _ in
                 vc.viewModel.addProducts()
+                
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.showWarning
+            .bind(with: self) { vc, message in
+                vc.showAlert(alertTitle: "Warning", alertMessage: message)
             }
             .disposed(by: disposeBag)
     }
@@ -90,21 +94,25 @@ private extension UnPlannedVisitItemsVC {
                 }
             
                 cell.configure(with: model)
-                cell.didSelectItem = { [weak self] item, type -> String? in
+                cell.didSelectItem = { [weak self] item, type, presentations -> String? in
                     guard let self = self else { return nil }
                     let warning = self.viewModel.updateSelection(at: index, item: item, type: type)
+                    
                     if let warning = warning {
                         self.showAlert(alertTitle: "Warning", alertMessage: warning)
+                        if type == .product {
+                            cell.productNameTextField.text = ""
+                            self.viewModel.updateSelection(at: index, item: IdNameModel(id: nil, name: nil), type: .product)
+                            self.viewModel.updatePresentations(at: index, presentation: [])
+                        }
                     } else {
-                        // تحديث الـ textField
-                        if type == .product { cell.productNameTextField.text = item.name }
-//                        else if type == .feedback { cell.feedbackTextField.text = item.name }
-//                        else if type == .market { cell.marketTextField.text = item.name }
-//                        else if type == .followUp { cell.followUpsTextField.text = item.name }
+                        if type == .product {
+                            cell.productNameTextField.text = item.name
+                            viewModel.updatePresentations(at: index, presentation: presentations)
+                        }
                     }
                     return warning
                 }
-
                 cell.onCountChanged = { [weak self] newCount in
                     self?.viewModel.updateProductsCount(at: index, count: "\(newCount)")
                 }
@@ -138,23 +146,6 @@ private extension UnPlannedVisitItemsVC {
                 cell.onOrderChanged = { [weak self] text in
                     self?.viewModel.updateOrder(at: index, text: text)
                 }
-                
-                cell.showPresentations = { [weak self] show in
-                    guard let self = self else { return }
-
-                    let isShown = show ?? false
-                    self.cellHeights[index] = isShown ? 384 : 330
-
-                    UIView.performWithoutAnimation {
-                        self.collectionView.collectionViewLayout.invalidateLayout()
-                        self.collectionView.layoutIfNeeded()
-                    }
-                }
-                cell.passPresentations = { [weak self] presentations in
-                    guard let self = self else { return }
-                    print("presentations >>>\(presentations)")
-                    viewModel.updatePresentations(at: index, presentation: presentations)
-                }
                 cell.onPresentations = { [weak self] slides in
                     guard let self = self else { return }
                     slidesWebViewVC(slides: slides)
@@ -164,24 +155,20 @@ private extension UnPlannedVisitItemsVC {
             .disposed(by: disposeBag)
     }
 }
-
-// MARK: - Collection Height Observation
-private extension UnPlannedVisitItemsVC {
-    func observeCollectionHeights() {
-        collectionViewObservation = collectionView.observe(\.contentSize) { [weak self] cv, _ in
-            self?.heightCollectionView.constant = cv.contentSize.height
-        }
-    }
-}
-
 // MARK: - UICollectionViewDelegateFlowLayout
 extension UnPlannedVisitItemsVC: UICollectionViewDelegateFlowLayout {
+
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-        let model = viewModel.products.value[indexPath.item]
-        let height: CGFloat = (model.presentations?.isEmpty == false) ? 270 : 230
+        let height: CGFloat
+        if let customHeight = cellHeights[indexPath.item] {
+            height = customHeight
+        } else {
+            let model = viewModel.products.value[indexPath.item]
+            height = (model.presentations?.isEmpty == false) ? 270 : 210
+        }
 
         let spacing: CGFloat = 10
         return CGSize(

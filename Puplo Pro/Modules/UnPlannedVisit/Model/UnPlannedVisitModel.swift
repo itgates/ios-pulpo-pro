@@ -166,11 +166,12 @@ extension ProductItem {
         let textFieldsValid =
         //comment.isFilled &&
         feedback.isFilled &&
+        comment.isFilled &&
         market.isFilled &&
-        followUp.isFilled &&
-        payment.isFilled &&
-        stock.isFilled &&
-        order.isFilled
+        followUp.isFilled //&&
+//        payment.isFilled &&
+//        stock.isFilled &&
+//        order.isFilled
         
         let countValid =
         !count.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty

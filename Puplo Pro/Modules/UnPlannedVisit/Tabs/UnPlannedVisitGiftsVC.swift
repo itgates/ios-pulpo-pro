@@ -36,6 +36,7 @@ class UnPlannedVisitGiftsVC: BaseView {
         addGiveawayButton.layer.cornerRadius = addGiveawayButton.frame.height / 2
         addGiveawayButton.layer.masksToBounds = true
     }
+    
 }
 // MARK: - CollectionView Setup
 private extension UnPlannedVisitGiftsVC {
@@ -59,6 +60,10 @@ private extension UnPlannedVisitGiftsVC {
         addGiveawayButton.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .bind(with: self) { vc, _ in
+                if let warning = self.viewModel.validateGiveaways() {
+                    self.showAlert(alertTitle: "Warning", alertMessage: warning)
+                    return
+                }
                 vc.viewModel.addGift(name: "Select Giveaway")
             }
             .disposed(by: disposeBag)

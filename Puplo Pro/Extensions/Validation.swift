@@ -9,66 +9,57 @@
 import Foundation
 import UIKit
 enum Period {
-   case firstTap
-   case secondTap
-   case thirdTap
-   case fourthTap
+    case firstTap
+    case secondTap
+    case thirdTap
+    case fourthTap
 }
 extension UIViewController {
-//    func validate(tab: TabIndex) -> NavigationResult {
-//
-//        let visitItems = LocalStorageManager.shared.getVisitItemData() ?? []
-//        let gifts = LocalStorageManager.shared.getGiftsData() ?? []
-//        let products = LocalStorageManager.shared.getProductsData() ?? []
-//
-//        switch tab {
-//
-//        case .first:
-//            return visitItems.contains(where: { $0.isValid })
-//            ? .allowed
-//            : .blocked(message: "Visit section incomplete.")
-//
-//        case .second:
-//            return hasValidSelection(gifts)
-//            ? .allowed
-//            : .blocked(message: "Gifts section incomplete.")
-//
-//        case .third:
-//            return products.contains(where: { $0.isValid })
-//            ? .allowed
-//            : .blocked(message: "Products section incomplete.")
-
-//        case .fourth:
-//            return .allowed
-//        }
-//    }
+  
     func validate(tab: TabIndex) -> NavigationResult {
-
+        
         let visitItems = LocalStorageManager.shared.getVisitItemData() ?? []
+        let managers = LocalStorageManager.shared.getManagerData()
+        let products = LocalStorageManager.shared.getProductsData() ?? []
 
         switch tab {
-
+            
         case .first:
-            return visitItems.contains(where: { $0.isValid })
-            ? .allowed
-            : .blocked(message: "Visit section incomplete.")
-
+            guard let firstVisit = visitItems.first else {
+                return .blocked(message: "Visit section incomplete.")
+            }
+            guard firstVisit.isValid else {
+                return .blocked(message: "Visit section incomplete.")
+            }
+            if firstVisit.visitType?.name == "Double" && managers?.count ?? 0 < 1 {
+                return .blocked(message: "Please select a Manager for Double visit.")
+            }
+            return .allowed
+            
         case .second:
-            return .allowed   // ✅ validation removed
-
+            return .allowed
+            
         case .third:
-            return .allowed   // ✅ validation removed
-
+            if products.contains(where: { !$0.isValid }) {
+                return .blocked(message: "Please complete all products before proceeding.")
+            }
+            return .allowed
+            
         case .fourth:
+            for tab in [TabIndex.first, .second, .third] {
+                if case .blocked(let msg) = validate(tab: tab) {
+                    showAlert(alertTitle: "Incomplete Data", alertMessage: msg)
+                    return .blocked(message: msg)
+                }
+            }
             return .allowed
         }
     }
-
     // ✅ Generic validation
     func hasValidSelection<T: SelectableItem>(_ items: [T]) -> Bool {
         items.contains { $0.idValue != "" }
     }
-     func periodToTabIndex(_ period: Period) -> TabIndex {
+    func periodToTabIndex(_ period: Period) -> TabIndex {
         switch period {
         case .firstTap: return .first
         case .secondTap: return .second

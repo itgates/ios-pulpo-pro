@@ -50,7 +50,7 @@ final class CellProduct: UICollectionViewCell {
     private let disposeBag = DisposeBag()
     private let dropDown = DropDown()
     
-    var didSelectItem: ((IdNameModel, ProductSelectionType) -> String?)?
+    var didSelectItem: ((IdNameModel, ProductSelectionType,[Presentations]) -> String?)?
     
     var onCountChanged: ((Int) -> Void)?
     var deleteIndex: (() -> Void)?
@@ -63,9 +63,7 @@ final class CellProduct: UICollectionViewCell {
     var onPaymentChanged: ((String?) -> Void)?
     var onStockChanged: ((String?) -> Void)?
     var onOrderChanged: ((String?) -> Void)?
-    var showPresentations: ((Bool?) -> Void)?
     var onPresentations: (([Slides]) -> Void)?
-    var passPresentations: (([Presentations]) -> Void)?
     
     private var count = 1 {
         didSet { countProductLabel.text = "\(count)" }
@@ -138,27 +136,20 @@ final class CellProduct: UICollectionViewCell {
         dropDown.dataSource = items.compactMap { $0.name }
         dropDown.anchorView = anchor
         dropDown.bottomOffset = CGPoint(x: 0, y: anchor.bounds.height)
-        
+ 
         dropDown.selectionAction = { [weak self] index, title in
             guard let self = self else { return }
-            
             let selectedItem = items[index]
-            print("Name: \(selectedItem.name ?? "")")
-            print("ID: \(selectedItem.id ?? "")")
             
-            if let warning = self.didSelectItem?(items[index], type) {
-            } else {
-                field.text = title
-                if field == productNameTextField {
-                    let filteredPresentations = presentationsData.filter {
-                        $0.product_id == selectedItem.id
-                    }
-                    let hasData = !filteredPresentations.isEmpty
-                    collectionViewPresentations.isHidden = !hasData
-                    showPresentations?(hasData)
-                    presentationsRelay.accept(filteredPresentations)
-                    passPresentations?(filteredPresentations)
+            field.text = title
+
+            if field == productNameTextField {
+                let filteredPresentations = self.presentationsData.filter {
+                    $0.product_id == selectedItem.id
                 }
+                self.didSelectItem?(selectedItem, .product, filteredPresentations)
+                self.collectionViewPresentations.isHidden = filteredPresentations.isEmpty
+                self.presentationsRelay.accept(filteredPresentations)
             }
         }
         dropDown.show()
@@ -195,9 +186,12 @@ final class CellProduct: UICollectionViewCell {
         orderTextField.text = model.order
         
         count = Int(model.count) ?? 1
-        if model.presentations?.count ?? 0 > 0  {
-            presentationsRelay.accept(model.presentations ?? [])
-        }
+//        if model.presentations?.count ?? 0 > 0  {
+//            presentationsRelay.accept(model.presentations ?? [])
+//        }
+        let hasData = !(model.presentations?.isEmpty ?? true)
+        collectionViewPresentations.isHidden = !hasData
+        presentationsRelay.accept(model.presentations ?? [])
        
     }
 }

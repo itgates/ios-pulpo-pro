@@ -82,3 +82,10 @@ struct Settings: Codable {
     let attribute_name: String?
     let attribute_value: String?
 }
+extension IdNameModel {
+    var isValid: Bool {
+        let hasID = (id ?? "").trimmingCharacters(in: .whitespacesAndNewlines) != ""
+        let hasName = (name ?? "").trimmingCharacters(in: .whitespacesAndNewlines) != ""
+        return hasID && hasName
+    }
+}

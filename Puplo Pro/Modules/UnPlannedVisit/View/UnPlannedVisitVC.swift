@@ -157,37 +157,29 @@ private extension UnPlannedVisitVC {
     func canNavigate(from current: TabIndex, to target: TabIndex) -> Bool {
 
         guard current != target else { return true }
-        let currentValidation = validate(tab: current)
 
+        // لو الهدف هو الرابع → تحقق من كل التابات السابقة
         if target == .fourth {
-            if case .blocked(let msg) = validate(tab: .first) {
-                showAlert(alertTitle: "Incomplete Data", alertMessage: msg)
-                return false
+            // تحقق من التابات الأولى والتانية والثالثة
+            for tab in [TabIndex.first, .second, .third] {
+                if case .blocked(let msg) = validate(tab: tab) {
+                    showAlert(alertTitle: "Incomplete Data", alertMessage: msg)
+                    return false
+                }
             }
 
-            if case .blocked(let msg) = validate(tab: .second) {
-                showAlert(alertTitle: "Incomplete Data", alertMessage: msg)
+            // تحقق إضافي للتاب الثالث (gifts)
+            let gifts = LocalStorageManager.shared.getGiftsData() ?? []
+            if gifts.contains(where: { !$0.isValid }) {
+                showAlert(alertTitle: "Incomplete Data", alertMessage: "Please complete all gifts before moving to the final tab.")
                 return false
             }
-
-            if case .blocked(let msg) = validate(tab: .third) {
-                showAlert(alertTitle: "Incomplete Data", alertMessage: msg)
-                return false
-            }
-
-            return true
         }
 
-        if case .blocked(let msg) = currentValidation,
-           case .blocked = validate(tab: target) {
-
-            showAlert(alertTitle: "Incomplete Data", alertMessage: msg)
-            return false
-        }
+        // باقي التنقلات مسموحة بدون مشاكل
         return true
     }
 }
-
 // MARK: - Rx Bindings
 private extension UnPlannedVisitVC {
 

@@ -137,6 +137,12 @@ private extension UnPlannedVisitDetailsVC {
             offset: .zero,
             radius: 12
         )
+        cell.showWarning = { [weak self] message in
+            self?.showAlert(
+                alertTitle: "Warning",
+                alertMessage: message
+            )
+        }
         // Selection callback (Model only)
         cell.didSelectItem = { [weak self] item, type in
             guard let self else { return }

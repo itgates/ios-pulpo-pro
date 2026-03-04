@@ -58,7 +58,7 @@ final class CellUnPlannedVisit: UICollectionViewCell {
     var model: VisitItem?
     var didSelectItem: ((IdNameModel, ItemSelectionType) -> Void)?
     var didChangeComment: ((String?) -> Void)?
-
+    var showWarning: ((String) -> Void)?
     let now = Date()
     
     // MARK: - Static Data
@@ -193,8 +193,63 @@ private extension CellUnPlannedVisit {
 // MARK: - DropDown Logic
 private extension CellUnPlannedVisit {
 
+//    func show(_ field: ItemSelectionType, anchor: UIView?) {
+//
+//        currentField = field
+//        dropDown.anchorView = anchor
+//        dropDown.bottomOffset = CGPoint(
+//            x: 0,
+//            y: anchor?.bounds.height ?? 0
+//        )
+//
+//        switch field {
+//
+//        case .division:
+//            currentItems = divisionData
+//
+//        case .brick:
+//            guard let divisionID = model?.division?.id else {
+//                currentItems = []
+//                break
+//            }
+//            currentItems = brickData.filter {
+//                $0.ter_id == divisionID
+//            }
+//
+//        case .accountType:
+//            currentItems = accountTypeData
+//
+//        case .account:
+//            guard let brickID = model?.brick?.id else {
+//                currentItems = []
+//                break
+//            }
+//            currentItems = accountsForBrick(brickID)
+//
+//        case .doctor:
+//            guard let accountID = model?.account?.id else {
+//                currentItems = []
+//                break
+//            }
+//            currentItems = doctorsForAccount(accountID)
+//
+//        case .visitType:
+//            currentItems = visitTypeData
+//
+//        case .shiftType:
+//            currentItems = shiftData
+//        }
+//
+//        dropDown.dataSource = currentItems.compactMap { $0.name }
+//        dropDown.show()
+//    }
     func show(_ field: ItemSelectionType, anchor: UIView?) {
 
+        // 🔴 Validation Order
+        if let warning = validationWarning(for: field) {
+            showWarning?(warning)
+            return
+        }
         currentField = field
         dropDown.anchorView = anchor
         dropDown.bottomOffset = CGPoint(
@@ -208,30 +263,18 @@ private extension CellUnPlannedVisit {
             currentItems = divisionData
 
         case .brick:
-            guard let divisionID = model?.division?.id else {
-                currentItems = []
-                break
-            }
             currentItems = brickData.filter {
-                $0.ter_id == divisionID
+                $0.ter_id == model?.division?.id
             }
 
         case .accountType:
             currentItems = accountTypeData
 
         case .account:
-            guard let brickID = model?.brick?.id else {
-                currentItems = []
-                break
-            }
-            currentItems = accountsForBrick(brickID)
+            currentItems = accountsForBrick(model?.brick?.id ?? "")
 
         case .doctor:
-            guard let accountID = model?.account?.id else {
-                currentItems = []
-                break
-            }
-            currentItems = doctorsForAccount(accountID)
+            currentItems = doctorsForAccount(model?.account?.id ?? "")
 
         case .visitType:
             currentItems = visitTypeData
@@ -242,6 +285,36 @@ private extension CellUnPlannedVisit {
 
         dropDown.dataSource = currentItems.compactMap { $0.name }
         dropDown.show()
+    }
+    private func validationWarning(for field: ItemSelectionType) -> String? {
+
+        switch field {
+
+        case .brick:
+            if model?.division == nil {
+                return "Please select Division first"
+            }
+
+        case .accountType:
+            if model?.brick == nil {
+                return "Please select Brick first"
+            }
+
+        case .account:
+            if model?.accountType == nil {
+                return "Please select Account Type first"
+            }
+
+        case .doctor:
+            if model?.account == nil {
+                return "Please select Account first"
+            }
+
+        default:
+            break
+        }
+
+        return nil
     }
 }
 
