@@ -55,6 +55,14 @@ private extension UnPlannedVisitItemsVC {
             }
             .disposed(by: disposeBag)
         
+        viewModel.isAddEnabled
+               .asObservable()
+               .subscribe(onNext: { [weak self] enabled in
+                   guard let self = self else { return }
+                   self.setApplyButton(button: self.addProductButton, enabled: enabled)
+               })
+               .disposed(by: disposeBag)
+        
         viewModel.showWarning
             .bind(with: self) { vc, message in
                 vc.showAlert(alertTitle: "Warning", alertMessage: message)

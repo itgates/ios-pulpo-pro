@@ -95,6 +95,17 @@ private extension SavePlansVC {
             self.showPopUp(view: calendarVC)
         }
     }
+    func isDoctorPlannedBefore(doctorId: String?, visitDate: String) -> Bool {
+
+        guard let doctorId = doctorId else { return false }
+
+        let existingPlans = LocalStorageManager.shared.getNewPlanData() ?? []
+
+        return existingPlans.contains {
+            $0.accountDoctorID == doctorId &&
+            $0.visitDate == visitDate
+        }
+    }
 }
 
 // MARK: - Calendar Delegate
@@ -120,46 +131,68 @@ private extension SavePlansVC {
         buttonSavePlans.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .bind { [weak self] in
-                guard let self = self else { return }
-                self.setApplyButton(button: buttonSavePlans, enabled: false)
-                self.subscribeToLoading()
                 
-                let now = Date()
-                let insertionDate = now.formattedDate
+                guard let self = self else { return }
+                
                 let visitDate = self.dateLabel.text ?? ""
-                let plans: [SavePlanData] = self.planningVisits.enumerated().map { index, doc in
-                    SavePlanData(
-                        acccount: doc.hosptal,
-                        doctor: doc.name,
-                        shift: doc.shift,
-                        llAcccount: doc.lat,
-                        lgAcccount: doc.lng,
-                        account_dr_id: doc.id,
-                        account_id: doc.account_id,
-                        account_type_id: doc.type_id,
-                        div_id: doc.div_id,
-                        insertion_date: insertionDate,
-                        line_id: doc.line_id,
-                        offline_id: Int(Date().timeIntervalSince1970 * 1000) + index,
-                        visit_date: visitDate,
-                        visit_time: now.formattedTime.to24HourFormat
-                    )
-                }
-                self.viewModel.savePlansWithNetworkCheck(plans: plans) { done, message in
-                    if done {
-                        self.showTopAlert(message: "The visit was successfully completed") {
-                            self.navigationHomeVC()
-                        }
-                    } else {
-                        self.setApplyButton(button: self.buttonSavePlans, enabled: true)
-                        self.showAlert(alertTitle: "Error", alertMessage: message)
+                
+                // validation
+                for doctor in self.planningVisits {
+                    
+                    if self.isDoctorPlannedBefore(
+                        doctorId: doctor.id,
+                        visitDate: visitDate
+                    ) {
+                        self.showAlert(
+                            alertTitle: "Warning",
+                            alertMessage: "This doctor already has a plan on the selected day"
+                        )
+                        return
                     }
                 }
+                // continue save
+                self.savePlan()
             }
             .disposed(by: disposeBag)
-
     }
   
+    // MARK: - savePlan
+    func savePlan() {
+        self.setApplyButton(button: buttonSavePlans, enabled: false)
+        self.subscribeToLoading()
+        
+        let now = Date()
+        let insertionDate = now.formattedDate
+        let visitDate = self.dateLabel.text ?? ""
+        let plans: [SavePlanData] = self.planningVisits.enumerated().map { index, doc in
+            SavePlanData(
+                acccount: doc.hosptal,
+                doctor: doc.name,
+                shift: doc.shift,
+                llAcccount: doc.lat,
+                lgAcccount: doc.lng,
+                account_dr_id: doc.id,
+                account_id: doc.account_id,
+                account_type_id: doc.type_id,
+                div_id: doc.div_id,
+                insertion_date: insertionDate,
+                line_id: doc.line_id,
+                offline_id: Int(Date().timeIntervalSince1970 * 1000) + index,
+                visit_date: visitDate,
+                visit_time: now.formattedTime.to24HourFormat
+            )
+        }
+        self.viewModel.savePlansWithNetworkCheck(plans: plans) { done, message in
+            if done {
+                self.showTopAlert(message: "The visit was successfully completed") {
+                    self.navigationHomeVC()
+                }
+            } else {
+                self.setApplyButton(button: self.buttonSavePlans, enabled: true)
+                self.showAlert(alertTitle: "Error", alertMessage: message)
+            }
+        }
+    }
     // MARK: - Loading Indicator
     private func subscribeToLoading() {
         viewModel.loadingBehavior

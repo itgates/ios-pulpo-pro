@@ -4,7 +4,9 @@
 //
 //  Created by Ahmed on 07/12/2025.
 //
+// LocalStorageManager.shared.getMasterData()?.Data?.settings,
 
+        
 import UIKit
 import DropDown
 
@@ -61,6 +63,13 @@ final class CellUnPlannedVisit: UICollectionViewCell {
     var showWarning: ((String) -> Void)?
     let now = Date()
     
+    private var isShiftEnabled: Bool {
+        masterData?
+            .Data?
+            .settings?
+            .first(where: { $0.attribute_name == "add_shift" })?
+            .attribute_value == "1"
+    }
     // MARK: - Static Data
     private let shiftData: [IdNameModel] = [
         IdNameModel(id: "2", name: "AM"),
@@ -117,6 +126,7 @@ private extension CellUnPlannedVisit {
         update(stackDate, nil, style: .required)
         update(stackTime, nil, style: .required)
         update(stackTappedDivision, nil, style: .required)
+        stackTappedShiftType.isHidden = !isShiftEnabled
     }
 
     func setupDropDown() {
@@ -193,56 +203,6 @@ private extension CellUnPlannedVisit {
 // MARK: - DropDown Logic
 private extension CellUnPlannedVisit {
 
-//    func show(_ field: ItemSelectionType, anchor: UIView?) {
-//
-//        currentField = field
-//        dropDown.anchorView = anchor
-//        dropDown.bottomOffset = CGPoint(
-//            x: 0,
-//            y: anchor?.bounds.height ?? 0
-//        )
-//
-//        switch field {
-//
-//        case .division:
-//            currentItems = divisionData
-//
-//        case .brick:
-//            guard let divisionID = model?.division?.id else {
-//                currentItems = []
-//                break
-//            }
-//            currentItems = brickData.filter {
-//                $0.ter_id == divisionID
-//            }
-//
-//        case .accountType:
-//            currentItems = accountTypeData
-//
-//        case .account:
-//            guard let brickID = model?.brick?.id else {
-//                currentItems = []
-//                break
-//            }
-//            currentItems = accountsForBrick(brickID)
-//
-//        case .doctor:
-//            guard let accountID = model?.account?.id else {
-//                currentItems = []
-//                break
-//            }
-//            currentItems = doctorsForAccount(accountID)
-//
-//        case .visitType:
-//            currentItems = visitTypeData
-//
-//        case .shiftType:
-//            currentItems = shiftData
-//        }
-//
-//        dropDown.dataSource = currentItems.compactMap { $0.name }
-//        dropDown.show()
-//    }
     func show(_ field: ItemSelectionType, anchor: UIView?) {
 
         // 🔴 Validation Order
@@ -280,7 +240,11 @@ private extension CellUnPlannedVisit {
             currentItems = visitTypeData
 
         case .shiftType:
+            guard isShiftEnabled else { return }
             currentItems = shiftData
+//
+//        case .shiftType:
+//            currentItems = shiftData
         }
 
         dropDown.dataSource = currentItems.compactMap { $0.name }
@@ -331,6 +295,7 @@ private extension CellUnPlannedVisit {
         shiftTypeTextField.text = model?.shiftType?.name
         commentTextField.text = model?.comment
     }
+    
     func updateUI(field: ItemSelectionType, item: IdNameModel) {
 
         switch field {

@@ -23,13 +23,19 @@ final class UnPlannedVisitItemsViewModel {
     let products = BehaviorRelay<[ProductItem]>(value: [])
     let showWarning = PublishRelay<String>()
     
+    var isAddEnabled: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+       
     // MARK: - Init
     init() {
         if let savedProducts = LocalStorageManager.shared.getProductsData() {
-            
-            print("savedProducts>>>\(savedProducts)")
             products.accept(savedProducts)
         }
+        checkAddEnabled()
+    }
+    func checkAddEnabled() {
+        let visitItem = LocalStorageManager.shared.getVisitItemData()?.first
+        let enabled = visitItem?.accountType?.id?.isEmpty == false
+        isAddEnabled.accept(enabled)
     }
     
     // MARK: - Products
