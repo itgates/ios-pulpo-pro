@@ -169,9 +169,9 @@ extension ProductItem {
         comment.isFilled &&
         market.isFilled &&
         followUp.isFilled //&&
-//        payment.isFilled &&
-//        stock.isFilled &&
-//        order.isFilled
+        //        payment.isFilled &&
+        //        stock.isFilled &&
+        //        order.isFilled
         
         let countValid =
         !count.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -183,20 +183,30 @@ extension VisitItem {
     
     var isValid: Bool {
         
-        let selectionsValid =
-        division.isSelected &&
-        brick.isSelected &&
-        accountType.isSelected &&
-        account.isSelected &&
-        doctor.isSelected &&
-        visitType.isSelected &&
-        shiftType.isSelected
+        let masterData = LocalStorageManager.shared.getMasterData()
         
-        //        let textFieldsValid =
-        //            date.isFilled &&
-        //            time.isFilled &&
-        //            comment.isFilled
+        let isShiftEnabled =
+        masterData?
+            .Data?
+            .settings?
+            .first(where: { $0.attribute_name == "add_shift" })?
+            .attribute_value == "1"
         
-        return selectionsValid //&& textFieldsValid
+        if isShiftEnabled {
+            return division != nil &&
+            brick != nil &&
+            accountType != nil &&
+            account != nil &&
+            doctor != nil &&
+            visitType != nil &&
+            shiftType != nil
+        } else {
+            return division != nil &&
+            brick != nil &&
+            accountType != nil &&
+            account != nil &&
+            doctor != nil &&
+            visitType != nil
+        }
     }
 }

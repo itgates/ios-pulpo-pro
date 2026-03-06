@@ -242,9 +242,6 @@ private extension CellUnPlannedVisit {
         case .shiftType:
             guard isShiftEnabled else { return }
             currentItems = shiftData
-//
-//        case .shiftType:
-//            currentItems = shiftData
         }
 
         dropDown.dataSource = currentItems.compactMap { $0.name }

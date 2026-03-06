@@ -154,29 +154,42 @@ private extension UnPlannedVisitVC {
 
 // MARK: - Validation Logic
 private extension UnPlannedVisitVC {
+    
     func canNavigate(from current: TabIndex, to target: TabIndex) -> Bool {
 
         guard current != target else { return true }
 
-        // لو الهدف هو الرابع → تحقق من كل التابات السابقة
         if target == .fourth {
-            // تحقق من التابات الأولى والتانية والثالثة
+
+            // ✅ Validate previous tabs
             for tab in [TabIndex.first, .second, .third] {
                 if case .blocked(let msg) = validate(tab: tab) {
                     showAlert(alertTitle: "Incomplete Data", alertMessage: msg)
                     return false
                 }
             }
+            let managers = LocalStorageManager.shared.getManagerData() ?? []
+            print("managers >>\(managers.count)")
 
-            // تحقق إضافي للتاب الثالث (gifts)
+            if managers.count > 0 && managers.contains(where: { $0.name?.isEmpty ?? true }) {
+                showAlert(
+                    alertTitle: "Incomplete Data",
+                    alertMessage: "Please select a Manager before proceeding."
+                )
+                return false
+            }
+            // ✅ Validate Gifts
             let gifts = LocalStorageManager.shared.getGiftsData() ?? []
+            
             if gifts.contains(where: { !$0.isValid }) {
-                showAlert(alertTitle: "Incomplete Data", alertMessage: "Please complete all gifts before moving to the final tab.")
+                showAlert(
+                    alertTitle: "Incomplete Data",
+                    alertMessage: "Please complete all gifts before moving to the final tab."
+                )
                 return false
             }
         }
 
-        // باقي التنقلات مسموحة بدون مشاكل
         return true
     }
 }

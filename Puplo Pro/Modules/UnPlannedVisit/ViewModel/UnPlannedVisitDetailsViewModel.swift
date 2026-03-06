@@ -30,8 +30,15 @@ final class UnPlannedVisitDetailsViewModel {
                 items.contains { $0.visitType?.name == "Double" }
             }
             .distinctUntilChanged()
+            .do(onNext: { [weak self] shouldShow in
+                guard let self else { return }
+                
+                if !shouldShow {
+                    self.managers.accept([])
+                    LocalStorageManager.shared.saveManagerData([])
+                }
+            })
     }
-
     // MARK: - Computed Observables
     var allManagersSelected: Observable<Bool> {
         managers
@@ -127,17 +134,24 @@ final class UnPlannedVisitDetailsViewModel {
     }
     
     // MARK: - Managers
-    func addManager(name: String) {
+    func addManager() -> String? {
         var list = managers.value
+        
+        // ❌ منع الإضافة لو فيه manager لسه متختارش
+        if list.contains(where: { $0.name?.isEmpty ?? true }) {
+            return "Please select the current manager first"
+        }
         
         let lastIdInt = Int(list.last?.id ?? "0") ?? 0
         let newId = String(lastIdInt + 1)
         
-        let newManager = IdNameModel(id: newId, name: name)
+        let newManager = IdNameModel(id: newId, name: "")
         list.append(newManager)
         
         managers.accept(list)
         LocalStorageManager.shared.saveManagerData(list)
+        
+        return nil
     }
 
     

@@ -10,7 +10,7 @@ class CellAddManager: UICollectionViewCell {
     
     // MARK: - Outlets
     @IBOutlet weak var stackSelect: UIStackView!
-    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var deleteButton: UIButton!
 
     // MARK: - Properties
@@ -37,7 +37,8 @@ class CellAddManager: UICollectionViewCell {
 // MARK: - Configuration
 extension CellAddManager {
     func configure(with model: IdNameModel, index: Int) {
-        nameLabel.text = model.name
+        nameTextField.isUserInteractionEnabled = false
+        nameTextField.text = model.name
         guard let data = managerData else { return }
         managerDataRelay.accept(data)
         updateDropDown(data)

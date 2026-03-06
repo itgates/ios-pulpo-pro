@@ -80,7 +80,13 @@ private extension UnPlannedVisitDetailsVC {
         addManagerButton.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .bind(with: self) { vc, _ in
-                vc.viewModel.addManager(name: "Manager")
+                
+                if let warning = vc.viewModel.addManager() {
+                    vc.showAlert(
+                        alertTitle: "Warning",
+                        alertMessage: warning
+                    )
+                }
             }
             .disposed(by: disposeBag)
 
@@ -88,6 +94,7 @@ private extension UnPlannedVisitDetailsVC {
             .observe(on: MainScheduler.instance)
             .bind { [weak self] shouldShow in
                 self?.addManagerButton.isHidden = !shouldShow
+                self?.collectionViewAddManager.isHidden = !shouldShow
             }
             .disposed(by: disposeBag)
     }
@@ -152,22 +159,12 @@ private extension UnPlannedVisitDetailsVC {
                 item: item,
                 type: type
             )
-
             if let warning {
                 self.showAlert(
                     alertTitle: "Warning",
                     alertMessage: warning
                 )
             }
-            
-            if type == .visitType {
-                   let shouldShow =
-                       self.viewModel.visitItems.value.contains {
-                           $0.visitType?.name == "Double"
-                       }
-
-                   self.addManagerButton.isHidden = !shouldShow
-               }
         }
         cell.didChangeComment = { [weak self] comment in
             guard let self else { return }
