@@ -48,7 +48,7 @@
                                                         </subviews>
                                                     </stackView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1ul-Ot-YPF">
-                                                        <rect key="frame" x="264.33333333333331" y="0.66666666666666607" width="7.6666666666666856" height="19.333333333333336"/>
+                                                        <rect key="frame" x="264.33333333333331" y="0.6666666666666643" width="7.6666666666666856" height="19.333333333333336"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="7.6699999999999999" id="B84-L4-lER"/>
                                                             <constraint firstAttribute="height" constant="19.329999999999998" id="paz-vm-oIw"/>
@@ -186,6 +186,7 @@
                 <outlet property="latLabel" destination="Brt-pM-Myf" id="pNd-bD-e6C"/>
                 <outlet property="lngLabel" destination="BTD-eG-FqT" id="p8Y-iI-wXi"/>
                 <outlet property="mapButton" destination="qvv-5C-z3B" id="poi-OX-SHt"/>
+                <outlet property="stackLocation" destination="lek-4t-Sif" id="kdu-PZ-pal"/>
                 <outlet property="viewContiner" destination="bRi-rR-6aL" id="PJZ-Ba-NjO"/>
             </connections>
             <point key="canvasLocation" x="-166.41221374045801" y="220.77464788732397"/>

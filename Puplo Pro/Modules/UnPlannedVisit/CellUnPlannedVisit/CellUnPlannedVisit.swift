@@ -73,9 +73,7 @@ final class CellUnPlannedVisit: UICollectionViewCell {
     // MARK: - Static Data
     private let shiftData: [IdNameModel] = [
         IdNameModel(id: "2", name: "AM"),
-        IdNameModel(id: "1", name: "PM"),
-        IdNameModel(id: "4", name: "Full Day")
-    ]
+        IdNameModel(id: "1", name: "PM")]
 
     private let visitTypeData: [IdNameModel] = [
         IdNameModel(id: "1", name: "Single"),
@@ -171,23 +169,28 @@ private extension CellUnPlannedVisit {
     func setupGestures() {
 
         stackTappedDivision.onTap { [weak self] in
-            self?.show(.division, anchor: self?.stackTappedDivision)
+            guard let self, self.model?.planID == "0" else { return }
+            self.show(.division, anchor: self.stackTappedDivision)
         }
 
         stackTappedBrick.onTap { [weak self] in
-            self?.show(.brick, anchor: self?.stackTappedBrick)
+            guard let self, self.model?.planID == "0" else { return }
+            self.show(.brick, anchor: self.stackTappedBrick)
         }
 
         stackTappedAccountType.onTap { [weak self] in
-            self?.show(.accountType, anchor: self?.stackTappedAccountType)
+            guard let self, self.model?.planID == "0" else { return }
+            self.show(.accountType, anchor: self.stackTappedAccountType)
         }
 
         stackTappedAccount.onTap { [weak self] in
-            self?.show(.account, anchor: self?.stackTappedAccount)
+            guard let self, self.model?.planID == "0" else { return }
+            self.show(.account, anchor: self.stackTappedAccount)
         }
 
         stackTappedDoctor.onTap { [weak self] in
-            self?.show(.doctor, anchor: self?.stackTappedDoctor)
+            guard let self, self.model?.planID == "0" else { return }
+            self.show(.doctor, anchor: self.stackTappedDoctor)
         }
 
         stackTappedVisitType.onTap { [weak self] in
@@ -195,7 +198,8 @@ private extension CellUnPlannedVisit {
         }
 
         stackTappedShiftType.onTap { [weak self] in
-            self?.show(.shiftType, anchor: self?.stackTappedShiftType)
+            guard let self, self.isShiftEnabled else { return }
+            self.show(.shiftType, anchor: self.stackTappedShiftType)
         }
     }
 }

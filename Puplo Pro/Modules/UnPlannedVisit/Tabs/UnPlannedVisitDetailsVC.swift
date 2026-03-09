@@ -48,7 +48,6 @@ final class UnPlannedVisitDetailsVC: BaseView, UIScrollViewDelegate {
     }
 }
 private extension UnPlannedVisitDetailsVC {
-
     
     func setupUI() {
         LocationManager.shared.getCurrentLocation { lat, lng in

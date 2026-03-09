@@ -38,7 +38,7 @@ final class UnPlannedVisitVC: BaseView {
     private var defaultHomeVC: UnPlannedVisitDetailsVC?
 
     private let selectedPeriod = BehaviorRelay<Period>(value: .firstTap)
-
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -196,6 +196,15 @@ private extension UnPlannedVisitVC {
 // MARK: - Rx Bindings
 private extension UnPlannedVisitVC {
 
+    // MARK: - Helpers
+    private func clearCachedVisitData() {
+        LocalStorageManager.shared.clearVisitItemData()
+        LocalStorageManager.shared.clearManagerData()
+        LocalStorageManager.shared.clearGiftsData()
+        LocalStorageManager.shared.clearProductsData()
+        LocalStorageManager.shared.clearSelectedImageVisitData()
+        LocalStorageManager.shared.clearVisitStartLocation()
+    }
     func bindUI() {
 
         let buttons: [(UIButton, Period)] = [
@@ -222,6 +231,10 @@ private extension UnPlannedVisitVC {
         buttonBack.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .bind(with: self) { vc, _ in
+                let visit =  LocalStorageManager.shared.getVisitItemData()
+                if visit?.first?.planID != "0" {
+                    vc.clearCachedVisitData()
+                }
                 vc.dismiss()
             }
             .disposed(by: disposeBag)

@@ -80,6 +80,9 @@ final class CellProduct: UICollectionViewCell {
     private var slidesData: [Slides] {
         LocalStorageManager.shared.getAppPresentationsModel()?.Data?.Slides ?? []
     }
+//    private var feedBackData: [IdNameModel]? {
+//        LocalStorageManager.shared.getMasterData()?.Data?.visitFeedBack
+//    }
     // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()

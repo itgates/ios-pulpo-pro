@@ -10,7 +10,11 @@ import RxCocoa
 import UIKit
 import Alamofire
 import CoreLocation
-
+enum LocationZone {
+    case white
+    case green
+    case red
+}
 final class UnPlannedVisitNotesViewModel {
         
     // MARK: - Properties
@@ -505,7 +509,7 @@ final class UnPlannedVisitNotesViewModel {
         LocalStorageManager.shared.clearVisitStartLocation()
     }
     
-    private func calculateDistance(
+     func calculateDistance(
         from lat1: Double,
         lng1: Double,
         to lat2: Double,
@@ -589,5 +593,19 @@ final class UnPlannedVisitNotesViewModel {
             }
         }
     }
+    
+    func getZone(distance: Int, acceptedDistance: Int) -> LocationZone {
+
+        if distance <= 15 {
+            return .white
+        }
+
+        if distance <= acceptedDistance {
+            return .green
+        }
+
+        return .red
+    }
+    
 }
 

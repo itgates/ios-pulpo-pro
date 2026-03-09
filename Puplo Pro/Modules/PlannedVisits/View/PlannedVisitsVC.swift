@@ -198,6 +198,10 @@ private extension PlannedVisitsVC {
                     )
                   
                     cell.onMapTapped = {
+                        if modelMap.lgAcccount.isEmpty || modelMap.llAcccount.isEmpty {
+                            self.showAlert( alertTitle: "Error", alertMessage: "No location available")
+                            return
+                        }
                         let vc = MapVC()
                         vc.delegateType = .plannedVisit
                         vc.itemModel = modelMap
@@ -265,13 +269,27 @@ private extension PlannedVisitsVC {
         let visitName = model.members == "0" ? "Single" : "Double"
         let visitID = model.members == "0" ? "1" : "2"
         
-        let shiftName: String = {
-            switch model.shift {
-            case "2": return "AM"
-            case "1": return "PM"
-            default: return "Full Day"
-            }
-        }()
+//        let shiftName: String = {
+//            switch model.shift {
+//            case "2": return "AM"
+//            case "1": return "PM"
+//            default: return ""
+//            }
+//        }()
+        
+        let shiftType = IdNameModel(
+            id: (model.shift == "0") ? "" : model.shift,
+            name: {
+                switch model.shift {
+                case "2": return "AM"
+                case "1": return "PM"
+                default: return ""
+                }
+            }(),
+            ll: accountll,
+            lg: accountlg
+        )
+
         let visitItem = VisitItem(
             date: model.vdate,
             time: model.vtime,
@@ -282,7 +300,7 @@ private extension PlannedVisitsVC {
             account: IdNameModel(id: accountId, name: accountName,ll: accountll,lg: accountlg),
             doctor: IdNameModel(id: model.item_doc_id, name: doctorName,ll: accountll,lg: accountlg),
             visitType: IdNameModel(id: visitID, name: visitName,ll: accountll,lg: accountlg),
-            shiftType: IdNameModel(id: model.shift, name: shiftName,ll: accountll,lg: accountlg),
+            shiftType: shiftType
         )
         print("visitItem >>> \(visitItem)")
         LocalStorageManager.shared.saveVisitItemData([visitItem])

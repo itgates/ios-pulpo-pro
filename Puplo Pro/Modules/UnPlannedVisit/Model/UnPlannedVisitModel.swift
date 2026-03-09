@@ -165,10 +165,12 @@ extension ProductItem {
         
         let textFieldsValid =
         //comment.isFilled &&
-        feedback.isFilled &&
-        comment.isFilled &&
-        market.isFilled &&
-        followUp.isFilled //&&
+        feedback.isFilled 
+//        comment.isFilled &&
+//        market.isFilled &&
+//        followUp.isFilled //&&
+        
+        
         //        payment.isFilled &&
         //        stock.isFilled &&
         //        order.isFilled
@@ -179,34 +181,64 @@ extension ProductItem {
         return selectionsValid && textFieldsValid && countValid
     }
 }
+//extension VisitItem {
+//    
+//    var isValid: Bool {
+//        
+//        let masterData = LocalStorageManager.shared.getMasterData()
+//        
+//        let isShiftEnabled =
+//        masterData?
+//            .Data?
+//            .settings?
+//            .first(where: { $0.attribute_name == "add_shift" })?
+//            .attribute_value == "1"
+//        
+//        if isShiftEnabled {
+//            return division != nil &&
+//            brick != nil &&
+//            accountType != nil &&
+//            account != nil &&
+//            doctor != nil &&
+//            visitType != nil &&
+//            shiftType != nil
+//        } else {
+//            return division != nil &&
+//            brick != nil &&
+//            accountType != nil &&
+//            account != nil &&
+//            doctor != nil &&
+//            visitType != nil &&
+//            shiftType != nil
+//        }
+//    }
+//}
 extension VisitItem {
     
     var isValid: Bool {
         
         let masterData = LocalStorageManager.shared.getMasterData()
-        
         let isShiftEnabled =
-        masterData?
-            .Data?
-            .settings?
-            .first(where: { $0.attribute_name == "add_shift" })?
-            .attribute_value == "1"
+            masterData?
+                .Data?
+                .settings?
+                .first(where: { $0.attribute_name == "add_shift" })?
+                .attribute_value == "1"
+        
+        let requiredFields: [IdNameModel?] = [
+            division,
+            brick,
+            accountType,
+            account,
+            doctor,
+            visitType
+        ]
         
         if isShiftEnabled {
-            return division != nil &&
-            brick != nil &&
-            accountType != nil &&
-            account != nil &&
-            doctor != nil &&
-            visitType != nil &&
-            shiftType != nil
+            return requiredFields.allSatisfy { $0?.id?.isEmpty == false } &&
+                   shiftType?.id?.isEmpty == false
         } else {
-            return division != nil &&
-            brick != nil &&
-            accountType != nil &&
-            account != nil &&
-            doctor != nil &&
-            visitType != nil
+            return requiredFields.allSatisfy { $0?.id?.isEmpty == false }
         }
     }
 }

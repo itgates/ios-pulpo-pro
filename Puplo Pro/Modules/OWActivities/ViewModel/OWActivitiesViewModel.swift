@@ -29,13 +29,12 @@ class OWActivitiesViewModel {
     
     var officeWork = LocalStorageManager.shared.getMasterData()
     
-    
     // MARK: - Fetch Data
     func fetchData() {
         
         let reportsData: [(name: String, id: String)] = [
-            ("AM", "1"),
-            ("PM", "2"),
+            ("AM", "2"),
+            ("PM", "1"),
             ("Full Day", "4")
         ]
         
@@ -71,8 +70,8 @@ class OWActivitiesViewModel {
         
         print("📆 Same Day Works:", sameDayWorks)
         
-        let hasAM = sameDayWorks.contains { $0.shift_id == "1" }
-        let hasPM = sameDayWorks.contains { $0.shift_id == "2" }
+        let hasAM = sameDayWorks.contains { $0.shift_id == "2" }
+        let hasPM = sameDayWorks.contains { $0.shift_id == "1" }
         let hasFullDay = sameDayWorks.contains { $0.shift_id == "4" }
         
         print("🔍 hasAM:", hasAM, "| hasPM:", hasPM, "| hasFullDay:", hasFullDay)
@@ -127,7 +126,7 @@ class OWActivitiesViewModel {
         
         let visitArray: [[String: Any]] = OWS.map { model in
             return [
-                "ampm": model.shift_id ?? "1",
+                "ampm": model.shift_id ?? "2",
                 "comments": model.notes,
                 "date_added": model.date,
                 "appVersion": AppInfo.shared.appVersion,

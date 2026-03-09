@@ -154,24 +154,42 @@ private extension UnPlannedVisitNotesVC {
             .disposed(by: disposeBag)
     }
     private func handleEndVisitTap() {
-        
-        setApplyButton(button: endVisitButton, enabled: false)
-        
+
+        subscribeToLoading()
+
         guard validateEndVisitData() else {
             updateEndVisitButtonState()
             return
         }
-        
+
         if let errorMessage = viewModel.validateActualVisit() {
             showAlert(alertTitle: "Error", alertMessage: errorMessage)
             updateEndVisitButtonState()
             return
         }
-        
+
+        guard let acceptedDistance = getAcceptedDistance() else {
+            saveVisit()
+            return
+        }
+
+        LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
+            guard let self = self else { return }
+
+            self.validateLocationAndSave(
+                endLat: endLat,
+                endLng: endLng,
+                acceptedDistance: acceptedDistance
+            )
+        }
+    }
+    func saveVisit() {
+
         subscribeToLoading()
+        setApplyButton(button: endVisitButton, enabled: false)
         viewModel.saveUnPlannedVisit { [weak self] done, message in
             guard let self else { return }
-            
+
             if done {
                 self.showTopAlert(message: "The visit was successfully completed") {
                     self.navigationHomeVC()
@@ -182,7 +200,6 @@ private extension UnPlannedVisitNotesVC {
             }
         }
     }
-    
     private func updateEndVisitButtonState() {
         let isValid =
         !visitItems.isEmpty
@@ -203,7 +220,7 @@ private extension UnPlannedVisitNotesVC {
 //            showAlert(alertTitle: "Error", alertMessage: "Please add a gift.")
 //            return false
 //        }
-//        
+//
 //        if productsData.isEmpty {
 //            showAlert(alertTitle: "Error", alertMessage: "Please add a product.")
 //            return false
@@ -262,6 +279,8 @@ private extension UnPlannedVisitNotesVC {
         ]
         tableView.reloadData()
     }
+    
+ 
 }
 // MARK: - UITableView Delegate & DataSource
 extension UnPlannedVisitNotesVC: UITableViewDelegate, UITableViewDataSource {
@@ -296,3 +315,191 @@ extension UnPlannedVisitNotesVC: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+// MARK: - Validate End Location
+extension UnPlannedVisitNotesVC {
+
+    func validateLocationAndSave(
+        endLat: Double,
+        endLng: Double,
+        acceptedDistance: Int
+    ) {
+
+        guard let visit = LocalStorageManager.shared.getVisitItemData()?.first else { return }
+
+        let accountLat = Double(visit.account?.ll ?? "") ?? 0
+        let accountLng = Double(visit.account?.lg ?? "") ?? 0
+
+        let distance = viewModel.calculateDistance(
+            from: accountLat,
+            lng1: accountLng,
+            to: endLat,
+            lng2: endLng
+        )
+
+        let zone = viewModel.getZone(
+            distance: distance,
+            acceptedDistance: acceptedDistance
+        )
+
+        let trackingSettingIsOn = getSettingValue("allow_actual_with_deviation")
+        let greenZoneSettingIsOn = getSettingValue("green_zone_with_deviation")
+        let checkStartSettingIsOn = getSettingValue("check_on_start_location")
+
+        switch zone {
+
+        case .white:
+
+            if checkStartSettingIsOn {
+                validateStartLocation(acceptedDistance: acceptedDistance)
+            } else {
+                saveVisit()
+            }
+
+        case .green:
+
+            if greenZoneSettingIsOn {
+
+                if checkStartSettingIsOn {
+                    validateStartLocation(acceptedDistance: acceptedDistance)
+                } else {
+                    saveVisit()
+                }
+
+            } else {
+
+                showLocationDeviationDialog(distance, acceptedDistance, true)
+
+            }
+
+        case .red:
+
+            if trackingSettingIsOn {
+                showLocationDeviationDialog(distance, acceptedDistance, true)
+            } else {
+                showLocationDeviationDialogWithoutSave(distance, acceptedDistance)
+            }
+        }
+    }
+
+    func validateStartLocation(acceptedDistance: Int) {
+
+        guard let visit = LocalStorageManager.shared.getVisitItemData()?.first else { return }
+
+        guard let startLocation = LocalStorageManager.shared.getVisitStartLocation() else {
+            saveVisit()
+            return
+        }
+
+        let accountLat = Double(visit.account?.ll ?? "") ?? 0
+        let accountLng = Double(visit.account?.lg ?? "") ?? 0
+
+        let distance = viewModel.calculateDistance(
+            from: accountLat,
+            lng1: accountLng,
+            to: startLocation.coordinate.latitude,
+            lng2: startLocation.coordinate.longitude
+        )
+
+        let zone = viewModel.getZone(
+            distance: distance,
+            acceptedDistance: acceptedDistance
+        )
+
+        switch zone {
+
+        case .white:
+            saveVisit()
+
+        case .green:
+            saveVisit()
+
+        case .red:
+            showLocationDeviationDialogWithTryAgain(distance, acceptedDistance)
+        }
+    }
+
+    private func getAcceptedDistance() -> Int? {
+
+        let value = LocalStorageManager.shared
+            .getMasterData()?
+            .Data?
+            .account_types?
+            .first?
+            .accepted_distance
+
+        print("value >>> \(value ?? "")")
+
+        return Int(value ?? "250")
+    }
+
+    private func getSettingValue(_ key: String) -> Bool {
+
+        return LocalStorageManager.shared
+            .getMasterData()?
+            .Data?
+            .settings?
+            .first(where: { $0.attribute_name == key })?
+            .attribute_value == "1"
+    }
+
+    func showLocationDeviationDialog(
+        _ deviation: Int,
+        _ acceptedDistance: Int,
+        _ allowSave: Bool
+    ) {
+
+        let message = "You are \(deviation)m away from the location"
+
+        let alert = UIAlertController(
+            title: "Location Deviation",
+            message: message,
+            preferredStyle: .alert
+        )
+
+        if allowSave {
+            alert.addAction(UIAlertAction(title: "Save Anyway", style: .default) { _ in
+                self.saveVisit()
+            })
+        }
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        present(alert, animated: true)
+    }
+
+    func showLocationDeviationDialogWithTryAgain(
+        _ deviation: Int,
+        _ acceptedDistance: Int
+    ) {
+
+        let message = "You are \(deviation)m away from the location. Please try again."
+
+        let alert = UIAlertController(
+            title: "Location Error",
+            message: message,
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "Try Again", style: .default))
+
+        present(alert, animated: true)
+    }
+
+    func showLocationDeviationDialogWithoutSave(
+        _ deviation: Int,
+        _ acceptedDistance: Int
+    ) {
+
+        let message = "You are outside the allowed distance (\(acceptedDistance)m)."
+
+        let alert = UIAlertController(
+            title: "Location Error",
+            message: message,
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+
+        present(alert, animated: true)
+    }
+}

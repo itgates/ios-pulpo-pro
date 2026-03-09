@@ -111,7 +111,7 @@ private extension AccountsListVC {
             UINib(nibName: "CellAccountsList", bundle: nil),
             forCellReuseIdentifier: "CellAccountsList"
         )
-        tableView.rowHeight = 100
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = UIView()
     }
     

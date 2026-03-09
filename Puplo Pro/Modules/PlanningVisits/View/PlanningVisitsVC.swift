@@ -242,7 +242,7 @@ private extension PlanningVisitsVC {
             UINib(nibName: "CellPlanningVisits", bundle: nil),
             forCellReuseIdentifier: "CellPlanningVisits"
         )
-        tableView.rowHeight = 140
+        tableView.rowHeight = 155
     }
 
     func bindTableView() {

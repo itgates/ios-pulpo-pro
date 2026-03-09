@@ -20,9 +20,9 @@ final class PlannedVisitsViewModel {
 
         var shiftId: String {
             switch self {
-            case .am: return "2"
+            case .am: return "3"
             case .pm: return "1"
-            case .other: return "0"
+            case .other: return "2"
             }
         }
     }
@@ -51,7 +51,6 @@ final class PlannedVisitsViewModel {
             }
     }
 
-
     // MARK: - Load Data
     func loadAccount(for type: AccountType) {
         loadingBehavior.accept(true)
@@ -62,21 +61,23 @@ final class PlannedVisitsViewModel {
             let items: [PlannedVisitItem]
 
             switch type {
-            case .am, .pm:
-                self.debugPrintPlanVisitsDates()
-                items = self.visits(for: type.shiftId)
+            case .am:
+                items = self.visits(for: type.shiftId, accountType: "3") // Hospital
+            case .pm:
+                items = self.visits(for: type.shiftId, accountType: "1") // Clinic
             case .other:
-                items = self.otherVisits()
+                items = self.visits(for: type.shiftId, accountType: "2") // Pharmacy
             }
 
             self.itemsRelay.accept(items)
             self.loadingBehavior.accept(false)
         }
     }
+
     func debugPrintPlanVisitsDates() {
         print("==== PLAN VISITS DATES ====")
         planVisits.enumerated().forEach { index, visit in
-            print("[\(index)] date -> \(visit.insertion_date ?? "nil") | shift_id -> \(visit.shift ?? "")")
+            print("[\(index)] date -> \(visit.insertion_date ?? "nil") | shift_id -> \(visit.shift ?? "") | account_type -> \(visit.account_type ?? "")")
         }
     }
 
@@ -113,27 +114,18 @@ private extension PlannedVisitsViewModel {
         return cleanDate == today
     }
 
-    func visits(for shiftId: String) -> [PlannedVisitItem] {
-      
+    /// ✅ Visits with optional account_type filter
+    func visits(for shiftId: String, accountType: String? = nil) -> [PlannedVisitItem] {
         planVisits
             .filter {
-                $0.shift == shiftId &&
-                isToday($0.insertion_date)
+//                $0.shift == shiftId &&
+                isToday($0.insertion_date) &&
+                (accountType == nil || $0.account_type == accountType)
             }
             .map { .visit($0) }
     }
 
     func otherVisits() -> [PlannedVisitItem] {
-        planVisits
-            .filter {
-//                $0.shift != AccountType.am.shiftId &&
-//                $0.shift != AccountType.pm.shiftId &&
-                $0.shift == AccountType.other.shiftId &&
-                isToday($0.insertion_date)
-            }
-            .map { .visit($0) }
+        visits(for: AccountType.other.shiftId, accountType: "2") // Pharmacy
     }
 }
-
-
-

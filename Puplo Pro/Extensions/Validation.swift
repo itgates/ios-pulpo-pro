@@ -34,6 +34,8 @@ extension UIViewController {
             if firstVisit.visitType?.name == "Double" && managers?.count ?? 0 < 1 {
                 return .blocked(message: "Please select a Manager for Double visit.")
             }
+            
+            print("visitItems.first?.visitType >> \(String(describing: visitItems.first?.shiftType))")
             return .allowed
             
         case .second:
