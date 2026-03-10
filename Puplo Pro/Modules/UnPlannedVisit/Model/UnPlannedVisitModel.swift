@@ -109,15 +109,15 @@ struct VisitBaseData {
 }
 struct ProductItem: Codable {
     var product: IdNameModel?
-    var feedback: String?
+    var feedback: IdNameModel?
     var market: String?
     var followUp: String?
     var presentations: [Presentations]?
     var count: String
     var comment: String?
-    var payment: String?
-    var stock: String?
-    var order: String?
+//    var payment: String?
+//    var stock: String?
+//    var order: String?
 }
 struct VisitItem: Codable {
     var date: String?
@@ -158,14 +158,14 @@ extension ProductItem {
     var isValid: Bool {
         
         let selectionsValid =
-        product.isSelected //&&
-        //            feedback.isSelected &&
+        product.isSelected &&
+        feedback.isSelected
         //            market.isSelected &&
         //            followUp.isSelected
         
-        let textFieldsValid =
+//        let textFieldsValid =
         //comment.isFilled &&
-        feedback.isFilled 
+//        feedback.isSelected 
 //        comment.isFilled &&
 //        market.isFilled &&
 //        followUp.isFilled //&&
@@ -177,8 +177,8 @@ extension ProductItem {
         
         let countValid =
         !count.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        
-        return selectionsValid && textFieldsValid && countValid
+        return selectionsValid && countValid
+//        return selectionsValid && textFieldsValid && countValid
     }
 }
 //extension VisitItem {

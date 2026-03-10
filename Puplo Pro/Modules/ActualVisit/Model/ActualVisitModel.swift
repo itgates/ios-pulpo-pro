@@ -48,12 +48,12 @@ struct ProductVisitModel: Codable {
     let name: String
     let count: String
     let comment: String
-    let stock: String
-    let payment: String
-    let order: String
-    let followup_id: String?
-    let market_feedback_id: String?
-    let vFeedback_id: String?
+//    let stock: String
+//    let payment: String
+//    let order: String
+    let feedback_id: String?
+    let follow_ups: String?
+    let market_feedback: String?
     var presentations: [Presentations]?
 }
 

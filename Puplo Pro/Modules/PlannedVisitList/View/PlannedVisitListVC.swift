@@ -110,6 +110,10 @@ private extension PlannedVisitListVC {
                     isUploaded: false
                 )
                 cell.onMapTapped = {
+                    if modelMap.lgAcccount.isEmpty || modelMap.llAcccount.isEmpty {
+                        self.showAlert( alertTitle: "Error", alertMessage: "No location available")
+                        return
+                    }
                     let vc = MapVC()
                     vc.delegateType = .plannedVisit
                     vc.itemModel = modelMap

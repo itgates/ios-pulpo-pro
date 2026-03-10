@@ -58,7 +58,7 @@ final class OWActivitiesVC: BaseView {
     private var isOfficeExpanded = false
     private var appendedOWSData = [OWSModel]()
     private var ow_type_id: String = ""
-    private var shift_id: String = "1"
+    private var shift_id: String = "2"
     private var ow_plan_id: String = ""
     var delegateType: OWActivitiesType = .OWActivities
     var plannedOfficeModel: PlanOwsData?

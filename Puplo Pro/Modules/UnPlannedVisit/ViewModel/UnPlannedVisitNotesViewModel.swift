@@ -235,12 +235,9 @@ final class UnPlannedVisitNotesViewModel {
                 name: $0.product?.name ?? "",
                 count: $0.count,
                 comment: $0.comment ?? "",
-                stock: $0.stock ?? "",
-                payment: $0.payment ?? "",
-                order: $0.order ?? "",
-                followup_id: $0.followUp ?? "",
-                market_feedback_id: $0.market ?? "",
-                vFeedback_id: $0.feedback ?? "",
+                feedback_id: $0.feedback?.id ?? "",
+                follow_ups: $0.followUp ?? "",
+                market_feedback: $0.market,
                 presentations: $0.presentations
             )
         }
@@ -410,14 +407,14 @@ final class UnPlannedVisitNotesViewModel {
             dict["notes"] = item.comment ?? ""
             
             // MARK: - Order & Stock
-            dict["current_stock"] = Int(item.stock ?? "") ?? 0
-            dict["current_order"] = Int(item.order ?? "") ?? 0
-            dict["quotation_payment_method"] = Int(item.payment ?? "") ?? 0
+            dict["current_stock"] =  0
+            dict["current_order"] =  0
+            dict["quotation_payment_method"] = 0
             
             // MARK: - Feedback
             dict["followup"] = item.followUp ?? ""
             dict["mfeedback"] = item.market ?? ""
-            dict["feedback_id"] = Int(item.feedback ?? "") ?? 0
+            dict["feedback_id"] = Int(item.feedback?.id ?? "") ?? 0
             
             // MARK: - Demo
             dict["is_demo"] = 0

@@ -23,26 +23,17 @@ final class CellProduct: UICollectionViewCell {
     @IBOutlet weak var countProductLabel: UILabel!
     @IBOutlet weak var minusButton: UIButton!
     
-    @IBOutlet weak var stackFeedBack: UIStackView!
+    @IBOutlet weak var stackSelectFeedBack: UIStackView!
     @IBOutlet weak var feedbackTextField: UITextField!
-//    
+
     @IBOutlet weak var stackMarket: UIStackView!
     @IBOutlet weak var marketTextField: UITextField!
-//    
+  
     @IBOutlet weak var stackFollowUps: UIStackView!
     @IBOutlet weak var followUpsTextField: UITextField!
     
     @IBOutlet weak var stackComment: UIStackView!
     @IBOutlet weak var commentTextField: UITextField!
-    
-    @IBOutlet weak var stackPayment: UIStackView!
-    @IBOutlet weak var paymentTextField: UITextField!
-    
-    @IBOutlet weak var stackStock: UIStackView!
-    @IBOutlet weak var stockTextField: UITextField!
-    
-    @IBOutlet weak var stackOrder: UIStackView!
-    @IBOutlet weak var orderTextField: UITextField!
     
     @IBOutlet weak var collectionViewPresentations: UICollectionView!
     
@@ -55,14 +46,10 @@ final class CellProduct: UICollectionViewCell {
     var onCountChanged: ((Int) -> Void)?
     var deleteIndex: (() -> Void)?
     
-    var onFeedBackChanged: ((String?) -> Void)?
     var onMarketChanged: ((String?) -> Void)?
     var onFollowUpsChanged: ((String?) -> Void)?
-    
     var onCommentChanged: ((String?) -> Void)?
-    var onPaymentChanged: ((String?) -> Void)?
-    var onStockChanged: ((String?) -> Void)?
-    var onOrderChanged: ((String?) -> Void)?
+    
     var onPresentations: (([Slides]) -> Void)?
     
     private var count = 1 {
@@ -80,9 +67,9 @@ final class CellProduct: UICollectionViewCell {
     private var slidesData: [Slides] {
         LocalStorageManager.shared.getAppPresentationsModel()?.Data?.Slides ?? []
     }
-//    private var feedBackData: [IdNameModel]? {
-//        LocalStorageManager.shared.getMasterData()?.Data?.visitFeedBack
-//    }
+    private var feedBackData: [IdNameModel]? {
+        LocalStorageManager.shared.getMasterData()?.Data?.comments
+    }
     // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -97,23 +84,20 @@ final class CellProduct: UICollectionViewCell {
     private func setupUI() {
         // DropDown fields → read only
         [
-            productNameTextField
+            productNameTextField,
+            feedbackTextField
         ].forEach { $0?.isUserInteractionEnabled = false }
     }
     // MARK: - Bind TextFields
     private func bindTextFields() {
-        feedbackTextField.delegate = self
         marketTextField.delegate = self
         followUpsTextField.delegate = self
-        
         commentTextField.delegate = self
-        paymentTextField.delegate = self
-        stockTextField.delegate = self
-        orderTextField.delegate = self
     }
     // MARK: - Gestures
     private func setupGestures() {
         bind(stackSelectProduct, productsData, .product, productNameTextField)
+        bind(stackSelectFeedBack, feedBackData, .feedback, feedbackTextField)
     }
     
     private func bind(
@@ -126,7 +110,7 @@ final class CellProduct: UICollectionViewCell {
             self?.showDropDown(items: data, anchor: stack, type: type, field: field)
         }
     }
-    
+
     private func showDropDown(
         items: [IdNameModel]?,
         anchor: UIView,
@@ -139,22 +123,28 @@ final class CellProduct: UICollectionViewCell {
         dropDown.dataSource = items.compactMap { $0.name }
         dropDown.anchorView = anchor
         dropDown.bottomOffset = CGPoint(x: 0, y: anchor.bounds.height)
- 
+
         dropDown.selectionAction = { [weak self] index, title in
             guard let self = self else { return }
+            
             let selectedItem = items[index]
             
-            field.text = title
-
-            if field == productNameTextField {
-                let filteredPresentations = self.presentationsData.filter {
-                    $0.product_id == selectedItem.id
+            let filteredPresentations = self.presentationsData.filter {
+                $0.product_id == selectedItem.id
+            }
+            
+            if let warning = self.didSelectItem?(selectedItem, type, filteredPresentations) {
+            } else {
+                field.text = title
+                
+                if field == self.productNameTextField {
+                    let hasData = !filteredPresentations.isEmpty
+                    self.collectionViewPresentations.isHidden = !hasData
+                    self.presentationsRelay.accept(filteredPresentations)
                 }
-                self.didSelectItem?(selectedItem, .product, filteredPresentations)
-                self.collectionViewPresentations.isHidden = filteredPresentations.isEmpty
-                self.presentationsRelay.accept(filteredPresentations)
             }
         }
+        
         dropDown.show()
     }
     
@@ -179,14 +169,10 @@ final class CellProduct: UICollectionViewCell {
     // MARK: - Configure
     func configure(with model: ProductItem) {
         productNameTextField.text = model.product?.name
-        feedbackTextField.text = model.feedback
+        feedbackTextField.text = model.feedback?.name
         marketTextField.text = model.market
         followUpsTextField.text = model.followUp
-        
         commentTextField.text = model.comment
-        paymentTextField.text = model.payment
-        stockTextField.text = model.stock
-        orderTextField.text = model.order
         
         count = Int(model.count) ?? 1
 //        if model.presentations?.count ?? 0 > 0  {
@@ -203,21 +189,15 @@ extension CellProduct: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         let text = textField.text ?? ""
-        
-        if text == feedbackTextField.text {
-            self.onFeedBackChanged?(text)
-        } else if text == marketTextField.text {
+       
+        if text == commentTextField.text {
+            self.onCommentChanged?(text)
+            
+        } else  if text == marketTextField.text {
             self.onMarketChanged?(text)
+            
         } else if text == followUpsTextField.text {
             self.onFollowUpsChanged?(text)
-        } else if text == commentTextField.text {
-            self.onCommentChanged?(text)
-        } else if text == paymentTextField.text {
-            self.onPaymentChanged?(text)
-        } else if text == stockTextField.text{
-            self.onStockChanged?(text)
-        } else {
-            self.onOrderChanged?(text)
         }
     }
 }

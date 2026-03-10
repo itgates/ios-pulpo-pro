@@ -350,14 +350,14 @@ class OfflineRequestManager {
             dict["notes"] = item.comment
             
             // MARK: - Order & Stock
-            dict["current_stock"] = item.stock
-            dict["current_order"] = item.order
-            dict["quotation_payment_method"] = item.payment
+            dict["current_stock"] = 0
+            dict["current_order"] = 0
+            dict["quotation_payment_method"] = 0
             
             // MARK: - Feedback
-            dict["followup"] = item.followup_id ?? ""
-            dict["mfeedback"] = item.market_feedback_id ?? ""
-            dict["feedback_id"] = item.vFeedback_id ?? ""
+            dict["followup"] = item.follow_ups ?? ""
+            dict["mfeedback"] = item.market_feedback ?? ""
+            dict["feedback_id"] = item.feedback_id ?? ""
             
             // MARK: - Demo
             dict["is_demo"] = 0

@@ -106,7 +106,9 @@ class OWActivitiesViewModel {
             fetchDataApplay(OWS: OWS) { done, message in
                 if done {
                     LocalStorageManager.shared.saveOfficeWorkModel(OWS)
-                    LocalStorageManager.shared.clearOWActivitiesModel()
+                    print("OWS >>>>\(OWS)")
+                    print("getOfficeWorkData >>>>\(LocalStorageManager.shared.getOfficeWorkData() ?? [])")
+//                    LocalStorageManager.shared.clearOWActivitiesModel()
                 }
                 completion(done, message)
             }

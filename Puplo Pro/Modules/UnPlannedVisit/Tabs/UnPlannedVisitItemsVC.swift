@@ -89,13 +89,10 @@ private extension UnPlannedVisitItemsVC {
                 let stacks: [UIStackView?] = [
                     cell.stackSelectProduct,
                     cell.stackButtons,
-                    cell.stackFeedBack,
+                    cell.stackSelectFeedBack,
                     cell.stackComment,
                     cell.stackMarket,
-                    cell.stackFollowUps,
-                    cell.stackPayment,
-                    cell.stackStock,
-                    cell.stackOrder
+                    cell.stackFollowUps
                 ]
                 stacks.compactMap { $0 }.forEach { stack in
                     self.style(view: stack, cornerRadius: stack.frame.height / 2, borderWidth: 1.5, borderColor: baseColor)
@@ -105,19 +102,11 @@ private extension UnPlannedVisitItemsVC {
                 cell.didSelectItem = { [weak self] item, type, presentations -> String? in
                     guard let self = self else { return nil }
                     let warning = self.viewModel.updateSelection(at: index, item: item, type: type)
-                    
                     if let warning = warning {
                         self.showAlert(alertTitle: "Warning", alertMessage: warning)
-                        if type == .product {
-                            cell.productNameTextField.text = ""
-                            self.viewModel.updateSelection(at: index, item: IdNameModel(id: nil, name: nil), type: .product)
-                            self.viewModel.updatePresentations(at: index, presentation: [])
-                        }
                     } else {
-                        if type == .product {
-                            cell.productNameTextField.text = item.name
-                            viewModel.updatePresentations(at: index, presentation: presentations)
-                        }
+                        if type == .product { cell.productNameTextField.text = item.name }
+                        else if type == .feedback { cell.feedbackTextField.text = item.name }
                     }
                     return warning
                 }
@@ -130,8 +119,8 @@ private extension UnPlannedVisitItemsVC {
                 }
 
                 // text filed
-                cell.onFeedBackChanged = { [weak self] text in
-                    self?.viewModel.updateFeedBack(at: index, text: text)
+                cell.onCommentChanged = { [weak self] text in
+                    self?.viewModel.updateComment(at: index, text: text)
                 }
                 cell.onMarketChanged = { [weak self] text in
                     self?.viewModel.updateMarket(at: index, text: text)
@@ -140,20 +129,6 @@ private extension UnPlannedVisitItemsVC {
                     self?.viewModel.updateFollowUps(at: index, text: text)
                 }
                 //
-                cell.onCommentChanged = { [weak self] text in
-                    self?.viewModel.updateComment(at: index, text: text)
-                }
-
-                cell.onPaymentChanged = { [weak self] text in
-                    self?.viewModel.updatePayment(at: index, text: text)
-                }
-
-                cell.onStockChanged = { [weak self] text in
-                    self?.viewModel.updateStock(at: index, text: text)
-                }
-                cell.onOrderChanged = { [weak self] text in
-                    self?.viewModel.updateOrder(at: index, text: text)
-                }
                 cell.onPresentations = { [weak self] slides in
                     guard let self = self else { return }
                     slidesWebViewVC(slides: slides)
