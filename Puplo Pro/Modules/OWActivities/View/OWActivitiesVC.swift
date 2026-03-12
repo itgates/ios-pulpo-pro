@@ -164,7 +164,6 @@ private extension OWActivitiesVC {
             setApplyButton(button: applyButton, enabled: true)
             return
         }
-        
         // 🔴 validation الجديدة
         if let errorMessage = viewModel.validateOfficeWorkShift(
             newShiftId: shift_id,
@@ -180,15 +179,20 @@ private extension OWActivitiesVC {
     
     // MARK: - Validation
     func validateOfficeWork() -> Bool {
-        guard ow_type_id != "" else {
-            showAlert(
-                alertTitle: "Error",
-                alertMessage: "Select office work"
-            )
+        
+        guard !ow_type_id.isEmpty else {
+            showAlert(alertTitle: "Error", alertMessage: "Select office work")
             return false
         }
+        
+        guard let comment = commentTextField.text, !comment.isEmpty else {
+            showAlert(alertTitle: "Error", alertMessage: "Please enter the comment")
+            return false
+        }
+        
         return true
     }
+    
 
     // MARK: - Submission
     func submitOfficeWork() {

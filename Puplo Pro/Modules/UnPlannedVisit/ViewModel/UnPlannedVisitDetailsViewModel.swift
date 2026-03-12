@@ -137,7 +137,6 @@ final class UnPlannedVisitDetailsViewModel {
     func addManager() -> String? {
         var list = managers.value
         
-        // ❌ منع الإضافة لو فيه manager لسه متختارش
         if list.contains(where: { $0.name?.isEmpty ?? true }) {
             return "Please select the current manager first"
         }

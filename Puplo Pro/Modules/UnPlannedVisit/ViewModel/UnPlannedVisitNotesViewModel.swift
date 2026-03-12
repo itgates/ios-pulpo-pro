@@ -178,6 +178,9 @@ final class UnPlannedVisitNotesViewModel {
         let images = LocalStorageManager.shared.getSelectedImageVisitData() ?? []
         let managers = LocalStorageManager.shared.getManagerData() ?? []
         
+        let ampm = visit.accountType?.cat_id == "1" ? "1" :
+                   visit.accountType?.cat_id == "2" ? "2" : "3"
+        
         let now = Date()
         let offlineId = String(Date().timeIntervalSince1970)
 
@@ -186,7 +189,6 @@ final class UnPlannedVisitNotesViewModel {
 
             let model = ActualVisitModel(
                 id: UUID().uuidString,
-                
                 accountID: visit.account?.id ?? "",
                 palnID: visit.planID ?? "",
                 doctorID: visit.doctor?.id ?? "",
@@ -196,6 +198,7 @@ final class UnPlannedVisitNotesViewModel {
                 lineId: visit.account?.line_id ?? "",
                 comment: visit.comment ?? "",
                 visitTypeId: visit.visitType?.id ?? "",
+                ampm: ampm,
                 shiftTypeId: visit.shiftType?.id ?? "",
                 shiftId: visit.accountType?.shift_id ?? "",
                 
@@ -304,7 +307,9 @@ final class UnPlannedVisitNotesViewModel {
         let members = buildMembersPayloadNEW(managerData)
         
         let now = Date()
-        
+
+        let ampm = visit.accountType?.cat_id == "1" ? "1" :
+                   visit.accountType?.cat_id == "2" ? "2" : "3"
         LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
             guard let self = self else { return }
             
@@ -319,7 +324,8 @@ final class UnPlannedVisitNotesViewModel {
             )
             
             let visitDict: [String: Any] = [
-                "ampm": visit.shiftType?.id ?? "1",
+               
+                "ampm": ampm,
                 "comments": visit.comment ?? "",
                 "date_added": now.formattedDate,
                 "appVersion": AppInfo.shared.appVersion,
@@ -337,7 +343,7 @@ final class UnPlannedVisitNotesViewModel {
                 "item_doc_id": visit.doctor?.id ?? 0,
                 "item_id": visit.account?.id ?? 0,
                 "member_info": members,
-                "members": "\(members.count)",
+                "members": visit.visitType?.id ?? 0,
                 "no_of_doctors": 1,
                 "offline_id": "11",
                 "product_info": products,
@@ -345,7 +351,10 @@ final class UnPlannedVisitNotesViewModel {
                 "sync_date": now.formattedDate,
                 "sync_time": now.formattedTime.to24HourFormat,
                 "team_id": user.lineIds ?? "",
-                "type_id": visit.visitType?.id ?? 0,
+                
+                // accountType
+                "type_id": visit.accountType?.id ?? 0,
+                
                 "user_id": user.user_id ?? 0,
                 "vdate": now.formattedDate,
                 "visit_address": "",
@@ -358,7 +367,7 @@ final class UnPlannedVisitNotesViewModel {
                 "ll": endLat,
                 "lg": endLng
             ]
-            
+            print("MEMBER INFO PAYLOAD >>>", members)
             let visitArray = [visitDict]
             
             print("NEW BODY >>> \(visitArray)")

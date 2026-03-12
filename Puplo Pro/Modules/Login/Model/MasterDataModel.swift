@@ -68,6 +68,8 @@ struct Divisions: Codable {
 struct IdNameModel: Codable {
     let id: String?
     var name: String?
+    var tbl: String? = ""
+    var cat_id: String? = ""
     var unplanned_limit: String? = ""
     var line_id: String? = ""
     var line_division_id: String? = ""

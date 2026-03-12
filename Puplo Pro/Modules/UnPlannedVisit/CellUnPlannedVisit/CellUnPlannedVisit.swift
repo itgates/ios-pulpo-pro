@@ -76,8 +76,8 @@ final class CellUnPlannedVisit: UICollectionViewCell {
         IdNameModel(id: "1", name: "PM")]
 
     private let visitTypeData: [IdNameModel] = [
-        IdNameModel(id: "1", name: "Single"),
-        IdNameModel(id: "2", name: "Double")
+        IdNameModel(id: "0", name: "Single"),
+        IdNameModel(id: "1", name: "Double")
     ]
 
     // MARK: - Lifecycle
@@ -227,10 +227,11 @@ private extension CellUnPlannedVisit {
             currentItems = divisionData
 
         case .brick:
-            currentItems = brickData.filter {
-                $0.ter_id == model?.division?.id
-            }
+            guard let divisionID = model?.division?.id else { return }
 
+            currentItems = brickData.filter {
+                $0.id == "0" || $0.ter_id == divisionID
+            }
         case .accountType:
             currentItems = accountTypeData
 
@@ -430,7 +431,8 @@ private extension CellUnPlannedVisit {
     }
 
     var brickData: [IdNameModel] {
-        masterData?.Data?.bricks?
+        
+        var bricks = masterData?.Data?.bricks?
             .map {
                 IdNameModel(
                     id: $0.id,
@@ -438,33 +440,53 @@ private extension CellUnPlannedVisit {
                     ter_id: $0.ter_id
                 )
             } ?? []
+        
+        bricks.insert(
+            IdNameModel(
+                id: "0",
+                name: "All Bricks",
+                ter_id: nil
+            ),
+            at: 0
+        )
+        
+        return bricks
     }
-
     var accountTypeData: [IdNameModel] {
         masterData?.Data?.account_types?
-            .map { IdNameModel(id: $0.id, name: $0.name) } ?? []
+            .map { IdNameModel(id: $0.id, name: $0.name, tbl: $0.tbl, cat_id: $0.cat_id) } ?? []
     }
+
     func accountsForBrick(_ brickID: String) -> [IdNameModel] {
-        LocalStorageManager.shared
-            .getAccountsDoctors()?
-            .Data?
-            .Accounts?
+
+        guard
+            let accounts = LocalStorageManager.shared
+                .getAccountsDoctors()?
+                .Data?
+                .Accounts
+        else { return [] }
+
+        let selectedAccountTypeTbl = model?.accountType?.tbl
+
+        return accounts
             .filter {
-                guard let idString = $0.brick_id,
-                      let id = Int(idString) else { return false }
-                return id == Int(brickID)
+                if brickID == "0" { return true }   // All Bricks
+                return $0.brick_id == brickID
+            }
+            .filter {
+                guard let selectedTbl = selectedAccountTypeTbl else { return true }
+                return $0.tbl == selectedTbl
             }
             .map {
                 IdNameModel(
                     id: $0.id,
                     name: $0.name ?? "",
-                    line_id: "",//$0.line_id ?? 0,
+                    line_id: "",
                     ll: $0.team_ll ?? "",
                     lg: $0.team_lg ?? ""
                 )
-            } ?? []
+            }
     }
-
     func doctorsForAccount(_ accountID: String) -> [IdNameModel] {
         LocalStorageManager.shared.getAccountsDoctors()?
             .Data?.Doctors?

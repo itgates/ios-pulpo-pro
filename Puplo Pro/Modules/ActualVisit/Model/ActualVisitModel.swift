@@ -17,6 +17,7 @@ struct ActualVisitModel: Codable {
     var lineId: String? = nil
     var comment: String? = nil
     var visitTypeId: String? = nil
+    var ampm: String? = "1"
     var shiftTypeId: String? = "2"
     var shiftId: String? = nil
     var offline_id: String? = nil

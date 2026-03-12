@@ -261,12 +261,13 @@ class OfflineRequestManager {
 
                 // Normalize types
                 let selectedShift: Int = Int(visit.shiftTypeId ?? "1") ?? 1
+                let ampm: Int = Int(visit.ampm ?? "1") ?? 1
                 let vPlannedID: Int = Int(visit.palnID ?? "0") ?? 0
                 let teamID: Int = Int((user.lineIds ?? "").components(separatedBy: ",").first ?? "0") ?? 0
                 let userIDString: String = (user.user_id ?? "")
 
                 let visitDict: [String: Any] = [
-                    "ampm": selectedShift,
+                    "ampm": ampm,
                     "comments": visit.comment ?? "",
                     "date_added": now.formattedDate,
                     "appVersion": AppInfo.shared.appVersion,
@@ -284,7 +285,7 @@ class OfflineRequestManager {
                     "item_doc_id": visit.doctorID ?? 0,
                     "item_id": visit.accountID ?? 0,
                     "member_info": members,
-                    "members": "\(members.count)",
+                    "members": visit.visitTypeId ?? 0,
                     "no_of_doctors": 1,
                     "offline_id": visit.offline_id ?? "",
                     "product_info": products,
@@ -292,7 +293,8 @@ class OfflineRequestManager {
                     "sync_date": now.formattedDate,
                     "sync_time": now.formattedTime.to24HourFormat,
                     "team_id": teamID,
-                    "type_id": visit.visitTypeId ?? 0,
+                    // accountType
+                    "type_id": visit.accountTypeID ?? 0,
                     "user_id": userIDString,
                     "vdate": now.formattedDate,
                     "visit_address": "",

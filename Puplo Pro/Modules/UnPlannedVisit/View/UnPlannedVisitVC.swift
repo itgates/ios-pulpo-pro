@@ -160,7 +160,7 @@ private extension UnPlannedVisitVC {
         guard current != target else { return true }
 
         if target == .fourth {
-
+           
             // ✅ Validate previous tabs
             for tab in [TabIndex.first, .second, .third] {
                 if case .blocked(let msg) = validate(tab: tab) {
@@ -168,9 +168,9 @@ private extension UnPlannedVisitVC {
                     return false
                 }
             }
-            let managers = LocalStorageManager.shared.getManagerData() ?? []
-            print("managers >>\(managers.count)")
 
+            // ✅ Validate managers
+            let managers = LocalStorageManager.shared.getManagerData() ?? []
             if managers.count > 0 && managers.contains(where: { $0.name?.isEmpty ?? true }) {
                 showAlert(
                     alertTitle: "Incomplete Data",
@@ -178,9 +178,18 @@ private extension UnPlannedVisitVC {
                 )
                 return false
             }
-            // ✅ Validate Gifts
+            // ✅ Validate products exist
+            let products = LocalStorageManager.shared.getProductsData() ?? []
+            if products.isEmpty {
+                showAlert(
+                    alertTitle: "Incomplete Data",
+                    alertMessage: "No products added. Please add products before proceeding."
+                )
+                return false
+            }
+
+            // ✅ Validate gifts
             let gifts = LocalStorageManager.shared.getGiftsData() ?? []
-            
             if gifts.contains(where: { !$0.isValid }) {
                 showAlert(
                     alertTitle: "Incomplete Data",
