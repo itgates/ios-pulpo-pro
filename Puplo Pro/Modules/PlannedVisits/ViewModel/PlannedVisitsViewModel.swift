@@ -114,18 +114,31 @@ private extension PlannedVisitsViewModel {
         return cleanDate == today
     }
 
-    /// ✅ Visits with optional account_type filter
+    // ✅ Visits with optional account_type filter}
     func visits(for shiftId: String, accountType: String? = nil) -> [PlannedVisitItem] {
-        planVisits
-            .filter {
-//                $0.shift == shiftId &&
-                isToday($0.insertion_date) &&
-                (accountType == nil || $0.account_type == accountType)
+
+        let actualVisits = LocalStorageManager.shared.getActualVisitData() ?? []
+
+        return planVisits
+            .filter { planned in
+                
+                guard isToday(planned.insertion_date) else { return false }
+
+                if let accountType, planned.account_type != accountType {
+                    return false
+                }
+
+                let isVisited = actualVisits.contains {
+                    $0.palnID == planned.id
+                }
+
+                return !isVisited
             }
             .map { .visit($0) }
     }
-
     func otherVisits() -> [PlannedVisitItem] {
         visits(for: AccountType.other.shiftId, accountType: "2") // Pharmacy
     }
+    
+    
 }

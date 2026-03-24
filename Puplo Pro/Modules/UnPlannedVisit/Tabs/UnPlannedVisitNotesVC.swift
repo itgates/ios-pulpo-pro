@@ -41,6 +41,7 @@ final class UnPlannedVisitNotesVC: BaseView {
         setupBindings()
         loadData()
         updateEndVisitButtonState()
+        setupUI()
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -48,7 +49,14 @@ final class UnPlannedVisitNotesVC: BaseView {
         endVisitButton.layer.masksToBounds = true
     }
 }
-
+private extension UnPlannedVisitDetailsVC {
+    
+    func setupUI() {
+        LocationManager.shared.getCurrentLocation { lat, lng in
+            LocalStorageManager.shared.saveVisitEndLocation(lat: lat, lng: lng)
+        }
+    }
+}
 // MARK: - UI Setup
 private extension UnPlannedVisitNotesVC {
     
@@ -167,15 +175,12 @@ private extension UnPlannedVisitNotesVC {
             updateEndVisitButtonState()
             return
         }
-
         guard let acceptedDistance = getAcceptedDistance() else {
             saveVisit()
             return
         }
-
         LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
             guard let self = self else { return }
-
             self.validateLocationAndSave(
                 endLat: endLat,
                 endLng: endLng,
@@ -186,10 +191,9 @@ private extension UnPlannedVisitNotesVC {
     func saveVisit() {
 
         subscribeToLoading()
-        setApplyButton(button: endVisitButton, enabled: false)
+//        setApplyButton(button: endVisitButton, enabled: false)
         viewModel.saveUnPlannedVisit { [weak self] done, message in
             guard let self else { return }
-
             if done {
                 self.showTopAlert(message: "The visit was successfully completed") {
                     self.navigationHomeVC()
@@ -368,9 +372,7 @@ extension UnPlannedVisitNotesVC {
             } else {
 
                 showLocationDeviationDialog(distance, acceptedDistance, true)
-
             }
-
         case .red:
 
             if trackingSettingIsOn {

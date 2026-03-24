@@ -3,7 +3,6 @@
 //  Puplo Pro
 //
 //  Created by Ahmed on 17/11/2025.
-//
 
 import Foundation
 import RxSwift
@@ -20,7 +19,17 @@ class LoginViewModel {
     func loginUser(name: String, password: String,companyName:String, completion: @escaping (Bool) -> Void) {
         
         let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-        let url = "\(baseURL + URLs.loginURL)&username=\(name)&password=\(password)"
+//     let url = "\(baseURL + URLs.loginURL)&username=\(name)&password=\(password)"
+        
+        var components = URLComponents(string: baseURL + URLs.loginURL)
+        var items = components?.queryItems ?? []
+
+        items.append(URLQueryItem(name: "username", value: name))
+        items.append(URLQueryItem(name: "password", value: password))
+
+        components?.queryItems = items
+
+        let url = components?.url?.absoluteString ?? ""
         print("url >>\(url)")
         // MARK: - Headers
         let headers: HTTPHeaders = [
@@ -95,7 +104,7 @@ class LoginViewModel {
             isAllSuccess = isAllSuccess && success
             group.leave()
         }
-    
+        
         group.notify(queue: .main) {
             completion(isAllSuccess)
         }

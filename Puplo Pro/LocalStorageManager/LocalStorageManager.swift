@@ -22,6 +22,7 @@ private enum UserDefaultsKeys {
     static let officeWorkKey = "officeWorkKey"
     static let oWActivitiesKey = "oWActivitiesKey"
     static let visitStartLocation = "visit_start_location"
+    static let visitEndLocation = "visit_end_location"
     static let lastLocation = "last_user_location"
     static let offlinePlansKey = "offline_plans_model"
     static let newPlanKey       = "new_plan_model"
@@ -452,6 +453,30 @@ final class LocalStorageManager {
         log("✔ Visit start location cleared")
     }
     
+    // MARK: - Visit End Location (UserDefaults)
+    func saveVisitEndLocation(lat: Double, lng: Double) {
+        let location = VisitStartLocation(
+            latitude: lat,
+            longitude: lng,
+            timestamp: Date())
+
+        saveCodable(location, key: UserDefaultsKeys.visitEndLocation)
+        log("✔ Visit end location saved")
+    }
+
+    func getVisitEndLocation() -> CLLocation? {
+        guard let loc = loadCodable(VisitStartLocation.self,
+                                    key: UserDefaultsKeys.visitEndLocation) else {
+            return nil
+        }
+        
+        return CLLocation(latitude: loc.latitude, longitude: loc.longitude)
+    }
+
+    func clearVisitEndLocation() {
+        removeValue(for: UserDefaultsKeys.visitEndLocation)
+        log("✔ Visit end location cleared")
+    }
     // MARK: - User Location (UserDefaults)
     func saveUserLocation(_ location: CLLocation) {
         let loc = UserLocation(

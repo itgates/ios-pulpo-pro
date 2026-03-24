@@ -132,36 +132,68 @@ final class UnPlannedVisitNotesViewModel {
         
         return nil
     }
+//    // MARK: - Public Save
+//    func saveUnPlannedVisit(completion: @escaping (Bool, String) -> Void) {
+//        
+//        if Reachability.isConnectedToNetwork() {
+//            LocationManager.shared.getCurrentLocation { [weak self] lat, lng in
+//                self?.saveUnPlannedVisitAPI(endLat: lat, endLng: lng) { success, message, id in
+//                    // completion
+//                }
+//            }
+//            
+////            saveUnPlannedVisitAPI { [weak self] success, message, onlineID in
+////                guard let self = self else { return }
+////                
+////                LocalStorageManager.shared.setUnPlannedVisitOffline(false)
+////                self.saveActualVisitData(
+////                    onlineID: onlineID,
+////                    isUploaded: success
+////                )
+////                
+////                if success {
+////                    self.clearCachedVisitData()
+////                }
+////                
+////                completion(success, message)
+////            }
+//        } else {
+//            saveActualVisitData(
+//                onlineID: nil,
+//                isUploaded: false
+//            )
+//            
+//            LocalStorageManager.shared.setUnPlannedVisitOffline(true)
+//            completion(true, "The data has been saved locally. It will be uploaded once an internet connection is available.")
+//        }
+//    }
+//
     // MARK: - Public Save
     func saveUnPlannedVisit(completion: @escaping (Bool, String) -> Void) {
         
         if Reachability.isConnectedToNetwork() {
-            saveUnPlannedVisitAPI { [weak self] success, message, onlineID in
-                guard let self = self else { return }
+            
+            self.saveUnPlannedVisitAPI() { success, message, onlineID in
                 
                 LocalStorageManager.shared.setUnPlannedVisitOffline(false)
-                self.saveActualVisitData(
-                    onlineID: onlineID,
-                    isUploaded: success
-                )
-                
+                self.saveActualVisitData(onlineID: onlineID,isUploaded: success)
                 if success {
                     self.clearCachedVisitData()
                 }
-                
                 completion(success, message)
             }
         } else {
-            saveActualVisitData(
+            self.saveActualVisitData(
                 onlineID: nil,
                 isUploaded: false
             )
-            
             LocalStorageManager.shared.setUnPlannedVisitOffline(true)
-            completion(true, "The data has been saved locally. It will be uploaded once an internet connection is available.")
+            completion(
+                true,
+                "The data has been saved locally. It will be uploaded once an internet connection is available."
+            )
         }
     }
-    
     // MARK: - Save Actual Visit (LOCAL)
     private func saveActualVisitData(
         onlineID: Int?,
@@ -283,8 +315,130 @@ final class UnPlannedVisitNotesViewModel {
     }
     
     // MARK: - API Save (REMOTE) - BODY DATA VERSION
-    private func saveUnPlannedVisitAPI(
-        completion: @escaping (Bool, String, Int) -> Void
+//    private func saveUnPlannedVisitAPI(
+//        completion: @escaping (Bool, String, Int) -> Void
+//    ) {
+//        
+//        guard let user = LocalStorageManager.shared.getLoggedUser(),
+//              let visit = LocalStorageManager.shared.getVisitItemData()?.first
+//        else {
+//            completion(false, "Unauthorized", 0)
+//            return
+//        }
+//        
+//        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
+//        let url = baseURL + URLs.saveOw
+//        
+//        let productsData = LocalStorageManager.shared.getProductsData() ?? []
+//        let giftsData = LocalStorageManager.shared.getGiftsData() ?? []
+//        let managerData = LocalStorageManager.shared.getManagerData() ?? []
+//        let startLocation = LocalStorageManager.shared.getVisitStartLocation()
+//        
+//        let products = buildProductsPayloadNEW(productsData)
+//        let giveaways = buildGiftsPayloadNEW(giftsData)
+//        let members = buildMembersPayloadNEW(managerData)
+//        
+//        let now = Date()
+//
+//        let ampm = visit.accountType?.cat_id == "1" ? "1" :
+//                   visit.accountType?.cat_id == "2" ? "2" : "3"
+//        
+//        
+//        LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
+//            guard let self = self else { return }
+//            
+//            let accountLat = Double(visit.account?.ll ?? "") ?? 0
+//            let accountLng = Double(visit.account?.lg ?? "") ?? 0
+//            
+//            let visitDeviation = self.calculateDistance(
+//                from: accountLat,
+//                lng1: accountLng,
+//                to: endLat,
+//                lng2: endLng
+//            )
+//            
+//            let visitDict: [String: Any] = [
+//               
+//                "ampm": ampm,
+//                "comments": visit.comment ?? "",
+//                "date_added": now.formattedDate,
+//                "appVersion": AppInfo.shared.appVersion,
+//                "osVersion": UIDevice.current.systemVersion,
+//                "deviceBrand": UIDevice.current.model,
+//                "osType": "iOS",
+//                "div_id": visit.division?.id ?? 0,
+//                "giveaway_info": giveaways,
+//                "id": 0,
+//                "insertion_date": now.formattedDate,
+//                "insertion_time": now.formattedTime.to24HourFormat,
+//                "is_fake_end_location": false,
+//                "is_fake_start_location": false,
+//                "is_sync": 0,
+//                "item_doc_id": visit.doctor?.id ?? 0,
+//                "item_id": visit.account?.id ?? 0,
+//                "member_info": members,
+//                "members": visit.visitType?.id ?? 0,
+//                "no_of_doctors": 1,
+//                "offline_id": "11",
+//                "product_info": products,
+//                "selected_shift": visit.shiftType?.id ?? 0,
+//                "sync_date": now.formattedDate,
+//                "sync_time": now.formattedTime.to24HourFormat,
+//                "team_id": user.lineIds ?? "",
+//                
+//                // accountType
+//                "type_id": visit.accountType?.id ?? 0,
+//                
+//                "user_id": user.user_id ?? 0,
+//                "vdate": now.formattedDate,
+//                "visit_address": "",
+//                "visit_deviation": visitDeviation,
+//                "visit_duration": "00:02:00",
+//                "vplanned_id": visit.planID ?? "0",
+//                "vtime": now.formattedTime.to24HourFormat,
+//                "ll_start": startLocation?.coordinate.latitude ?? endLat,
+//                "lg_start": startLocation?.coordinate.longitude ?? endLng,
+//                "ll": endLat,
+//                "lg": endLng
+//            ]
+//            print("MEMBER INFO PAYLOAD >>>", members)
+//            let visitArray = [visitDict]
+//            
+//            print("NEW BODY >>> \(visitArray)")
+//            
+//            do {
+//                let bodyData = try JSONSerialization.data(withJSONObject: visitArray, options: [])
+//                
+//                self.loadingBehavior.accept(true)
+//                
+//                NetworkLayer.shared.fetchData(
+//                    method: .post,
+//                    url: url,
+//                    parameters: [:],
+//                    body: bodyData,
+//                    headers: [
+//                        "Content-Type": "application/json",
+//                        "Accept": "application/json",
+//                        "lang": "ar",
+//                        "device-id": AppInfo.shared.deviceID,
+//                        "timezone": "Africa/Cairo"
+//                    ]
+//                ) { (result: Result<UnPlannedVisitAResponse>) in
+//                    self.loadingBehavior.accept(false)
+//                    switch result {
+//                    case .success(let model):
+//                        completion(true, model.Status_Message ?? "",Int(model.Data?.first?.visit_id ?? "") ?? 0)
+//                        print("model >>> \(model)")
+//                    case .failure(let error):
+//                        completion(false, error.localizedDescription, 0)
+//                    }
+//                }
+//            } catch {
+//                completion(false, "JSON Encoding Error", 0)
+//            }
+//        }
+//    }
+    private func saveUnPlannedVisitAPI(completion: @escaping (Bool, String, Int) -> Void
     ) {
         
         guard let user = LocalStorageManager.shared.getLoggedUser(),
@@ -301,107 +455,101 @@ final class UnPlannedVisitNotesViewModel {
         let giftsData = LocalStorageManager.shared.getGiftsData() ?? []
         let managerData = LocalStorageManager.shared.getManagerData() ?? []
         let startLocation = LocalStorageManager.shared.getVisitStartLocation()
+        let endLocation = LocalStorageManager.shared.getVisitEndLocation()
         
         let products = buildProductsPayloadNEW(productsData)
         let giveaways = buildGiftsPayloadNEW(giftsData)
         let members = buildMembersPayloadNEW(managerData)
         
         let now = Date()
-
+        
         let ampm = visit.accountType?.cat_id == "1" ? "1" :
                    visit.accountType?.cat_id == "2" ? "2" : "3"
-        LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
-            guard let self = self else { return }
+        
+        let accountLat = Double(visit.account?.ll ?? "") ?? 0
+        let accountLng = Double(visit.account?.lg ?? "") ?? 0
+        
+        let visitDeviation = calculateDistance(
+            from: accountLat,
+            lng1: accountLng,
+            to: endLocation?.coordinate.latitude ?? 0,
+            lng2: endLocation?.coordinate.longitude ?? 0
+        )
+        
+        let visitDict: [String: Any] = [
+            "ampm": ampm,
+            "comments": visit.comment ?? "",
+            "date_added": now.formattedDate,
+            "appVersion": AppInfo.shared.appVersion,
+            "osVersion": UIDevice.current.systemVersion,
+            "deviceBrand": UIDevice.current.model,
+            "osType": "iOS",
+            "div_id": visit.division?.id ?? 0,
+            "giveaway_info": giveaways,
+            "id": 0,
+            "insertion_date": now.formattedDate,
+            "insertion_time": now.formattedTime.to24HourFormat,
+            "is_fake_end_location": false,
+            "is_fake_start_location": false,
+            "is_sync": 0,
+            "item_doc_id": visit.doctor?.id ?? 0,
+            "item_id": visit.account?.id ?? 0,
+            "member_info": members,
+            "members": visit.visitType?.id ?? 0,
+            "no_of_doctors": 1,
+            "offline_id": "11",
+            "product_info": products,
+            "selected_shift": visit.shiftType?.id ?? 0,
+            "sync_date": now.formattedDate,
+            "sync_time": now.formattedTime.to24HourFormat,
+            "team_id": user.lineIds ?? "",
+            "type_id": visit.accountType?.id ?? 0,
+            "user_id": user.user_id ?? 0,
+            "vdate": now.formattedDate,
+            "visit_address": "",
+            "visit_deviation": visitDeviation,
+            "visit_duration": "00:02:00",
+            "vplanned_id": visit.planID ?? "0",
+            "vtime": now.formattedTime.to24HourFormat,
+            "ll_start": startLocation?.coordinate.latitude ?? 0,
+            "lg_start": startLocation?.coordinate.longitude ?? 0,
+            "ll": endLocation?.coordinate.latitude ?? 0,
+            "lg": endLocation?.coordinate.longitude ?? 0,
+        ]
+        print("visitDict >>>\(visitDict)")
+        let visitArray = [visitDict]
+        
+        do {
+            let bodyData = try JSONSerialization.data(withJSONObject: visitArray, options: [])
             
-            let accountLat = Double(visit.account?.ll ?? "") ?? 0
-            let accountLng = Double(visit.account?.lg ?? "") ?? 0
+            loadingBehavior.accept(true)
             
-            let visitDeviation = self.calculateDistance(
-                from: accountLat,
-                lng1: accountLng,
-                to: endLat,
-                lng2: endLng
-            )
-            
-            let visitDict: [String: Any] = [
-               
-                "ampm": ampm,
-                "comments": visit.comment ?? "",
-                "date_added": now.formattedDate,
-                "appVersion": AppInfo.shared.appVersion,
-                "osVersion": UIDevice.current.systemVersion,
-                "deviceBrand": UIDevice.current.model,
-                "osType": "iOS",
-                "div_id": visit.division?.id ?? 0,
-                "giveaway_info": giveaways,
-                "id": 0,
-                "insertion_date": now.formattedDate,
-                "insertion_time": now.formattedTime.to24HourFormat,
-                "is_fake_end_location": false,
-                "is_fake_start_location": false,
-                "is_sync": 0,
-                "item_doc_id": visit.doctor?.id ?? 0,
-                "item_id": visit.account?.id ?? 0,
-                "member_info": members,
-                "members": visit.visitType?.id ?? 0,
-                "no_of_doctors": 1,
-                "offline_id": "11",
-                "product_info": products,
-                "selected_shift": visit.shiftType?.id ?? 0,
-                "sync_date": now.formattedDate,
-                "sync_time": now.formattedTime.to24HourFormat,
-                "team_id": user.lineIds ?? "",
+            NetworkLayer.shared.fetchData(
+                method: .post,
+                url: url,
+                parameters: [:],
+                body: bodyData,
+                headers: [
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "lang": "ar",
+                    "device-id": AppInfo.shared.deviceID,
+                    "timezone": "Africa/Cairo"
+                ]
+            ) { (result: Result<UnPlannedVisitAResponse>) in
                 
-                // accountType
-                "type_id": visit.accountType?.id ?? 0,
+                self.loadingBehavior.accept(false)
                 
-                "user_id": user.user_id ?? 0,
-                "vdate": now.formattedDate,
-                "visit_address": "",
-                "visit_deviation": visitDeviation,
-                "visit_duration": "00:02:00",
-                "vplanned_id": visit.planID ?? "0",
-                "vtime": now.formattedTime.to24HourFormat,
-                "ll_start": startLocation?.coordinate.latitude ?? endLat,
-                "lg_start": startLocation?.coordinate.longitude ?? endLng,
-                "ll": endLat,
-                "lg": endLng
-            ]
-            print("MEMBER INFO PAYLOAD >>>", members)
-            let visitArray = [visitDict]
-            
-            print("NEW BODY >>> \(visitArray)")
-            
-            do {
-                let bodyData = try JSONSerialization.data(withJSONObject: visitArray, options: [])
-                
-                self.loadingBehavior.accept(true)
-                
-                NetworkLayer.shared.fetchData(
-                    method: .post,
-                    url: url,
-                    parameters: [:],
-                    body: bodyData,
-                    headers: [
-                        "Content-Type": "application/json",
-                        "Accept": "application/json",
-                        "lang": "ar",
-                        "device-id": AppInfo.shared.deviceID,
-                        "timezone": "Africa/Cairo"
-                    ]
-                ) { (result: Result<UnPlannedVisitAResponse>) in
-                    self.loadingBehavior.accept(false)
-                    switch result {
-                    case .success(let model):
-                        completion(true, model.Status_Message ?? "",Int(model.Data?.first?.visit_id ?? "") ?? 0)
-                        print("model >>> \(model)")
-                    case .failure(let error):
-                        completion(false, error.localizedDescription, 0)
-                    }
+                switch result {
+                case .success(let model):
+                    completion(true, model.Status_Message ?? "", Int(model.Data?.first?.visit_id ?? "") ?? 0)
+                case .failure(let error):
+                    completion(false, error.localizedDescription, 0)
                 }
-            } catch {
-                completion(false, "JSON Encoding Error", 0)
             }
+            
+        } catch {
+            completion(false, "JSON Encoding Error", 0)
         }
     }
     private func buildProductsPayloadNEW(_ productsData: [ProductItem]) -> [[String: Any]] {
