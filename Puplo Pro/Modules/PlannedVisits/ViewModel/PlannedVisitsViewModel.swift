@@ -46,8 +46,9 @@ final class PlannedVisitsViewModel {
         let today = Self.dateFormatter.string(from: Date())
 
         self.planVisits = (LocalStorageManager.shared.getPlannedVisitsData() ?? [])
+      
             .filter {
-                $0.insertion_date?.trimmingCharacters(in: .whitespacesAndNewlines) == today
+                $0.vdate?.trimmingCharacters(in: .whitespacesAndNewlines) == today
             }
     }
 
@@ -77,7 +78,7 @@ final class PlannedVisitsViewModel {
     func debugPrintPlanVisitsDates() {
         print("==== PLAN VISITS DATES ====")
         planVisits.enumerated().forEach { index, visit in
-            print("[\(index)] date -> \(visit.insertion_date ?? "nil") | shift_id -> \(visit.shift ?? "") | account_type -> \(visit.account_type ?? "")")
+            print("[\(index)] date -> \(visit.vdate ?? "nil") | shift_id -> \(visit.shift ?? "") | account_type -> \(visit.account_type ?? "")")
         }
     }
 
@@ -122,7 +123,7 @@ private extension PlannedVisitsViewModel {
         return planVisits
             .filter { planned in
                 
-                guard isToday(planned.insertion_date) else { return false }
+                guard isToday(planned.vdate) else { return false }
 
                 if let accountType, planned.account_type != accountType {
                     return false
