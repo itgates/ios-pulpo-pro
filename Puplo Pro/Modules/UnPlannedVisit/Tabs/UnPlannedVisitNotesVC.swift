@@ -42,6 +42,8 @@ final class UnPlannedVisitNotesVC: BaseView {
         loadData()
         updateEndVisitButtonState()
         setupUI()
+        
+        
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -49,14 +51,7 @@ final class UnPlannedVisitNotesVC: BaseView {
         endVisitButton.layer.masksToBounds = true
     }
 }
-private extension UnPlannedVisitDetailsVC {
-    
-    func setupUI() {
-        LocationManager.shared.getCurrentLocation { lat, lng in
-            LocalStorageManager.shared.saveVisitEndLocation(lat: lat, lng: lng)
-        }
-    }
-}
+
 // MARK: - UI Setup
 private extension UnPlannedVisitNotesVC {
     
@@ -70,7 +65,11 @@ private extension UnPlannedVisitNotesVC {
               borderWidth: 2,
               borderColor: baseColor
         )
+        LocationManager.shared.getCurrentLocation { lat, lng in
+            LocalStorageManager.shared.saveVisitEndLocation(lat: lat, lng: lng)
+        }
     }
+    
     /// Configure add-images tap gesture
     func setupAddImagesGesture() {
         addImagesTapped.isUserInteractionEnabled = true
@@ -179,11 +178,12 @@ private extension UnPlannedVisitNotesVC {
             saveVisit()
             return
         }
-        LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
+        LocationManager.shared.getCurrentLocation { [weak self] lat, lng in
             guard let self = self else { return }
+            LocalStorageManager.shared.saveVisitEndLocation(lat: lat, lng: lng) // ✅ هنا
             self.validateLocationAndSave(
-                endLat: endLat,
-                endLng: endLng,
+                endLat: lat,
+                endLng: lng,
                 acceptedDistance: acceptedDistance
             )
         }

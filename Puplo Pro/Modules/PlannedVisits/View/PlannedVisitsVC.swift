@@ -304,6 +304,8 @@ private extension PlannedVisitsVC {
         )
         print("visitItem >>> \(visitItem)")
         LocalStorageManager.shared.saveVisitItemData([visitItem])
+        LocalStorageManager.shared.clearProductsData()
+        LocalStorageManager.shared.clearGiftsData()
         let vc = UnPlannedVisitVC()
         navigationController?.pushViewController(vc, animated: true)
     }

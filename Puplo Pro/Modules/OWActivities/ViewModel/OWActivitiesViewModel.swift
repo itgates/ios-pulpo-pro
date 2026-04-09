@@ -87,12 +87,12 @@ class OWActivitiesViewModel {
             return "You cannot select Full Day together with any other shift on the same day."
         }
         
-        if newShiftId == "1" && hasAM {
+        if newShiftId == "2" && hasAM {
             print("❌ Blocked: Duplicate AM")
             return "You cannot add AM more than once on the same day."
         }
         
-        if newShiftId == "2" && hasPM {
+        if newShiftId == "1" && hasPM {
             print("❌ Blocked: Duplicate PM")
             return "You cannot add PM more than once on the same day."
         }

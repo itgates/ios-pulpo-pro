@@ -232,6 +232,11 @@ class BaseView: UIViewController, UITextFieldDelegate{
         }
     }
     
+    //MARK: - open Link
+    func openLink(Link: String) {
+        guard let url = URL(string: Link) else { return }
+        UIApplication.shared.open(url)
+    }
     // MARK: - Shadow
     
     /// Adds shadow to any UIView (UILabel, UIButton, or UIView)

@@ -63,7 +63,6 @@ final class OWActivitiesVC: BaseView {
     var delegateType: OWActivitiesType = .OWActivities
     var plannedOfficeModel: PlanOwsData?
 
-
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()

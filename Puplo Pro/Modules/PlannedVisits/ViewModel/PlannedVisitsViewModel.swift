@@ -1,6 +1,6 @@
 //
 //  PlannedVisitsViewModel.swift
-//  Gemstone Pro
+//  Puplo Pro
 //
 
 import Foundation
@@ -14,15 +14,15 @@ final class PlannedVisitsViewModel {
         case visit(PlannedVisitsData)
     }
 
-    // MARK: - Account Type
+    // MARK: - Account Type (UI Tabs)
     enum AccountType {
         case am, pm, other
 
-        var shiftId: String {
+        var categoryId: String {
             switch self {
-            case .am: return "3"
+            case .am: return "2"
             case .pm: return "1"
-            case .other: return "2"
+            case .other: return "3"
             }
         }
     }
@@ -41,12 +41,25 @@ final class PlannedVisitsViewModel {
 
     private(set) var allPlanOws: [PlanOwsData] = []
 
+    /// ✅ Mapping سريع: account_type_id → cat_id
+    private lazy var accountTypeMap: [String: String] = {
+        let list = LocalStorageManager.shared.getMasterData()?.Data?.account_types ?? []
+        var dict: [String: String] = [:]
+
+        list.forEach {
+            if let id = $0.id, let cat = $0.cat_id {
+                dict["\(id)"] = "\(cat)"
+            }
+        }
+
+        return dict
+    }()
+
     // MARK: - Init
     init() {
         let today = Self.dateFormatter.string(from: Date())
 
         self.planVisits = (LocalStorageManager.shared.getPlannedVisitsData() ?? [])
-      
             .filter {
                 $0.vdate?.trimmingCharacters(in: .whitespacesAndNewlines) == today
             }
@@ -55,39 +68,38 @@ final class PlannedVisitsViewModel {
     // MARK: - Load Data
     func loadAccount(for type: AccountType) {
         loadingBehavior.accept(true)
+        debugPrintPlanVisitsDates()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             guard let self else { return }
 
-            let items: [PlannedVisitItem]
-
-            switch type {
-            case .am:
-                items = self.visits(for: type.shiftId, accountType: "3") // Hospital
-            case .pm:
-                items = self.visits(for: type.shiftId, accountType: "1") // Clinic
-            case .other:
-                items = self.visits(for: type.shiftId, accountType: "2") // Pharmacy
-            }
+            let items = self.visits(for: type.categoryId)
 
             self.itemsRelay.accept(items)
             self.loadingBehavior.accept(false)
         }
     }
 
+    // MARK: - Debug
     func debugPrintPlanVisitsDates() {
         print("==== PLAN VISITS DATES ====")
+
+        let accountTypes = LocalStorageManager.shared.getMasterData()?.Data?.account_types ?? []
+        print("account_types -> \(accountTypes)")
+
         planVisits.enumerated().forEach { index, visit in
-            print("[\(index)] date -> \(visit.vdate ?? "nil") | shift_id -> \(visit.shift ?? "") | account_type -> \(visit.account_type ?? "")")
+            print("[\(index)] id -> \(visit.id ?? "nil") | account_type -> \(visit.account_type ?? "")")
         }
     }
 
     // MARK: - Filtering (Date Range)
     func filterVisits(from fromDate: Date, to toDate: Date) -> [PlanOwsData] {
         let formatter = Self.dateFormatter
+
         return allPlanOws.filter {
             guard let dateString = $0.date,
                   let date = formatter.date(from: dateString) else { return false }
+
             return date >= fromDate && date <= toDate
         }
     }
@@ -103,32 +115,35 @@ private extension PlannedVisitsViewModel {
         return f
     }()
 
-    /// ✅ Strict comparison — TODAY ONLY
+    /// ✅ تأكد إنه النهاردة
     func isToday(_ dateString: String?) -> Bool {
         guard let dateString else { return false }
 
         let cleanDate = dateString.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        let formatter = Self.dateFormatter
-        let today = formatter.string(from: Date())
+        let today = Self.dateFormatter.string(from: Date())
 
         return cleanDate == today
     }
 
-    // ✅ Visits with optional account_type filter}
-    func visits(for shiftId: String, accountType: String? = nil) -> [PlannedVisitItem] {
+    // MARK: - Core Filtering 🔥
+    func visits(for categoryId: String) -> [PlannedVisitItem] {
 
         let actualVisits = LocalStorageManager.shared.getActualVisitData() ?? []
 
         return planVisits
             .filter { planned in
-                
+
                 guard isToday(planned.vdate) else { return false }
 
-                if let accountType, planned.account_type != accountType {
+                /// ✅ نجيب الـ cat_id من الماب
+                let catId = accountTypeMap[planned.account_type ?? ""]
+
+                /// ✅ نقارن بالـ tab (AM / PM / Other)
+                if catId != categoryId {
                     return false
                 }
 
+                /// ✅ نشيل اللي اتعملها visit
                 let isVisited = actualVisits.contains {
                     $0.palnID == planned.id
                 }
@@ -137,9 +152,4 @@ private extension PlannedVisitsViewModel {
             }
             .map { .visit($0) }
     }
-    func otherVisits() -> [PlannedVisitItem] {
-        visits(for: AccountType.other.shiftId, accountType: "2") // Pharmacy
-    }
-    
-    
 }

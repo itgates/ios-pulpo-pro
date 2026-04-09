@@ -24,6 +24,9 @@ class HomeViewModel {
     private let homeModelSubject = BehaviorRelay<[HomeModel]>(value: [])
     var homeModelObservable: Observable<[HomeModel]> { homeModelSubject.asObservable() }
     
+    var newVersionAvailable: Bool?
+    var appStoreVersion: String?
+    
     // MARK: - Fetch Data
     func fetchData() {
         loadingBehavior.accept(true)
@@ -86,6 +89,51 @@ class HomeViewModel {
         print("✅ Can Open: \(canOpen)")
         
         return canOpen
+    }
+    
+    // MARK: - check App Store
+    func checkAppStore(callback: ((_ versionAvailable: Bool?, _ version: String?)->Void)? = nil) {
+        let ourBundleId = Bundle.main.infoDictionary!["CFBundleIdentifier"] as! String
+        let url = "https://itunes.apple.com/lookup?bundleId=\(ourBundleId)&timestamp=\(Date().timeIntervalSince1970)"
+        AF.request(url).responseJSON { response in
+            var isNew: Bool?
+            var versionStr: String?
+            switch response.result {
+            case .success(let value):
+                if let json = value as? NSDictionary,
+                   let results = json["results"] as? NSArray,
+                   let entry = results.firstObject as? NSDictionary,
+                   let appVersion = entry["version"] as? String,
+                   let ourVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                    
+                    isNew = self.isVersion(appVersion, greaterThan: ourVersion)
+                    versionStr = appVersion
+                    print("ourVersion >>\(ourVersion)")
+                    print("appVersion >>\(appVersion)")
+                }
+            case .failure(let error):
+                print("Error: \(error)")
+            }
+            
+            self.appStoreVersion = versionStr
+            self.newVersionAvailable = isNew
+            callback?(isNew, versionStr)
+        }
+    }
+    private func isVersion(_ v1: String, greaterThan v2: String) -> Bool {
+        let v1Components = v1.split(separator: ".").map { Int($0) ?? 0 }
+        let v2Components = v2.split(separator: ".").map { Int($0) ?? 0 }
+        let maxCount = max(v1Components.count, v2Components.count)
+
+        for i in 0..<maxCount {
+            let v1Part = i < v1Components.count ? v1Components[i] : 0
+            let v2Part = i < v2Components.count ? v2Components[i] : 0
+
+            if v1Part > v2Part { return true }
+            if v1Part < v2Part { return false }
+        }
+
+        return false
     }
 }
 

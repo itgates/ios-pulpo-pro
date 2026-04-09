@@ -46,6 +46,7 @@ final class HomeVC: BaseView {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        checkUpdateVersion()
         setNeedsStatusBarAppearanceUpdate()
         setupUI()
         setupBindings()
@@ -191,4 +192,20 @@ extension HomeVC: UICollectionViewDelegateFlowLayout {
         return CGSize(width: width, height: height)
     }
 
+}
+
+// MARK: - check Update Version
+extension HomeVC {
+    
+    func checkUpdateVersion() {
+        viewModel.checkAppStore { [weak self] isNew, version in
+            guard let self else { return }
+            if isNew == true{
+                let vc = ForceUpdateVC()
+                vc.modalPresentationStyle = .overCurrentContext
+                vc.modalTransitionStyle = .crossDissolve
+                self.present(vc, animated: true, completion: nil)
+            }
+        }
+    }
 }

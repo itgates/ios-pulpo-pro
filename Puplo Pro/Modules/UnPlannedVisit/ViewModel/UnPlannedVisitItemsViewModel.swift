@@ -134,6 +134,38 @@ final class UnPlannedVisitItemsViewModel {
         LocalStorageManager.shared.saveProductsData(list)
     }
     
+//    func updateSelection(
+//        at index: Int,
+//        item: IdNameModel,
+//        type: ProductSelectionType
+//    ) -> String? {
+//        var list = products.value
+//        guard index < list.count else { return nil }
+//        
+//        let isDuplicate = list.enumerated().contains { (offset, element) in
+//            guard offset != index else { return false }
+//            switch type {
+//            case .product: return element.product?.id == item.id
+//            case .feedback: return element.feedback?.id == item.id
+//                //            case .market: return element.market?.id == item.id
+//                //            case .followUp: return element.followUp?.id == item.id
+//            }
+//        }
+//        
+//        if isDuplicate {
+//            return "Warning: This item is already selected in another row"
+//        }
+//        switch type {
+//        case .product: list[index].product = item
+//        case .feedback: list[index].feedback = item
+//            //        case .market: list[index].market = item
+//            //        case .followUp: list[index].followUp = item
+//        }
+//        
+//        products.accept(list)
+//        LocalStorageManager.shared.saveProductsData(list)
+//        return nil
+//    }
     func updateSelection(
         at index: Int,
         item: IdNameModel,
@@ -142,28 +174,30 @@ final class UnPlannedVisitItemsViewModel {
         var list = products.value
         guard index < list.count else { return nil }
         
-        let isDuplicate = list.enumerated().contains { (offset, element) in
-            guard offset != index else { return false }
-            switch type {
-            case .product: return element.product?.id == item.id
-            case .feedback: return element.feedback?.id == item.id
-                //            case .market: return element.market?.id == item.id
-                //            case .followUp: return element.followUp?.id == item.id
+        // ✅ Apply duplicate check ONLY for product
+        if type == .product {
+            let isDuplicate = list.enumerated().contains { (offset, element) in
+                guard offset != index else { return false }
+                return element.product?.id == item.id
+            }
+            
+            if isDuplicate {
+                return "Warning: This product is already selected in another row"
             }
         }
         
-        if isDuplicate {
-            return "Warning: This item is already selected in another row"
-        }
+        // 🔽 normal assignment
         switch type {
-        case .product: list[index].product = item
-        case .feedback: list[index].feedback = item
-            //        case .market: list[index].market = item
-            //        case .followUp: list[index].followUp = item
+        case .product:
+            list[index].product = item
+            
+        case .feedback:
+            list[index].feedback = item
         }
         
         products.accept(list)
         LocalStorageManager.shared.saveProductsData(list)
+        
         return nil
     }
     
