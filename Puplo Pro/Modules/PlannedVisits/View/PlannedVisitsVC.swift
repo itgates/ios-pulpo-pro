@@ -266,16 +266,9 @@ private extension PlannedVisitsVC {
             .first(where: { $0.id == model.item_doc_id })
         let doctorName = selectedDoctor?.name ?? ""
         
-        let visitName = model.members == "0" ? "Single" : "Double"
-        let visitID = model.members == "0" ? "1" : "2"
+//        let visitName = model.members == "0" ? "Single" : "Double"
+//        let visitID = model.members == "0" ? "1" : "2"
         
-//        let shiftName: String = {
-//            switch model.shift {
-//            case "2": return "AM"
-//            case "1": return "PM"
-//            default: return ""
-//            }
-//        }()
         
         let shiftType = IdNameModel(
             id: (model.shift == "0") ? "" : model.shift,
@@ -299,7 +292,7 @@ private extension PlannedVisitsVC {
             accountType: IdNameModel(id: model.account_type, name: accountTypeName,ll: accountll,lg: accountlg),
             account: IdNameModel(id: accountId, name: accountName,ll: accountll,lg: accountlg),
             doctor: IdNameModel(id: model.item_doc_id, name: doctorName,ll: accountll,lg: accountlg),
-            visitType: IdNameModel(id: visitID, name: visitName,ll: accountll,lg: accountlg),
+//            visitType: IdNameModel(id: visitID, name: visitName,ll: accountll,lg: accountlg),
             shiftType: shiftType
         )
         print("visitItem >>> \(visitItem)")
