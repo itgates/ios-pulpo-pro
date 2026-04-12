@@ -51,7 +51,7 @@ final class PlannedVisitsViewModel {
                 dict["\(id)"] = "\(cat)"
             }
         }
-
+       
         return dict
     }()
 
@@ -70,14 +70,12 @@ final class PlannedVisitsViewModel {
         loadingBehavior.accept(true)
         debugPrintPlanVisitsDates()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-            guard let self else { return }
-
+       // DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+//            guard let self else { return }
             let items = self.visits(for: type.categoryId)
-
             self.itemsRelay.accept(items)
             self.loadingBehavior.accept(false)
-        }
+       // }
     }
 
     // MARK: - Debug
@@ -86,7 +84,7 @@ final class PlannedVisitsViewModel {
 
         let accountTypes = LocalStorageManager.shared.getMasterData()?.Data?.account_types ?? []
         print("account_types -> \(accountTypes)")
-
+        print("accountTypeMap -> \(accountTypeMap)")
         planVisits.enumerated().forEach { index, visit in
             print("[\(index)] id -> \(visit.id ?? "nil") | account_type -> \(visit.account_type ?? "")")
         }
@@ -104,7 +102,6 @@ final class PlannedVisitsViewModel {
         }
     }
 }
-
 // MARK: - Date Helpers
 private extension PlannedVisitsViewModel {
 

@@ -203,6 +203,24 @@ class DataCenterViewModel {
             }
         }
     }
+    
+//    doctorsDataList.forEach {
+//                when(it.catId) {
+//                    1 -> {
+//                        pmDoctorsDataList.add(it)
+//                        pmDoctorsDataListToShow.add(it)
+//                    }
+//                    2 -> {
+//                        amDoctorsDataList.add(it)
+//                        amDoctorsDataListToShow.add(it)
+//                    }
+//                    3 -> {
+//                        otherDoctorsDataList.add(it)
+//                        otherDoctorsDataListToShow.add(it)
+//                    }
+//                }
+//            }
+    
     // MARK: - get Planned Visits
     func getPlannedVisits(completion: @escaping (Bool) -> Void) {
         

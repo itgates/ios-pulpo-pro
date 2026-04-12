@@ -52,13 +52,13 @@ final class PlanningVisitsViewModel {
                 data = LocalStorageManager.shared.getAccountsDoctorsOther() ?? []
             }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            //DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 print("data.count >>\(data.count)")
                 self.allDoctorsRelay.accept(data)
                 self.doctorsRelay.accept(data)
                 self.loadingBehavior.accept(false)
             }
-        }
+       // }
     }
     
     func applyFilter(_ filter: SelectFilter) {

@@ -46,7 +46,7 @@ final class PlanningVisitsVC: BaseView {
 
     @IBOutlet private weak var amAccountLabel: UILabel!
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
+//    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
     @IBOutlet private weak var nextButton: UIButton!
 
     // MARK: - Properties
@@ -105,8 +105,8 @@ final class PlanningVisitsVC: BaseView {
         setupGestures()
         setupBindings()
         bindTableView()
-        observeTableHeight()
-        subscribeToLoading()
+//        observeTableHeight()
+//        subscribeToLoading()
 
         viewModel.doctorsObservable
             .bind(to: filteredDoctors)
@@ -202,7 +202,7 @@ private extension PlanningVisitsVC {
                 }
 
                 // 4️⃣ Reload table to reset UI
-                self.tableView.reloadData()
+//                self.tableView.reloadData()
 
                 // 5️⃣ Close filter view
                 self.toggleFilterStack()
@@ -250,16 +250,27 @@ private extension PlanningVisitsVC {
         let search = searchTextField.rx.text.orEmpty
             .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
+//
+//        let dataSource = Observable.combineLatest(filteredDoctors, search)
+//            .map { items, text in
+//                guard !text.isEmpty else { return items }
+//                return items.filter {
+//                    $0.name.localizedCaseInsensitiveContains(text) || $0.hosptal.localizedCaseInsensitiveContains(text) || $0.id.localizedCaseInsensitiveContains(text)
+//                    
+//                }
+//            }
 
         let dataSource = Observable.combineLatest(filteredDoctors, search)
             .map { items, text in
+                
                 guard !text.isEmpty else { return items }
+                
                 return items.filter {
-                    $0.name.localizedCaseInsensitiveContains(text)
-                    || $0.hosptal.localizedCaseInsensitiveContains(text)
+                    $0.name.localizedCaseInsensitiveContains(text) ||
+                    ($0.hosptal).localizedCaseInsensitiveContains(text) ||
+                    ($0.id ?? "").localizedCaseInsensitiveContains(text)
                 }
             }
-
         dataSource
             .bind(to: tableView.rx.items(
                 cellIdentifier: "CellPlanningVisits",
@@ -285,7 +296,7 @@ private extension PlanningVisitsVC {
                            borderWidth: 3,
                            borderColor: borderColor)
                 
-                cell.configureCell(model: model)
+//                cell.configureCell(model: model)
                 self.selectedModels.value.contains(where: { $0.id == model.id })
                     ? cell.selectedItem()
                     : cell.unSelectedItem()
@@ -423,11 +434,11 @@ private extension PlanningVisitsVC {
         }
     }
 
-    func observeTableHeight() {
-        tableObservation = tableView.observe(\.contentSize) { [weak self] tableView, _ in
-            self?.heightTableView.constant = tableView.contentSize.height
-        }
-    }
+//    func observeTableHeight() {
+//        tableObservation = tableView.observe(\.contentSize) { [weak self] tableView, _ in
+//            self?.heightTableView.constant = tableView.contentSize.height
+//        }
+//    }
 
     func subscribeToLoading() {
         viewModel.loadingBehavior
