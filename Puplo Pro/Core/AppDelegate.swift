@@ -35,16 +35,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         rootVC()
         // clear data 1783633
-        LocalStorageManager.shared.setUnPlannedVisitOffline(false)
-        LocalStorageManager.shared.clearVisitItemData()
-        LocalStorageManager.shared.clearManagerData()
-        LocalStorageManager.shared.clearGiftsData()
-        LocalStorageManager.shared.clearProductsData()
-        LocalStorageManager.shared.clearSelectedImageVisitData()
-        LocalStorageManager.shared.clearVisitStartLocation()
-        LocalStorageManager.shared.clearNewPlanData()
-        LocalStorageManager.shared.clearActualVisitData()
-        LocalStorageManager.shared.clearOfficeWorkModel()
+//        LocalStorageManager.shared.setUnPlannedVisitOffline(false)
+//        LocalStorageManager.shared.clearVisitItemData()
+//        LocalStorageManager.shared.clearManagerData()
+//        LocalStorageManager.shared.clearGiftsData()
+//        LocalStorageManager.shared.clearProductsData()
+//        LocalStorageManager.shared.clearSelectedImageVisitData()
+//        LocalStorageManager.shared.clearVisitStartLocation()
+//        LocalStorageManager.shared.clearNewPlanData()
+//        LocalStorageManager.shared.clearActualVisitData()
+//        LocalStorageManager.shared.clearOfficeWorkModel()
         return true
     }
     
