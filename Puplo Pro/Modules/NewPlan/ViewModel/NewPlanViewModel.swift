@@ -23,12 +23,12 @@ final class NewPlanViewModel {
     // MARK: - Public
     func loadProducts() {
         loadingBehavior.accept(true)
-        DispatchQueue.global(qos: .userInitiated).async {
+        //DispatchQueue.global(qos: .userInitiated).async {
             let items = LocalStorageManager.shared.getNewPlanData() ?? []
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            //DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 self.newPlanRelay.accept(items)
                 self.loadingBehavior.accept(false)
-            }
-        }
+//            }
+//        }
     }
 }

@@ -17,7 +17,7 @@ class NewPlanVC: BaseView {
     
     @IBOutlet private weak var buttonBack: UIButton!
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
+//    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
     
     // MARK: - Properties
     private let disposeBag = DisposeBag()
@@ -29,7 +29,7 @@ class NewPlanVC: BaseView {
         super.viewDidLoad()
         setupUI()
         configureTableView()
-        observeTableHeight()
+//        observeTableHeight()
         bindUI()
         bindTableView()
         subscribeToLoading()
@@ -103,12 +103,12 @@ private extension NewPlanVC {
     }
 }
 
-private extension NewPlanVC {
-    
-    func observeTableHeight() {
-        tableObservation = tableView.observe(\.contentSize) { [weak self] _, _ in
-            guard let self else { return }
-            heightTableView.constant = tableView.contentSize.height
-        }
-    }
-}
+//private extension NewPlanVC {
+//    
+//    func observeTableHeight() {
+//        tableObservation = tableView.observe(\.contentSize) { [weak self] _, _ in
+//            guard let self else { return }
+//            heightTableView.constant = tableView.contentSize.height
+//        }
+//    }
+//}

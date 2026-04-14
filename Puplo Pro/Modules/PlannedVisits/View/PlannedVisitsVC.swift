@@ -35,7 +35,7 @@ final class PlannedVisitsVC: BaseView {
     @IBOutlet weak var stackFilter: UIStackView!
     
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
+//    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
     
     // MARK: - Properties
     private let disposeBag = DisposeBag()
@@ -60,7 +60,7 @@ final class PlannedVisitsVC: BaseView {
         setupUI()
         setupButtons()
         setupBindings()
-        observeTableHeight()
+//        observeTableHeight()
         setupTableView()
         bindTableView()
         subscribeToLoading()
@@ -297,6 +297,7 @@ private extension PlannedVisitsVC {
         )
         print("visitItem >>> \(visitItem)")
         LocalStorageManager.shared.saveVisitItemData([visitItem])
+        LocalStorageManager.shared.clearManagerData()
         LocalStorageManager.shared.clearProductsData()
         LocalStorageManager.shared.clearGiftsData()
         let vc = UnPlannedVisitVC()
@@ -396,12 +397,12 @@ extension PlannedVisitsVC: BackSelectDate {
         }
     }
 }
-private extension PlannedVisitsVC {
-    
-    func observeTableHeight() {
-        tableObservation = tableView.observe(\.contentSize) { [weak self] tableView, _ in
-            self?.heightTableView.constant = tableView.contentSize.height
-        }
-    }
-}
-
+//private extension PlannedVisitsVC {
+//    
+//    func observeTableHeight() {
+//        tableObservation = tableView.observe(\.contentSize) { [weak self] tableView, _ in
+//            self?.heightTableView.constant = tableView.contentSize.height
+//        }
+//    }
+//}
+//

@@ -38,7 +38,7 @@ final class AccountsListVC: BaseView {
     @IBOutlet private weak var stackFilter: UIStackView!
     
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
+//    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
     
     // MARK: - Properties
     private let disposeBag = DisposeBag()
@@ -57,7 +57,7 @@ final class AccountsListVC: BaseView {
         super.viewDidLoad()
         setupUI()
         setupTableView()
-        observeTableHeight()
+//        observeTableHeight()
         setupDropDown()
         setupGestures()
         bindActions()
@@ -284,12 +284,12 @@ private extension AccountsListVC {
 // MARK: - Helpers
 private extension AccountsListVC {
     
-    func observeTableHeight() {
-        tableObservation = tableView.observe(\.contentSize) { [weak self] table, _ in
-            self?.heightTableView.constant = table.contentSize.height
-        }
-    }
-    
+//    func observeTableHeight() {
+//        tableObservation = tableView.observe(\.contentSize) { [weak self] table, _ in
+//            self?.heightTableView.constant = table.contentSize.height
+//        }
+//    }
+//    
     func bindLoading() {
         viewModel.loadingBehavior.subscribe(onNext: { [weak self] isLoading in
             isLoading ? self?.startLoading() : self?.endLoading()

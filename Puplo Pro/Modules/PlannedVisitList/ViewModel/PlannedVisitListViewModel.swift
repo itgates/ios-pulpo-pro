@@ -23,14 +23,14 @@ final class PlannedVisitListViewModel {
     // MARK: - Fetch Data
     func fetchData() {
         loadingBehavior.accept(true)
-        DispatchQueue.global(qos: .userInitiated).async {
+//        DispatchQueue.global(qos: .userInitiated).async {
             let items = LocalStorageManager.shared.getPlannedVisitsData() ?? []
             self.allVisits = items
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            //DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 self.visitSubject.accept(items)
                 self.loadingBehavior.accept(false)
-            }
-        }
+            //}
+        //}
     }
 
     // MARK: - Filter by Date

@@ -31,7 +31,7 @@ final class ActualVisitViewModel {
 
         loadingBehavior.accept(true)
 
-        DispatchQueue.global(qos: .userInitiated).async {
+       // DispatchQueue.global(qos: .userInitiated).async {
 
             let visits = LocalStorageManager.shared.getActualVisitData() ?? []
             let officeWorks = LocalStorageManager.shared.getOfficeWorkData() ?? []
@@ -44,11 +44,11 @@ final class ActualVisitViewModel {
                 VisitSection(header: "Office Work", items: officeWorks)
             ]
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            //DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 self.sectionsSubject.accept(sections)
                 self.loadingBehavior.accept(false)
-            }
-        }
+//            }
+//        }
     }
 
     // MARK: - Filter by Date

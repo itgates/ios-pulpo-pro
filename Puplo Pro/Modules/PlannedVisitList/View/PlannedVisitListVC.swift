@@ -26,7 +26,7 @@ final class PlannedVisitListVC: BaseView {
     @IBOutlet weak var stackFilter: UIStackView!
 
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var heightTableView: NSLayoutConstraint!
+//    @IBOutlet weak var heightTableView: NSLayoutConstraint!
 
     // MARK: - Properties
     private let disposeBag = DisposeBag()
@@ -39,7 +39,7 @@ final class PlannedVisitListVC: BaseView {
         super.viewDidLoad()
         setupUI()
         configureTableView()
-        observeTableHeight()
+//        observeTableHeight()
         bindActions()
         bindTableView()
         subscribeToLoading()
@@ -173,13 +173,13 @@ private extension PlannedVisitListVC {
 }
 
 // MARK: - Table Height
-private extension PlannedVisitListVC {
-    func observeTableHeight() {
-        tableObservation = tableView.observe(\.contentSize) { [weak self] _, _ in
-            self?.heightTableView.constant = self?.tableView.contentSize.height ?? 0
-        }
-    }
-}
+//private extension PlannedVisitListVC {
+//    func observeTableHeight() {
+//        tableObservation = tableView.observe(\.contentSize) { [weak self] _, _ in
+//            self?.heightTableView.constant = self?.tableView.contentSize.height ?? 0
+//        }
+//    }
+//}
 
 // MARK: - Loading
 private extension PlannedVisitListVC {
