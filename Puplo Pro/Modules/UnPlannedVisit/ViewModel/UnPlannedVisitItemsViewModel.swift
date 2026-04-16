@@ -74,8 +74,8 @@ final class UnPlannedVisitItemsViewModel {
         
         if requiredCount > 0, currentCount == requiredCount {
             guard let last = list.last else { return }
-            if !isProductCompleted(last) {
-                showWarning.accept("Please complete the last product first.")
+            if let error = last.validationError() {
+                showWarning.accept(error)
                 return
             }
         }
@@ -89,9 +89,8 @@ final class UnPlannedVisitItemsViewModel {
                 LocalStorageManager.shared.saveProductsData(list)
                 return
             }
-            
-            if !isProductCompleted(last) {
-                showWarning.accept("Please complete the last product first.")
+            if let error = last.validationError() {
+                showWarning.accept(error)
                 return
             }
         }
@@ -110,14 +109,6 @@ final class UnPlannedVisitItemsViewModel {
         LocalStorageManager.shared.saveProductsData(list)
     }
     // MARK: - Helpers
-    private func isProductCompleted(_ item: ProductItem) -> Bool {
-        return item.product != nil &&
-        !(item.count.isEmpty) &&
-        !(item.feedback?.name?.isEmpty ?? true)
-//        !(item.market?.isEmpty ?? true) &&
-//        !(item.followUp?.isEmpty ?? true)
-    }
-    
     func deleteProducts(at index: Int) {
         var list = products.value
         guard index < list.count else { return }
@@ -133,39 +124,7 @@ final class UnPlannedVisitItemsViewModel {
         products.accept(list)
         LocalStorageManager.shared.saveProductsData(list)
     }
-    
-//    func updateSelection(
-//        at index: Int,
-//        item: IdNameModel,
-//        type: ProductSelectionType
-//    ) -> String? {
-//        var list = products.value
-//        guard index < list.count else { return nil }
-//        
-//        let isDuplicate = list.enumerated().contains { (offset, element) in
-//            guard offset != index else { return false }
-//            switch type {
-//            case .product: return element.product?.id == item.id
-//            case .feedback: return element.feedback?.id == item.id
-//                //            case .market: return element.market?.id == item.id
-//                //            case .followUp: return element.followUp?.id == item.id
-//            }
-//        }
-//        
-//        if isDuplicate {
-//            return "Warning: This item is already selected in another row"
-//        }
-//        switch type {
-//        case .product: list[index].product = item
-//        case .feedback: list[index].feedback = item
-//            //        case .market: list[index].market = item
-//            //        case .followUp: list[index].followUp = item
-//        }
-//        
-//        products.accept(list)
-//        LocalStorageManager.shared.saveProductsData(list)
-//        return nil
-//    }
+
     func updateSelection(
         at index: Int,
         item: IdNameModel,

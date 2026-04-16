@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UnPlannedVisitVC" customModule="Gemstone_Pro" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UnPlannedVisitVC" customModule="Puplo_Pro" customModuleProvider="target">
             <connections>
                 <outlet property="appVersionLabel" destination="ZO3-lR-SPR" id="T7v-SI-RuR"/>
                 <outlet property="buttonBack" destination="WlI-Wh-X4C" id="5K7-VO-d9W"/>
@@ -174,7 +174,7 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <color key="tintColor" name="baseColor"/>
                                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                            <state key="normal" image="pencil.and.list.clipboard.rtl" catalog="system">
+                                            <state key="normal" image="long.text.page.and.pencil.fill" catalog="system">
                                                 <color key="titleColor" name="baseColor"/>
                                             </state>
                                         </button>
@@ -224,7 +224,7 @@
         <image name="arrowshape.backward" catalog="system" width="128" height="104"/>
         <image name="gift.fill" catalog="system" width="128" height="125"/>
         <image name="logo" width="1024" height="1024"/>
-        <image name="pencil.and.list.clipboard.rtl" catalog="system" width="105" height="128"/>
+        <image name="long.text.page.and.pencil.fill" catalog="system" width="112" height="128"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
         <image name="shippingbox" catalog="system" width="128" height="123"/>
         <namedColor name="baseColor">

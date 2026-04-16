@@ -178,15 +178,6 @@ private extension UnPlannedVisitVC {
                 )
                 return false
             }
-            // ✅ Validate products exist
-            let products = LocalStorageManager.shared.getProductsData() ?? []
-            if products.isEmpty {
-                showAlert(
-                    alertTitle: "Incomplete Data",
-                    alertMessage: "No products added. Please add products before proceeding."
-                )
-                return false
-            }
 
             // ✅ Validate gifts
             let gifts = LocalStorageManager.shared.getGiftsData() ?? []

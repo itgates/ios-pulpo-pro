@@ -61,7 +61,7 @@ private extension ProductListVC {
         tableView.register(UINib(nibName: "CellProductList", bundle: nil),
                            forCellReuseIdentifier: "CellProductList")
         tableView.tableFooterView = UIView()
-        tableView.rowHeight = 30
+        tableView.rowHeight = UITableView.automaticDimension
     }
 }
 private extension ProductListVC {

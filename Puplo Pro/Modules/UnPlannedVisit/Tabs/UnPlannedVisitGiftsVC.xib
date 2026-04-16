@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UnPlannedVisitGiftsVC" customModule="Gemstone_Pro" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UnPlannedVisitGiftsVC" customModule="Puplo_Pro" customModuleProvider="target">
             <connections>
                 <outlet property="addGiveawayButton" destination="fI6-lG-ueE" id="34A-Df-wu7"/>
                 <outlet property="collectionView" destination="tuN-Ry-mRr" id="Upg-ae-vUb"/>
@@ -100,6 +100,9 @@
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fI6-lG-ueE">
                                     <rect key="frame" x="0.0" y="0.0" width="170.33333333333334" height="50"/>
                                     <color key="backgroundColor" name="baseColor"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="50" id="Hki-x0-AP8"/>
+                                    </constraints>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                     <state key="normal" title="Add Giveaway">
@@ -128,7 +131,6 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="fI6-lG-ueE" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.0586854" id="4Gg-6C-KMt"/>
                 <constraint firstItem="fI6-lG-ueE" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.433333" id="GeX-rd-ajq"/>
                 <constraint firstItem="Ph3-Dd-b0A" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="M4k-OH-q7K"/>
                 <constraint firstItem="Ph3-Dd-b0A" firstAttribute="top" secondItem="GYM-aL-IvM" secondAttribute="bottom" constant="10" id="Xtw-ZY-PKS"/>

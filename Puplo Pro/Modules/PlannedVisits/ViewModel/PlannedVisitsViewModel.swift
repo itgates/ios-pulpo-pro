@@ -41,6 +41,10 @@ final class PlannedVisitsViewModel {
 
     private(set) var allPlanOws: [PlanOwsData] = []
 
+    private lazy var actualVisits: [ActualVisitModel] = {
+        LocalStorageManager.shared.getActualVisitData() ?? []
+    }()
+    
     /// ✅ Mapping سريع: account_type_id → cat_id
     private lazy var accountTypeMap: [String: String] = {
         let list = LocalStorageManager.shared.getMasterData()?.Data?.account_types ?? []
@@ -66,30 +70,31 @@ final class PlannedVisitsViewModel {
     }
 
     // MARK: - Load Data
+//    func loadAccount(for type: AccountType) {
+////        loadingBehavior.accept(true)
+////        debugPrintPlanVisitsDates()
+//
+//       // DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+////            guard let self else { return }
+//            let items = self.visits(for: type.categoryId)
+//            self.itemsRelay.accept(items)
+////            self.loadingBehavior.accept(false)
+//       // }
+//    }
     func loadAccount(for type: AccountType) {
         loadingBehavior.accept(true)
-        debugPrintPlanVisitsDates()
 
-       // DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-//            guard let self else { return }
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+
             let items = self.visits(for: type.categoryId)
-            self.itemsRelay.accept(items)
-            self.loadingBehavior.accept(false)
-       // }
-    }
 
-    // MARK: - Debug
-    func debugPrintPlanVisitsDates() {
-        print("==== PLAN VISITS DATES ====")
-
-        let accountTypes = LocalStorageManager.shared.getMasterData()?.Data?.account_types ?? []
-        print("account_types -> \(accountTypes)")
-        print("accountTypeMap -> \(accountTypeMap)")
-        planVisits.enumerated().forEach { index, visit in
-            print("[\(index)] id -> \(visit.id ?? "nil") | account_type -> \(visit.account_type ?? "")")
+            DispatchQueue.main.async {
+                self.itemsRelay.accept(items)
+                self.loadingBehavior.accept(false)
+            }
         }
     }
-
     // MARK: - Filtering (Date Range)
     func filterVisits(from fromDate: Date, to toDate: Date) -> [PlanOwsData] {
         let formatter = Self.dateFormatter
@@ -125,7 +130,7 @@ private extension PlannedVisitsViewModel {
     // MARK: - Core Filtering 🔥
     func visits(for categoryId: String) -> [PlannedVisitItem] {
 
-        let actualVisits = LocalStorageManager.shared.getActualVisitData() ?? []
+//        let actualVisits = LocalStorageManager.shared.getActualVisitData() ?? []
 
         return planVisits
             .filter { planned in
@@ -144,7 +149,6 @@ private extension PlannedVisitsViewModel {
                 let isVisited = actualVisits.contains {
                     $0.palnID == planned.id
                 }
-
                 return !isVisited
             }
             .map { .visit($0) }

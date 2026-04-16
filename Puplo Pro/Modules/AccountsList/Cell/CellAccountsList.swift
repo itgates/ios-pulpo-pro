@@ -22,10 +22,17 @@ final class CellAccountsList: UITableViewCell {
     @IBOutlet weak var latLabel: UILabel!
     @IBOutlet weak var lngLabel: UILabel!
     
+    @IBOutlet weak var divisionLabel: UILabel!
+    @IBOutlet weak var brickLabel: UILabel!
+    @IBOutlet weak var doctorLabel: UILabel!
+    
     // MARK: - Properties
     private let disposeBag = DisposeBag()
     var onMapTapped: (() -> Void)?
     private var isMapEnabled: Bool = false
+    
+    private let masterData = LocalStorageManager.shared.getMasterData()
+    private let doctorsData =  LocalStorageManager.shared.getAccountsDoctors()?.Data?.Doctors ?? []
     
     // MARK: - Lifecycle
     override func awakeFromNib() {
@@ -39,11 +46,23 @@ final class CellAccountsList: UITableViewCell {
         latLabel.rx.text.onNext(model.team_ll)
         lngLabel.rx.text.onNext(model.team_lg)
         
-//        isMapEnabled = !(model.team_ll?.isEmpty ?? true) && !(model.team_lg?.isEmpty ?? true)
-//        mapButton.isEnabled = isMapEnabled
-//        mapButton.alpha = isMapEnabled ? 1.0 : 0.6
         mapButton.isHidden = (model.team_ll?.isEmpty ?? true)
         stackLocation.rx.isHidden.onNext(model.team_ll?.isEmpty ?? true)
+        
+        let divisionName = masterData?.Data?.divisions?
+            .first(where: { $0.id == model.t_div_id })?.name
+        divisionLabel.text = divisionName ?? "-"
+        
+        let brickName = masterData?.Data?.bricks?
+            .first(where: { Int($0.id ?? "") == Int(model.brick_id ?? "") })?.name
+        brickLabel.text = brickName ?? "-"
+        
+        let doctors = doctorsData.filter { doctor in
+            doctor.d_account_id == model.id
+        }
+
+        let doctorNames = doctors.compactMap { $0.name }
+        doctorLabel.text = doctorNames.isEmpty ? "-" : doctorNames.joined(separator: ", ")
         
         // Account Type
         if let accountTypes = LocalStorageManager.shared.getMasterData()?.Data?.account_types,

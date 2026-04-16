@@ -453,36 +453,6 @@ private extension CellUnPlannedVisit {
             .map { IdNameModel(id: $0.id, name: $0.name, tbl: $0.tbl, cat_id: $0.cat_id) } ?? []
     }
 
-//    func accountsForBrick(_ brickID: String) -> [IdNameModel] {
-//
-//        guard
-//            let accounts = LocalStorageManager.shared
-//                .getAccountsDoctors()?
-//                .Data?
-//                .Accounts
-//        else { return [] }
-//
-//        let selectedAccountTypeTbl = model?.accountType?.tbl
-//
-//        return accounts
-//            .filter {
-//                if brickID == "0" { return true }   // All Bricks
-//                return $0.brick_id == brickID
-//            }
-//            .filter {
-//                guard let selectedTbl = selectedAccountTypeTbl else { return true }
-//                return $0.tbl == selectedTbl
-//            }
-//            .map {
-//                IdNameModel(
-//                    id: $0.id,
-//                    name: $0.name ?? "",
-//                    line_id: "",
-//                    ll: $0.team_ll ?? "",
-//                    lg: $0.team_lg ?? ""
-//                )
-//            }
-//    }
     func accountsForBrick(_ brickID: String) -> [IdNameModel] {
 
         guard

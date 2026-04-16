@@ -336,7 +336,13 @@ extension ActualVisitVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         sections[section].header
     }
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 
+        if let header = view as? UITableViewHeaderFooterView {
+            header.textLabel?.textColor = mainColor
+            header.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        }
+    }
     func tableView(
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath

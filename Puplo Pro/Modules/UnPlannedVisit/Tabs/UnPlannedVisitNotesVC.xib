@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -109,6 +109,9 @@
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jBz-iM-J0T">
                                     <rect key="frame" x="0.0" y="0.0" width="170.33333333333334" height="50"/>
                                     <color key="backgroundColor" name="baseColor"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="50" id="Lxl-PP-ebz"/>
+                                    </constraints>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                     <state key="normal" title="End Visit">
@@ -142,7 +145,6 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="QnR-TT-KQo" secondAttribute="trailing" id="GH5-x9-wub"/>
                 <constraint firstItem="3jO-LU-1CW" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="QU3-Ds-w8t"/>
                 <constraint firstItem="jBz-iM-J0T" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.433333" id="QsE-Lx-zfb"/>
-                <constraint firstItem="jBz-iM-J0T" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.0586854" id="RaE-bp-dvW"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="3jO-LU-1CW" secondAttribute="bottom" id="baL-Qj-grw"/>
                 <constraint firstItem="QnR-TT-KQo" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="10" id="iVF-Bf-uD7"/>
                 <constraint firstItem="BF4-g8-8Tc" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="25" id="nES-Fn-RoG"/>
