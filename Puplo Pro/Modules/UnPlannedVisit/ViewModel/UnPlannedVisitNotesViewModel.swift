@@ -31,14 +31,14 @@ final class UnPlannedVisitNotesViewModel {
     
     // MARK: - Init
     init() {
-        if let savedImages = LocalStorageManager.shared.getSelectedImageVisitData() {
+        if let savedImages = RealmStorageManager.shared.getSelectedImageVisitData() {
             imagesSubject.accept(savedImages)
         }
     }
     
     // MARK: - Build Visit Details Section
     func buildVisitDetailsSection() -> NotesSection {
-        let visitItems = LocalStorageManager.shared.getVisitItemData() ?? []
+        let visitItems = RealmStorageManager.shared.getVisitItemData() ?? []
         
         let rows: [NotesRow] = visitItems.isEmpty
         ? [NotesRow(title: "", value: "No Visit Item Selected")]
@@ -87,7 +87,7 @@ final class UnPlannedVisitNotesViewModel {
     
     // MARK: - Build Gifts Section
     func buildGiftsSection() -> NotesSection {
-        let gifts = LocalStorageManager.shared.getGiftsData() ?? []
+        let gifts = RealmStorageManager.shared.getGiftsData() ?? []
         
         let rows: [NotesRow] = gifts.isEmpty
         ? [NotesRow(title: "", value: "No Gifts Selected")]
@@ -99,7 +99,7 @@ final class UnPlannedVisitNotesViewModel {
     }
     // MARK: - Build Products Section
     func buildProductsSection() -> NotesSection {
-        let products = LocalStorageManager.shared.getProductsData() ?? []
+        let products = RealmStorageManager.shared.getProductsData() ?? []
         
         let rows: [NotesRow] = products.isEmpty
         ? [NotesRow(title: "", value: "No Products Selected")]
@@ -112,13 +112,13 @@ final class UnPlannedVisitNotesViewModel {
     
     func validateActualVisit() -> String? {
         
-        guard let visit = LocalStorageManager.shared.getVisitItemData()?.first else {
+        guard let visit = RealmStorageManager.shared.getVisitItemData()?.first else {
             return nil
         }
         
         let today = Date().formattedDate
         
-        let visits = LocalStorageManager.shared.getActualVisitData() ?? []
+        let visits = RealmStorageManager.shared.getActualVisitData() ?? []
         
        // Same doctor + same day
         let isDuplicate = visits.contains {
@@ -145,7 +145,7 @@ final class UnPlannedVisitNotesViewModel {
 ////            saveUnPlannedVisitAPI { [weak self] success, message, onlineID in
 ////                guard let self = self else { return }
 ////                
-////                LocalStorageManager.shared.setUnPlannedVisitOffline(false)
+////                RealmStorageManager.shared.setUnPlannedVisitOffline(false)
 ////                self.saveActualVisitData(
 ////                    onlineID: onlineID,
 ////                    isUploaded: success
@@ -163,7 +163,7 @@ final class UnPlannedVisitNotesViewModel {
 //                isUploaded: false
 //            )
 //            
-//            LocalStorageManager.shared.setUnPlannedVisitOffline(true)
+//            RealmStorageManager.shared.setUnPlannedVisitOffline(true)
 //            completion(true, "The data has been saved locally. It will be uploaded once an internet connection is available.")
 //        }
 //    }
@@ -175,7 +175,7 @@ final class UnPlannedVisitNotesViewModel {
             
             self.saveUnPlannedVisitAPI() { success, message, onlineID in
                 
-                LocalStorageManager.shared.setUnPlannedVisitOffline(false)
+                RealmStorageManager.shared.setUnPlannedVisitOffline(false)
                 self.saveActualVisitData(onlineID: onlineID,isUploaded: success)
                 if success {
                     self.clearCachedVisitData()
@@ -187,7 +187,7 @@ final class UnPlannedVisitNotesViewModel {
                 onlineID: nil,
                 isUploaded: false
             )
-            LocalStorageManager.shared.setUnPlannedVisitOffline(true)
+            RealmStorageManager.shared.setUnPlannedVisitOffline(true)
             completion(
                 true,
                 "The data has been saved locally. It will be uploaded once an internet connection is available."
@@ -200,15 +200,15 @@ final class UnPlannedVisitNotesViewModel {
         isUploaded: Bool
     ) {
         
-        guard let visit = LocalStorageManager.shared.getVisitItemData()?.first else {
+        guard let visit = RealmStorageManager.shared.getVisitItemData()?.first else {
             print("❌ No visit item found")
             return
         }
         
-        let products = LocalStorageManager.shared.getProductsData() ?? []
-        let gifts = LocalStorageManager.shared.getGiftsData() ?? []
-        let images = LocalStorageManager.shared.getSelectedImageVisitData() ?? []
-        let managers = LocalStorageManager.shared.getManagerData() ?? []
+        let products = RealmStorageManager.shared.getProductsData() ?? []
+        let gifts = RealmStorageManager.shared.getGiftsData() ?? []
+        let images = RealmStorageManager.shared.getSelectedImageVisitData() ?? []
+        let managers = RealmStorageManager.shared.getManagerData() ?? []
         
         let ampm = visit.accountType?.cat_id == "1" ? "1" :
                    visit.accountType?.cat_id == "2" ? "2" : "3"
@@ -244,8 +244,9 @@ final class UnPlannedVisitNotesViewModel {
                 doctor_name: visit.doctor?.name ?? "",
                 shift_type: visit.shiftType?.name ?? "",
                 visit_type: visit.visitType?.name ?? "",
-                
+               
                 visit_date: now.formattedDate,
+                visit_time: now.formattedTime.to24HourFormat,
                 llAcccount: visit.account?.ll ?? "",
                 lgAcccount: visit.account?.lg ?? "",
                 endLat: "\(endLat)",
@@ -305,12 +306,12 @@ final class UnPlannedVisitNotesViewModel {
     
     // MARK: - Persist
     private func persistActualVisit(_ model: ActualVisitModel) {
-        var visits = LocalStorageManager.shared.getActualVisitData() ?? []
+        var visits = RealmStorageManager.shared.getActualVisitData() ?? []
         
         visits.removeAll { $0.offline_id == model.offline_id }
         visits.append(model)
         
-        LocalStorageManager.shared.saveActualVisitData(visits)
+        RealmStorageManager.shared.saveActualVisitData(visits)
         print("✅ Actual Visit saved locally")
     }
     
@@ -318,21 +319,21 @@ final class UnPlannedVisitNotesViewModel {
     private func saveUnPlannedVisitAPI(completion: @escaping (Bool, String, Int) -> Void
     ) {
         
-        guard let user = LocalStorageManager.shared.getLoggedUser(),
-              let visit = LocalStorageManager.shared.getVisitItemData()?.first
+        guard let user = RealmStorageManager.shared.getLoggedUser(),
+              let visit = RealmStorageManager.shared.getVisitItemData()?.first
         else {
             completion(false, "Unauthorized", 0)
             return
         }
         
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
+        let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let url = baseURL + URLs.saveOw
         
-        let productsData = LocalStorageManager.shared.getProductsData() ?? []
-        let giftsData = LocalStorageManager.shared.getGiftsData() ?? []
-        let managerData = LocalStorageManager.shared.getManagerData() ?? []
-        let startLocation = LocalStorageManager.shared.getVisitStartLocation()
-        let endLocation = LocalStorageManager.shared.getVisitEndLocation()
+        let productsData = RealmStorageManager.shared.getProductsData() ?? []
+        let giftsData = RealmStorageManager.shared.getGiftsData() ?? []
+        let managerData = RealmStorageManager.shared.getManagerData() ?? []
+        let startLocation = RealmStorageManager.shared.getVisitStartLocation()
+        let endLocation = RealmStorageManager.shared.getVisitEndLocation()
         
         let products = buildProductsPayloadNEW(productsData)
         let giveaways = buildGiftsPayloadNEW(giftsData)
@@ -379,9 +380,9 @@ final class UnPlannedVisitNotesViewModel {
             "selected_shift": visit.shiftType?.id ?? 0,
             "sync_date": now.formattedDate,
             "sync_time": now.formattedTime.to24HourFormat,
-            "team_id": user.lineIds ?? "",
+            "team_id": user.lineIds,
             "type_id": visit.accountType?.id ?? 0,
-            "user_id": user.user_id ?? 0,
+            "user_id": user.user_id,
             "vdate": now.formattedDate,
             "visit_address": "",
             "visit_deviation": visitDeviation,
@@ -532,12 +533,12 @@ final class UnPlannedVisitNotesViewModel {
     
     // MARK: - Helpers
     private func clearCachedVisitData() {
-        LocalStorageManager.shared.clearVisitItemData()
-        LocalStorageManager.shared.clearManagerData()
-        LocalStorageManager.shared.clearGiftsData()
-        LocalStorageManager.shared.clearProductsData()
-        LocalStorageManager.shared.clearSelectedImageVisitData()
-        LocalStorageManager.shared.clearVisitStartLocation()
+        RealmStorageManager.shared.clearVisitItemData()
+        RealmStorageManager.shared.clearManagerData()
+        RealmStorageManager.shared.clearGiftsData()
+        RealmStorageManager.shared.clearProductsData()
+        RealmStorageManager.shared.clearSelectedImageVisitData()
+        RealmStorageManager.shared.clearVisitStartLocation()
     }
     
      func calculateDistance(
@@ -559,11 +560,11 @@ final class UnPlannedVisitNotesViewModel {
         completion: @escaping (Swift.Result<UploadResponse, Error>) -> Void
     ){
         guard
-            let user = LocalStorageManager.shared.getLoggedUser(),
+            let user = RealmStorageManager.shared.getLoggedUser(),
             !images.isEmpty
         else { return }
         
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
+        let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let url = baseURL + URLs.attachmentsURL
         
         let headers: HTTPHeaders = [

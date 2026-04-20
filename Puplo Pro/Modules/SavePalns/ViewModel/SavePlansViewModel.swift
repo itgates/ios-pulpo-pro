@@ -39,7 +39,7 @@ final class SavePlansViewModel {
                 isUploaded: success
             )
             if success {
-                LocalStorageManager.shared.clearOfflinePlans()
+                RealmStorageManager.shared.clearOfflinePlans()
             }
             completion(success, message)
         }
@@ -50,7 +50,7 @@ final class SavePlansViewModel {
         plans: [SavePlanData],
         completion: @escaping (Bool, String) -> Void
     ) {
-        LocalStorageManager.shared.saveOfflinePlans(plans)
+        RealmStorageManager.shared.saveOfflinePlans(plans)
 
         self.storePlans(
             plans: plans,
@@ -97,9 +97,9 @@ final class SavePlansViewModel {
             )
         }
 
-        var existingPlans = LocalStorageManager.shared.getNewPlanData() ?? []
+        var existingPlans = RealmStorageManager.shared.getNewPlanData() ?? []
         existingPlans.append(contentsOf: storedPlans)
-        LocalStorageManager.shared.saveNewPlanData(existingPlans)
+        RealmStorageManager.shared.saveNewPlanData(existingPlans)
     }
 
     // MARK: - API Call
@@ -108,8 +108,8 @@ final class SavePlansViewModel {
         completion: @escaping (Bool, String, [ResponseData]) -> Void
     ) {
         guard
-            let user = LocalStorageManager.shared.getLoggedUser(),
-            let baseURL = LocalStorageManager.shared.getAPIPath()
+            let user = RealmStorageManager.shared.getLoggedUser(),
+            let baseURL = RealmStorageManager.shared.getAPIPath()
         else {
             completion(false, "Unauthorized", [])
             return

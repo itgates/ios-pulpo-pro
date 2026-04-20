@@ -26,8 +26,7 @@ class CellPlanningVisits: UITableViewCell {
     private let disposeBag = DisposeBag()
     // Closure
     var onMapTapped: (() -> Void)?
-    let officeWorkTypes = LocalStorageManager.shared.getMasterData()?.Data?.office_work_types
-    
+    let masterData = AppDataProvider.shared.masterData
     var accountName: String = ""
     var doctorName: String = ""
     var onLat: String = ""
@@ -54,7 +53,7 @@ class CellPlanningVisits: UITableViewCell {
         idLabel.rx.text.onNext("id: \(model.id ?? "")")
 
         // ✅ Doctor Name
-        let doctors = LocalStorageManager.shared.getAccountsDoctors()?.Data?.Doctors ?? []
+        let doctors = RealmStorageManager.shared.getAccountsDoctors()?.Data?.Doctors ?? []
 
         let doctor = doctors.first {
             $0.id?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -66,7 +65,7 @@ class CellPlanningVisits: UITableViewCell {
         self.doctorName =  doctorName
         
         // ✅ Account Type Name
-        let accountTypes = LocalStorageManager.shared.getMasterData()?.Data?.account_types ?? []
+        let accountTypes = masterData?.Data?.account_types ?? []
 
         let accountTypeName = accountTypes
             .first {
@@ -79,7 +78,7 @@ class CellPlanningVisits: UITableViewCell {
         hosptalLabel.rx.text.onNext("\(accountTypeName):")
 
         // ✅ Fetch Account Object (IMPORTANT)
-        let accounts = LocalStorageManager.shared.getAccountsDoctors()?.Data?.Accounts ?? []
+        let accounts = RealmStorageManager.shared.getAccountsDoctors()?.Data?.Accounts ?? []
 
         let account = accounts.first {
             $0.id?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -102,7 +101,7 @@ class CellPlanningVisits: UITableViewCell {
         idLabel.rx.text.onNext("id: \(model.id ?? "")")
         iMDepartmentLabel.rx.text.onNext("Date: \(model.date ?? "")")
        
-        let name = officeWorkTypes?
+        let name = masterData?.Data?.office_work_types?
             .first(where: { $0.id == model.ow_type_id })?
             .name ?? ""
         hosptalLabel.rx.text.onNext("\(name): ")

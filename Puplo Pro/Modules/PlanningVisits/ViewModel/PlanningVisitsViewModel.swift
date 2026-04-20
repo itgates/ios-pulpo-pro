@@ -28,8 +28,6 @@ final class PlanningVisitsViewModel {
         case am, pm, other
     }
     
-    let loadingBehavior = BehaviorRelay<Bool>(value: false)
-    
     private let allDoctorsRelay = BehaviorRelay<[PlanningVisitsData]>(value: [])
     private let doctorsRelay = BehaviorRelay<[PlanningVisitsData]>(value: [])
     
@@ -38,50 +36,42 @@ final class PlanningVisitsViewModel {
     }
     
     func loadDoctors(for type: AccountType) {
-        loadingBehavior.accept(true)
         
-        DispatchQueue.global(qos: .userInitiated).async {
-            
-            let data: [PlanningVisitsData]
-            switch type {
-            case .am:
-                data = LocalStorageManager.shared.getAccountsDoctorsAM() ?? []
-            case .pm:
-                data = LocalStorageManager.shared.getAccountsDoctorsPM() ?? []
-            case .other:
-                data = LocalStorageManager.shared.getAccountsDoctorsOther() ?? []
-            }
-            
-            //DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                print("data.count >>\(data.count)")
-                self.allDoctorsRelay.accept(data)
-                self.doctorsRelay.accept(data)
-                self.loadingBehavior.accept(false)
-            }
-       // }
-    }
-    
-    func applyFilter(_ filter: SelectFilter) {
-        let filtered = allDoctorsRelay.value.filter {
-            self.matchesFilter($0, filter: filter)
+        let data: [PlanningVisitsData]
+        switch type {
+        case .am:
+            data = RealmStorageManager.shared.getAccountsDoctorsAM() ?? []
+        case .pm:
+            data = RealmStorageManager.shared.getAccountsDoctorsPM() ?? []
+        case .other:
+            data = RealmStorageManager.shared.getAccountsDoctorsOther() ?? []
         }
-        doctorsRelay.accept(filtered)
+        print("data.count >>\(data.count)")
+        self.allDoctorsRelay.accept(data)
+        self.doctorsRelay.accept(data)
+   }
+
+   func applyFilter(_ filter: SelectFilter) {
+    let filtered = allDoctorsRelay.value.filter {
+        self.matchesFilter($0, filter: filter)
     }
+    doctorsRelay.accept(filtered)
+   }
+
+   func clearFilter() {
+    doctorsRelay.accept(allDoctorsRelay.value)
+   }
+
+   private func matchesFilter(
+    _ account: PlanningVisitsData,
+    filter: SelectFilter
+   ) -> Bool {
     
-    func clearFilter() {
-        doctorsRelay.accept(allDoctorsRelay.value)
-    }
+    if let id = filter.division?.id, account.div_id != id { return false }
+    if let id = filter.brick?.id, account.brick_id ?? "" != id { return false }
+    if let id = filter.accountType?.id, account.type_id != id { return false }
+    if let id = filter.classType?.id, account.class_id != id { return false }
     
-    private func matchesFilter(
-        _ account: PlanningVisitsData,
-        filter: SelectFilter
-    ) -> Bool {
-        
-        if let id = filter.division?.id, account.div_id != id { return false }
-        if let id = filter.brick?.id, account.brick_id ?? "" != id { return false }
-        if let id = filter.accountType?.id, account.type_id != id { return false }
-        if let id = filter.classType?.id, account.class_id != id { return false }
-        
-        return true
-    }
+    return true
+  }
 }

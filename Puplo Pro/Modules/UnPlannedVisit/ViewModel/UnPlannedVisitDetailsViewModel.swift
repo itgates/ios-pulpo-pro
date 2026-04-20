@@ -35,7 +35,7 @@ final class UnPlannedVisitDetailsViewModel {
                 
                 if !shouldShow {
                     self.managers.accept([])
-                    LocalStorageManager.shared.saveManagerData([])
+                    RealmStorageManager.shared.saveManagerData([])
                 }
             })
     }
@@ -43,7 +43,7 @@ final class UnPlannedVisitDetailsViewModel {
     var allManagersSelected: Observable<Bool> {
         managers
             .map { currentManagers in
-                guard let masterManagers = LocalStorageManager.shared.getMasterData()?.Data?.managers,
+                guard let masterManagers = RealmStorageManager.shared.getMasterData()?.Data?.managers,
                       !masterManagers.isEmpty else {
                     return false
                 }
@@ -53,11 +53,11 @@ final class UnPlannedVisitDetailsViewModel {
     
     // MARK: - Init
     init() {
-        if let savedVisitItems = LocalStorageManager.shared.getVisitItemData() {
+        if let savedVisitItems = RealmStorageManager.shared.getVisitItemData() {
             visitItems.accept(savedVisitItems)
         }
         // Load saved managers
-        if let savedManagers = LocalStorageManager.shared.getManagerData() {
+        if let savedManagers = RealmStorageManager.shared.getManagerData() {
             managers.accept(savedManagers)
         }
     }
@@ -122,7 +122,7 @@ final class UnPlannedVisitDetailsViewModel {
         }
         
         visitItems.accept(list)
-        LocalStorageManager.shared.saveVisitItemData(list)
+        RealmStorageManager.shared.saveVisitItemData(list)
         return nil
     }
     func updateComment(at index: Int, text: String?) {
@@ -130,7 +130,7 @@ final class UnPlannedVisitDetailsViewModel {
         guard index < list.count else { return }
         list[index].comment = text
         visitItems.accept(list)
-        LocalStorageManager.shared.saveVisitItemData(list)
+        RealmStorageManager.shared.saveVisitItemData(list)
     }
     
     // MARK: - Managers
@@ -148,7 +148,7 @@ final class UnPlannedVisitDetailsViewModel {
         list.append(newManager)
         
         managers.accept(list)
-        LocalStorageManager.shared.saveManagerData(list)
+        RealmStorageManager.shared.saveManagerData(list)
         
         return nil
     }
@@ -159,6 +159,6 @@ final class UnPlannedVisitDetailsViewModel {
         guard index < list.count else { return }
         list.remove(at: index)
         managers.accept(list)
-        LocalStorageManager.shared.saveManagerData(list)
+        RealmStorageManager.shared.saveManagerData(list)
     }
 }

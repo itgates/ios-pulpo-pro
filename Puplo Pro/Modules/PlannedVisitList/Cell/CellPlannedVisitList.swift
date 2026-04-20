@@ -38,7 +38,7 @@ class CellPlannedVisitList: UITableViewCell {
         visitDateLabel.rx.text.onNext(model.insertion_date)
         
         // ✅ Fetch Account Object (IMPORTANT)
-        let accounts = LocalStorageManager.shared.getAccountsDoctors()?.Data?.Accounts ?? []
+        let accounts = RealmStorageManager.shared.getAccountsDoctors()?.Data?.Accounts ?? []
         let account = accounts.first {
             $0.id?.trimmingCharacters(in: .whitespacesAndNewlines)
             ==
@@ -50,7 +50,7 @@ class CellPlannedVisitList: UITableViewCell {
         self.onLat = account?.team_ll ?? ""
         self.onLong = account?.team_lg ?? ""
         
-        let doctorData = LocalStorageManager.shared.getAccountsDoctors()?.Data
+        let doctorData = RealmStorageManager.shared.getAccountsDoctors()?.Data
         let selectedDoctor = doctorData?.Doctors?
             .first(where: { $0.id == model.item_doc_id })
         let doctorName = selectedDoctor?.name ?? ""

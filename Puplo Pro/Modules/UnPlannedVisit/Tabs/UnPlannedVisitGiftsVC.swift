@@ -100,7 +100,7 @@ private extension UnPlannedVisitGiftsVC {
                     items[index] = item
                     self.viewModel.gifts.accept(items)
                     cell.nameLabel.text = item.name
-                    LocalStorageManager.shared.saveGiftsData(items)
+                    RealmStorageManager.shared.saveGiftsData(items)
                 }
                 cell.onCountChanged = { [weak self] newCount in
                     self?.viewModel.updateGiftCount(at: index, count: "\(newCount)")

@@ -149,16 +149,18 @@ private extension HomeVC {
 private extension HomeVC {
     
     func loadUserData() {
-        guard let user = LocalStorageManager.shared.getLoggedUser() else { return }
+        guard let user = RealmStorageManager.shared.getLoggedUser() else { return }
         
         userNameLabel.rx.text.onNext(user.fullname)
-        guard let mobile = user.mobile, !mobile.isEmpty else {
+        guard !user.mobile.isEmpty else {
             userPhoneLabel.rx.isHidden.onNext(true)
-            return }
+            return
+        }
+        let mobile = user.mobile
         userPhoneLabel.rx.text.onNext(Constants.userPhonePrefix + mobile)
         
-        dateLabel.rx.text.onNext("Date \(user.check_in_date ?? "")")
-        timeLabel.rx.text.onNext("Time \(user.check_in_time ?? "")")
+        dateLabel.rx.text.onNext("Date \(user.check_in_date)")
+        timeLabel.rx.text.onNext("Time \(user.check_in_time)")
         
 //        if let urlString = user.url, let url = URL(string: urlString) {
 //            userImageView.kf.setImage(with: url)

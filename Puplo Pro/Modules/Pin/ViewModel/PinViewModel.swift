@@ -29,7 +29,7 @@ class PinViewModel {
                     completion(false,"", "Invalid PIN. No account found.")
                 } else {
                     if let apiPath = model.data?.first?.apiPath {
-                        LocalStorageManager.shared.saveAPIPath(apiPath)
+                        RealmStorageManager.shared.saveAPIPath(apiPath)
                         print("🔥 Saved API Path = \(apiPath)")
                     }
                     

@@ -43,6 +43,11 @@ PODS:
   - Kingfisher (8.6.2)
   - Koyomi (1.2.7)
   - lottie-ios (4.5.2)
+  - Realm (20.0.3):
+    - Realm/Headers (= 20.0.3)
+  - Realm/Headers (20.0.3)
+  - RealmSwift (20.0.3):
+    - Realm (= 20.0.3)
   - RxCocoa (6.9.0):
     - RxRelay (= 6.9.0)
     - RxSwift (= 6.9.0)
@@ -62,6 +67,7 @@ DEPENDENCIES:
   - Kingfisher
   - Koyomi
   - lottie-ios
+  - RealmSwift
   - RxCocoa
   - RxDataSources
   - RxSwift
@@ -83,6 +89,8 @@ SPEC REPOS:
     - Kingfisher
     - Koyomi
     - lottie-ios
+    - Realm
+    - RealmSwift
     - RxCocoa
     - RxDataSources
     - RxRelay
@@ -104,12 +112,14 @@ SPEC CHECKSUMS:
   Kingfisher: 23d18f54677d973b713e54ce6a8f5eef6e7056ba
   Koyomi: f03615b8d2bb5a5a4752c6404a9794ed7ef7b327
   lottie-ios: 96784afc26ea031d3e2b6cae342a4b8915072489
+  Realm: 853e5089d6042dff807bda000277eadfe2da93d2
+  RealmSwift: f33c19577cefcbf681345d721fcbc7b42be4c949
   RxCocoa: ac16414696ae706516be3e1ab00fcce5bdc9be8a
   RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
   RxRelay: 6b0c930e5cef57d5fe2032571e5e65b78e3cbdb1
   RxSwift: 31649ace6aceeb422e16ff71c60804f9c3281ed9
   SSZipArchive: 8a6ee5677c8e304bebc109e39cf0da91ccef22ea
 
-PODFILE CHECKSUM: 678f9f0df0b8ed978f80ad96dff6fe2965017903
+PODFILE CHECKSUM: d44db63ad02129eebde0cb6249c152711c865f5a
 
 COCOAPODS: 1.16.2

@@ -35,7 +35,6 @@ final class PlannedVisitsVC: BaseView {
     @IBOutlet weak var stackFilter: UIStackView!
     
     @IBOutlet private weak var tableView: UITableView!
-//    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
     
     // MARK: - Properties
     private let disposeBag = DisposeBag()
@@ -46,6 +45,7 @@ final class PlannedVisitsVC: BaseView {
     private var tableObservation: NSKeyValueObservation?
     private var selectedFilterType: FilterType?
     
+    let masterData = AppDataProvider.shared.masterData?.Data
     // MARK: - Enums
     private enum Period {
         case am
@@ -60,10 +60,8 @@ final class PlannedVisitsVC: BaseView {
         setupUI()
         setupButtons()
         setupBindings()
-//        observeTableHeight()
         setupTableView()
         bindTableView()
-        subscribeToLoading()
         viewModel.loadAccount(for: .am)
     }
 }
@@ -234,26 +232,23 @@ private extension PlannedVisitsVC {
         }
     }
     private func handleVisit(_ model: PlannedVisitsData) {
-        guard let masterData = LocalStorageManager.shared.getMasterData()?.Data,
-              let user = LocalStorageManager.shared.getLoggedUser()
-        else { return }
 
-        let divisionName = masterData.divisions?
+        let divisionName = masterData?.divisions?
             .first(where: { $0.id == model.div_id })?
             .name ?? ""
 
-        let brick = masterData.bricks?.first(where: {
-            $0.ter_id == model.div_id &&
-            $0.team_id == user.lineIds
-        })
+        let accounts = RealmStorageManager.shared.getAccountsDoctors()?.Data?.Accounts
+        let account = accounts?.first(where: { $0.id == model.item_id })
+
+        let brick = masterData?.bricks?.first(where: { "\($0.id ?? "")" == account?.brick_id })
 
         let brickName = brick?.name ?? ""
         
-        let accountTypeName = masterData.account_types?
+        let accountTypeName = masterData?.account_types?
             .first(where: { $0.id == model.account_type })?
             .name ?? ""
 
-        let accountsData = LocalStorageManager.shared.getAccountsDoctors()?.Data
+        let accountsData = RealmStorageManager.shared.getAccountsDoctors()?.Data
         let selectedAccount = accountsData?.Accounts?
             .first(where: { $0.id == model.item_id })
         let accountId = selectedAccount?.id ?? ""
@@ -261,7 +256,7 @@ private extension PlannedVisitsVC {
         let accountll = selectedAccount?.team_ll ?? ""
         let accountlg = selectedAccount?.team_lg ?? ""
         
-        let doctorData = LocalStorageManager.shared.getAccountsDoctors()?.Data
+        let doctorData = RealmStorageManager.shared.getAccountsDoctors()?.Data
         let selectedDoctor = doctorData?.Doctors?
             .first(where: { $0.id == model.item_doc_id })
         let doctorName = selectedDoctor?.name ?? ""
@@ -284,11 +279,11 @@ private extension PlannedVisitsVC {
         )
 
         let visitItem = VisitItem(
-            date: model.vdate,
-            time: model.vtime,
+//            date: model.vdate,
+//            time: model.vtime,
             planID: model.id,
             division: IdNameModel(id: model.div_id, name: divisionName,ll: accountll,lg: accountlg),
-            brick: IdNameModel(id: brick?.id ?? "", name: brickName,ll: accountll,lg: accountlg),
+            brick: IdNameModel(id: brick?.id ?? "", name: brickName, ll: accountll,lg: accountlg),
             accountType: IdNameModel(id: model.account_type, name: accountTypeName,ll: accountll,lg: accountlg),
             account: IdNameModel(id: accountId, name: accountName,ll: accountll,lg: accountlg),
             doctor: IdNameModel(id: model.item_doc_id, name: doctorName,ll: accountll,lg: accountlg),
@@ -296,24 +291,14 @@ private extension PlannedVisitsVC {
             shiftType: shiftType
         )
         print("visitItem >>> \(visitItem)")
-        LocalStorageManager.shared.saveVisitItemData([visitItem])
-        LocalStorageManager.shared.clearManagerData()
-        LocalStorageManager.shared.clearProductsData()
-        LocalStorageManager.shared.clearGiftsData()
+        RealmStorageManager.shared.saveVisitItemData([visitItem])
+        RealmStorageManager.shared.clearManagerData()
+        RealmStorageManager.shared.clearProductsData()
+        RealmStorageManager.shared.clearGiftsData()
         let vc = UnPlannedVisitVC()
         navigationController?.pushViewController(vc, animated: true)
     }
 }
-
-// MARK: - Loading
-private extension PlannedVisitsVC {
-    func subscribeToLoading() {
-        viewModel.loadingBehavior.subscribe(onNext: { [weak self] isLoading in
-            isLoading ? self?.startLoading() : self?.endLoading()
-        }).disposed(by: disposeBag)
-    }
-}
-
 // MARK: - Rx Bindings
 private extension PlannedVisitsVC {
     

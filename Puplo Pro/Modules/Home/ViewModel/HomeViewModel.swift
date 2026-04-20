@@ -30,7 +30,6 @@ class HomeViewModel {
     // MARK: - Fetch Data
     func fetchData() {
         loadingBehavior.accept(true)
-        DispatchQueue.global(qos: .userInitiated).async {
             let schedulData: [(dayName: String, imageName: String,vc: UIViewController.Type?)] = [
                 ("Planning visits", "Planning",PlanningVisitsVC.self),
                 ("Planned Visits", "Planned",PlannedVisitsVC.self),
@@ -50,11 +49,10 @@ class HomeViewModel {
                 self.homeModelSubject.accept(items)
                 self.loadingBehavior.accept(false)
             }
-        }
     }
     func canOpenUnplanned() -> Bool {
         
-        guard let lines = LocalStorageManager.shared
+        guard let lines = RealmStorageManager.shared
             .getMasterData()?
             .Data?
             .lines,
@@ -71,7 +69,7 @@ class HomeViewModel {
         print("📅 Today: \(todayString)")
         print("🎯 Limit: \(limit)")
         
-        let allVisits = LocalStorageManager.shared.getActualVisitData() ?? []
+        let allVisits = RealmStorageManager.shared.getActualVisitData() ?? []
         
         print("📦 All Visits Count: \(allVisits.count)")
         

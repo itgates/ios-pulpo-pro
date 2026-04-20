@@ -15,11 +15,14 @@ class LoginViewModel {
     let loadingBehavior = BehaviorRelay<Bool>(value: false)
     let alertBehavior = PublishSubject<String>()
     
+    var user: UserLoginRealm? {
+        RealmStorageManager.shared.getLoggedUser()
+    }
+    var baseURL: String {
+        RealmStorageManager.shared.getAPIPath() ?? ""
+    }
     // MARK: - API Call: Login
     func loginUser(name: String, password: String,companyName:String, completion: @escaping (Bool) -> Void) {
-        
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
-//     let url = "\(baseURL + URLs.loginURL)&username=\(name)&password=\(password)"
         
         var components = URLComponents(string: baseURL + URLs.loginURL)
         var items = components?.queryItems ?? []
@@ -55,12 +58,12 @@ class LoginViewModel {
                 
                 if model.Status != 500 && model.Data?.count ?? 0 > 0 {
                     
-                    LocalStorageManager.shared.clearUsers()
+                    RealmStorageManager.shared.clearUsers()
                     let now = Date()
                     let checkInDate = now.formattedDate
                     let checkInTime = now.formattedTime
                     
-                    LocalStorageManager.shared.saveUser(
+                    RealmStorageManager.shared.saveUser(
                         model: model,
                         checkInDate: checkInDate,
                         checkInTime: checkInTime,
@@ -112,8 +115,7 @@ class LoginViewModel {
     
     // MARK: - get Master Data
     func getMasterData(completion: @escaping (Bool) -> Void) {
-        let user = LocalStorageManager.shared.getLoggedUser()
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
+        
         let now = Date()
         
         let url = "\(baseURL + URLs.masterDataURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")&lineId=\(user?.lineIds ?? "")&divId=\(user?.divIds ?? "")"
@@ -140,7 +142,7 @@ class LoginViewModel {
             switch result {
             case .success(let model):
                 // Save master data locally
-                LocalStorageManager.shared.saveMasterData(model)
+                RealmStorageManager.shared.saveMasterData(model)
                 if model.Data != nil {
                     completion(true)
                 } else {
@@ -154,14 +156,8 @@ class LoginViewModel {
     }
     // MARK: - get Accounts Doctors
     func getAccountsDoctors(completion: @escaping (Bool) -> Void) {
-        
-        // MARK: - Validate Required Data
-        guard let user = LocalStorageManager.shared.getLoggedUser(),
-              let baseURL = LocalStorageManager.shared.getAPIPath() else {
-            completion(false)
-            return }
-        
-        let url = "\(baseURL + URLs.accountsDoctorsURL)&lineId=\(user.lineIds ?? "")&divId=\(user.divIds ?? "")"
+       
+        let url = "\(baseURL + URLs.accountsDoctorsURL)&lineId=\(user?.lineIds ?? "")&divId=\(user?.divIds ?? "")"
         
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -189,14 +185,14 @@ class LoginViewModel {
                     completion(false)
                     return
                 }
-                LocalStorageManager.shared.saveAccountsDoctors(model)
+                RealmStorageManager.shared.saveAccountsDoctors(model)
                 
                 var amDoctors: [PlanningVisitsData] = []
                 var pmDoctors: [PlanningVisitsData] = []
                 var otherDoctors: [PlanningVisitsData] = []
                 
                 //  Optimization: Cache account types once
-                let accountTypes = LocalStorageManager.shared
+                let accountTypes = RealmStorageManager.shared
                     .getMasterData()?
                     .Data?
                     .account_types
@@ -257,9 +253,9 @@ class LoginViewModel {
                 print("amDoctors >>> \(amDoctors.count)")
                 print("pmDoctors >>> \(pmDoctors.count)")
                 print("otherDoctors >>> \(otherDoctors.count)")
-                LocalStorageManager.shared.saveAccountsDoctorsAM(amDoctors)
-                LocalStorageManager.shared.saveAccountsDoctorsPM(pmDoctors)
-                LocalStorageManager.shared.saveAccountsDoctorsOther(otherDoctors)
+                RealmStorageManager.shared.saveAccountsDoctorsAM(amDoctors)
+                RealmStorageManager.shared.saveAccountsDoctorsPM(pmDoctors)
+                RealmStorageManager.shared.saveAccountsDoctorsOther(otherDoctors)
                 
                 completion(true)
                 
@@ -274,9 +270,7 @@ class LoginViewModel {
     //(empty data please check the data entry)
     func getPlannedVisits(completion: @escaping (Bool) -> Void) {
         
-        let user = LocalStorageManager.shared.getLoggedUser()
         let now = Date()
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
         let url = "\(baseURL + URLs.plannedVisitsURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")"
         print("url >>\(url)")
         
@@ -301,7 +295,7 @@ class LoginViewModel {
             switch result {
             case .success(let model):
                 // Save  Plan Visits Data locally
-                LocalStorageManager.shared.savePlannedVisitsData(model.Data ?? [])
+                RealmStorageManager.shared.savePlannedVisitsData(model.Data ?? [])
                 if model.Data != nil {
                     completion(true)
                 } else {
@@ -317,8 +311,6 @@ class LoginViewModel {
     // MARK: - get app presentations
     func getAppPresentations(completion: @escaping (Bool) -> Void) {
         
-        let user = LocalStorageManager.shared.getLoggedUser()
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
         let url = "\(baseURL + URLs.appPresentationsURL)&teamId=\(user?.lineIds ?? "")"
         
         let headers: HTTPHeaders = [
@@ -342,7 +334,7 @@ class LoginViewModel {
             switch result {
             case .success(let model):
                 // Save  Plan Ows Data locally
-                LocalStorageManager.shared.saveAppPresentationsModel(model)
+                RealmStorageManager.shared.saveAppPresentationsModel(model)
                 if model.Data != nil {
                     completion(true)
                 } else {

@@ -65,8 +65,7 @@ final class PlanningVisitsVC: BaseView {
     private var currentLines: [IdNameModel] = []
     private var selectedFilter = SelectFilter()
 
-    private let masterData = LocalStorageManager.shared.getMasterData()
-
+    let masterData = AppDataProvider.shared.masterData
     // MARK: - Period
     private enum Period {
         case am, pm, other
@@ -105,9 +104,6 @@ final class PlanningVisitsVC: BaseView {
         setupGestures()
         setupBindings()
         bindTableView()
-//        observeTableHeight()
-//        subscribeToLoading()
-
         viewModel.doctorsObservable
             .bind(to: filteredDoctors)
             .disposed(by: disposeBag)
@@ -351,15 +347,16 @@ private extension PlanningVisitsVC {
 
         switch type {
         case .division:
-            guard let user = LocalStorageManager.shared.getLoggedUser(),
-                  let userDivIdsString = user.divIds else {
+            guard let user = RealmStorageManager.shared.getLoggedUser(),
+                  !user.divIds.isEmpty else {
                 currentLines = []
-                break }
-            //  Convert "1,2,5" -> ["1","2","5"]
-            let userDivIds = userDivIdsString
+                break
+            }
+
+            let userDivIds = user.divIds
                 .split(separator: ",")
                 .map { String($0.trimmingCharacters(in: .whitespaces)) }
-            
+
             currentLines = (masterData?.Data?.divisions ?? [])
                 .filter { division in
                     guard let id = division.id else { return false }
@@ -432,20 +429,6 @@ private extension PlanningVisitsVC {
         UIView.animate(withDuration: 0.3) {
             self.stackFilter.alpha = self.stackFilter.isHidden ? 0 : 1
         }
-    }
-
-//    func observeTableHeight() {
-//        tableObservation = tableView.observe(\.contentSize) { [weak self] tableView, _ in
-//            self?.heightTableView.constant = tableView.contentSize.height
-//        }
-//    }
-
-    func subscribeToLoading() {
-        viewModel.loadingBehavior
-            .subscribe(onNext: { [weak self] loading in
-                loading ? self?.startLoading() : self?.endLoading()
-            })
-            .disposed(by: disposeBag)
     }
 }
 

@@ -18,9 +18,9 @@ extension UIViewController {
     
     func validate(tab: TabIndex) -> NavigationResult {
         
-        let visitItems = LocalStorageManager.shared.getVisitItemData() ?? []
-        let managers = LocalStorageManager.shared.getManagerData()
-        let products = LocalStorageManager.shared.getProductsData() ?? []
+        let visitItems = RealmStorageManager.shared.getVisitItemData() ?? []
+        let managers = RealmStorageManager.shared.getManagerData()
+        let products = RealmStorageManager.shared.getProductsData() ?? []
         
         switch tab {
             
@@ -79,7 +79,7 @@ extension UIViewController {
     private func validateVisitItem(_ item: VisitItem) -> String? {
         
         
-        let masterData = LocalStorageManager.shared.getMasterData()
+        let masterData = RealmStorageManager.shared.getMasterData()
         let isShiftEnabled =
             masterData?
                 .Data?

@@ -24,9 +24,7 @@ final class PlannedVisitListVC: BaseView {
     @IBOutlet weak var dateToLabel: UILabel!
     @IBOutlet weak var applyButton: UIButton!
     @IBOutlet weak var stackFilter: UIStackView!
-
     @IBOutlet weak var tableView: UITableView!
-//    @IBOutlet weak var heightTableView: NSLayoutConstraint!
 
     // MARK: - Properties
     private let disposeBag = DisposeBag()
@@ -39,10 +37,8 @@ final class PlannedVisitListVC: BaseView {
         super.viewDidLoad()
         setupUI()
         configureTableView()
-//        observeTableHeight()
         bindActions()
         bindTableView()
-        subscribeToLoading()
         viewModel.fetchData()
     }
     
@@ -171,25 +167,6 @@ private extension PlannedVisitListVC {
         showPopUp(view: calendarVC)
     }
 }
-
-// MARK: - Table Height
-//private extension PlannedVisitListVC {
-//    func observeTableHeight() {
-//        tableObservation = tableView.observe(\.contentSize) { [weak self] _, _ in
-//            self?.heightTableView.constant = self?.tableView.contentSize.height ?? 0
-//        }
-//    }
-//}
-
-// MARK: - Loading
-private extension PlannedVisitListVC {
-    func subscribeToLoading() {
-        viewModel.loadingBehavior.subscribe(onNext: { [weak self] isLoading in
-            isLoading ? self?.startLoading() : self?.endLoading()
-        }).disposed(by: disposeBag)
-    }
-}
-
 // MARK: - Calendar Delegate
 extension PlannedVisitListVC: BackSelectDate {
     func selectDate(date: String) {

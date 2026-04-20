@@ -16,4 +16,5 @@ target 'Puplo Pro' do
  pod 'Koyomi'
  pod 'DropDown'
  pod 'SSZipArchive'
+ pod 'RealmSwift'
 end

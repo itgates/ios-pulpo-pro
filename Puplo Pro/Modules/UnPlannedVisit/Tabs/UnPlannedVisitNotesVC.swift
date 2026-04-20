@@ -23,15 +23,15 @@ final class UnPlannedVisitNotesVC: BaseView {
     
     // MARK: - Computed Data
     private var visitItems: [VisitItem] {
-        LocalStorageManager.shared.getVisitItemData() ?? []
+        RealmStorageManager.shared.getVisitItemData() ?? []
     }
     
     private var giftsData: [IdNameModel] {
-        LocalStorageManager.shared.getGiftsData() ?? []
+        RealmStorageManager.shared.getGiftsData() ?? []
     }
     
     private var productsData: [ProductItem] {
-        LocalStorageManager.shared.getProductsData() ?? []
+        RealmStorageManager.shared.getProductsData() ?? []
     }
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -66,7 +66,7 @@ private extension UnPlannedVisitNotesVC {
               borderColor: baseColor
         )
         LocationManager.shared.getCurrentLocation { lat, lng in
-            LocalStorageManager.shared.saveVisitEndLocation(lat: lat, lng: lng)
+            RealmStorageManager.shared.saveVisitEndLocation(lat: lat, lng: lng)
         }
     }
     
@@ -106,7 +106,7 @@ private extension UnPlannedVisitNotesVC {
                             }
                             self.viewModel.selectedImages.append(contentsOf: updatedImages)
                             self.viewModel.imagesSubject.accept(self.viewModel.selectedImages)
-                            LocalStorageManager.shared.saveSelectedImageVisitData(self.viewModel.selectedImages)
+                            RealmStorageManager.shared.saveSelectedImageVisitData(self.viewModel.selectedImages)
                         case .failure(let error):
                             print("❌ Upload failed:", error)
                             self.showAlert(
@@ -180,7 +180,7 @@ private extension UnPlannedVisitNotesVC {
         }
         LocationManager.shared.getCurrentLocation { [weak self] lat, lng in
             guard let self = self else { return }
-            LocalStorageManager.shared.saveVisitEndLocation(lat: lat, lng: lng) // ✅ هنا
+            RealmStorageManager.shared.saveVisitEndLocation(lat: lat, lng: lng) // ✅ هنا
             self.validateLocationAndSave(
                 endLat: lat,
                 endLng: lng,
@@ -262,7 +262,7 @@ private extension UnPlannedVisitNotesVC {
                         currentImages.remove(at: index)
                         
                         self.viewModel.imagesSubject.accept(currentImages)
-                        LocalStorageManager.shared.saveSelectedImageVisitData(currentImages)
+                        RealmStorageManager.shared.saveSelectedImageVisitData(currentImages)
                         self.viewModel.selectedImages = currentImages
                     }
                 }
@@ -328,7 +328,7 @@ extension UnPlannedVisitNotesVC {
         acceptedDistance: Int
     ) {
 
-        guard let visit = LocalStorageManager.shared.getVisitItemData()?.first else { return }
+        guard let visit = RealmStorageManager.shared.getVisitItemData()?.first else { return }
 
         let accountLat = Double(visit.account?.ll ?? "") ?? 0
         let accountLng = Double(visit.account?.lg ?? "") ?? 0
@@ -385,9 +385,9 @@ extension UnPlannedVisitNotesVC {
 
     func validateStartLocation(acceptedDistance: Int) {
 
-        guard let visit = LocalStorageManager.shared.getVisitItemData()?.first else { return }
+        guard let visit = RealmStorageManager.shared.getVisitItemData()?.first else { return }
 
-        guard let startLocation = LocalStorageManager.shared.getVisitStartLocation() else {
+        guard let startLocation = RealmStorageManager.shared.getVisitStartLocation() else {
             saveVisit()
             return
         }
@@ -422,7 +422,7 @@ extension UnPlannedVisitNotesVC {
 
     private func getAcceptedDistance() -> Int? {
 
-        let value = LocalStorageManager.shared
+        let value = RealmStorageManager.shared
             .getMasterData()?
             .Data?
             .account_types?
@@ -436,7 +436,7 @@ extension UnPlannedVisitNotesVC {
 
     private func getSettingValue(_ key: String) -> Bool {
 
-        return LocalStorageManager.shared
+        return RealmStorageManager.shared
             .getMasterData()?
             .Data?
             .settings?

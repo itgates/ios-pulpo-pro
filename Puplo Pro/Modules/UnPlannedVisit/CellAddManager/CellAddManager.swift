@@ -22,7 +22,7 @@ class CellAddManager: UICollectionViewCell {
     var didSelectItem: ((IdNameModel) -> Void)?
 
     private var managerData: [IdNameModel]? {
-        LocalStorageManager.shared.getMasterData()?.Data?.managers
+        RealmStorageManager.shared.getMasterData()?.Data?.managers
     }
 
     // MARK: - Lifecycle

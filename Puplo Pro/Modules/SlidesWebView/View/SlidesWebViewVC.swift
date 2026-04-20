@@ -65,14 +65,14 @@ final class SlidesWebViewVC: BaseView {
         guard idx >= 0, idx < slidesArray.count else { return nil }
         return idx
     }
-    private func apiBaseURL() -> String {"https://pulpo-cira.cloud/crm/edetailing_files/"}// LocalStorageManager.shared.getAPIPath() ?? "" }
+    private func apiBaseURL() -> String {"https://pulpo-cira.cloud/crm/edetailing_files/"}// RealmStorageManager.shared.getAPIPath() ?? "" }
 
     // MARK: - Rating UI
     private func updateRateButtonAppearance() {
         guard let currentIdx = resolvedCurrentIndex() else { return }
 
         // Load current saved products to check if this slide is rated
-        guard let list = LocalStorageManager.shared.getProductsData(),
+        guard let list = RealmStorageManager.shared.getProductsData(),
               productIndex >= 0, productIndex < list.count,
               let presentations = list[productIndex].presentations, !presentations.isEmpty else {
             // default to not rated
@@ -462,7 +462,7 @@ extension SlidesWebViewVC: WKNavigationDelegate {
 // MARK: - Persistence helpers
 private extension SlidesWebViewVC {
     func saveSlidesIntoProducts() {
-        guard var list = LocalStorageManager.shared.getProductsData() else { return }
+        guard var list = RealmStorageManager.shared.getProductsData() else { return }
         guard productIndex >= 0, productIndex < list.count else { return }
         guard var presentations = list[productIndex].presentations, !presentations.isEmpty else { return }
         if let pid = presentationID {
@@ -475,7 +475,7 @@ private extension SlidesWebViewVC {
             presentations[0].slides = slidesArray
         }
         list[productIndex].presentations = presentations
-        LocalStorageManager.shared.saveProductsData(list)
+        RealmStorageManager.shared.saveProductsData(list)
     }
 }
 
@@ -522,7 +522,7 @@ private extension SlidesWebViewVC {
         present(alert, animated: true)
     }
     func saveRating(stars: Int) {
-        guard var list = LocalStorageManager.shared.getProductsData() else { return }
+        guard var list = RealmStorageManager.shared.getProductsData() else { return }
         guard productIndex >= 0, productIndex < list.count else { return }
         guard var presentations = list[productIndex].presentations, !presentations.isEmpty else { return }
         var targetIndex = 0
@@ -535,7 +535,7 @@ private extension SlidesWebViewVC {
         ratings.append(newRating)
         presentations[targetIndex].ratings = ratings
         list[productIndex].presentations = presentations
-        LocalStorageManager.shared.saveProductsData(list)
+        RealmStorageManager.shared.saveProductsData(list)
         updateRateButtonAppearance()
     }
 }

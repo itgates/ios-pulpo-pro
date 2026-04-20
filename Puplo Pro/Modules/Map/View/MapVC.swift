@@ -96,7 +96,7 @@ private extension MapVC {
             locationManager.startUpdatingLocation()
         default:
             if let lastLocation =
-                LocalStorageManager.shared.getUserLocation() {
+                RealmStorageManager.shared.getUserLocation() {
                 centerOnce(at: lastLocation)
             }
         }
@@ -126,7 +126,7 @@ extension MapVC: CLLocationManagerDelegate {
             mapView.showsUserLocation = true
         default:
             if let lastLocation =
-                LocalStorageManager.shared.getUserLocation() {
+                RealmStorageManager.shared.getUserLocation() {
                 centerOnce(at: lastLocation)
             }
         }
@@ -137,7 +137,7 @@ extension MapVC: CLLocationManagerDelegate {
         guard let location = locations.first else { return }
 
         centerOnce(at: location)
-        LocalStorageManager.shared.saveUserLocation(location)
+        RealmStorageManager.shared.saveUserLocation(location)
         locationManager.stopUpdatingLocation()
     }
 }

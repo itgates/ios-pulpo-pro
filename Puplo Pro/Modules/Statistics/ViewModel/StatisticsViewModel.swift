@@ -17,30 +17,31 @@ final class StatisticsViewModel {
     let plannedVisitsCount: Driver<String>
     let actualVisitsCount: Driver<String>
     let settingsCount: Driver<String>
-
+    let masterData = AppDataProvider.shared.masterData
+    
     init() {
         productsCount = Observable
-            .just(LocalStorageManager.shared.getMasterData()?.Data?.products?.count ?? 0)
+            .just(masterData?.Data?.products?.count ?? 0)
             .map { "\($0)" }
             .asDriver(onErrorJustReturn: "0")
 
         accountsCount = Observable
-            .just(LocalStorageManager.shared.getAccountsDoctors()?.Data?.Accounts?.count ?? 0)
+            .just(RealmStorageManager.shared.getAccountsDoctors()?.Data?.Accounts?.count ?? 0)
             .map { "\($0)" }
             .asDriver(onErrorJustReturn: "0")
 
         plannedVisitsCount = Observable
-            .just(LocalStorageManager.shared.getPlannedVisitsData()?.count ?? 0)
+            .just(RealmStorageManager.shared.getPlannedVisitsData()?.count ?? 0)
             .map { "\($0)" }
             .asDriver(onErrorJustReturn: "0")
 
         actualVisitsCount = Observable
-            .just(LocalStorageManager.shared.getActualVisitData()?.count ?? 0)
+            .just(RealmStorageManager.shared.getActualVisitData()?.count ?? 0)
             .map { "\($0)" }
             .asDriver(onErrorJustReturn: "0")
 
         settingsCount = Observable
-            .just(LocalStorageManager.shared.getMasterData()?.Data?.settings?.count ?? 0)
+            .just(masterData?.Data?.settings?.count ?? 0)
             .map { "\($0)" }
             .asDriver(onErrorJustReturn: "0")
     }

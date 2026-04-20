@@ -31,8 +31,8 @@ final class CellAccountsList: UITableViewCell {
     var onMapTapped: (() -> Void)?
     private var isMapEnabled: Bool = false
     
-    private let masterData = LocalStorageManager.shared.getMasterData()
-    private let doctorsData =  LocalStorageManager.shared.getAccountsDoctors()?.Data?.Doctors ?? []
+    let doctors = AppDataProvider.shared.doctors
+    let masterData = AppDataProvider.shared.masterData
     
     // MARK: - Lifecycle
     override func awakeFromNib() {
@@ -57,7 +57,7 @@ final class CellAccountsList: UITableViewCell {
             .first(where: { Int($0.id ?? "") == Int(model.brick_id ?? "") })?.name
         brickLabel.text = brickName ?? "-"
         
-        let doctors = doctorsData.filter { doctor in
+        let doctors = doctors.filter { doctor in
             doctor.d_account_id == model.id
         }
 
@@ -65,7 +65,7 @@ final class CellAccountsList: UITableViewCell {
         doctorLabel.text = doctorNames.isEmpty ? "-" : doctorNames.joined(separator: ", ")
         
         // Account Type
-        if let accountTypes = LocalStorageManager.shared.getMasterData()?.Data?.account_types,
+        if let accountTypes = masterData?.Data?.account_types,
            let tbl = model.tbl,
            let accountType = accountTypes.first(where: { $0.tbl == tbl }) {
             accountLabel.rx.text.onNext("(\(accountType.name ?? ""))")

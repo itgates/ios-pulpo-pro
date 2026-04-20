@@ -27,8 +27,8 @@ class OWActivitiesViewModel {
         officeWorkTypesModelSubject.asObservable()
     }
     
-    var officeWork = LocalStorageManager.shared.getMasterData()
-    
+    let officeWork = AppDataProvider.shared.masterData
+        
     // MARK: - Fetch Data
     func fetchData() {
         
@@ -59,7 +59,7 @@ class OWActivitiesViewModel {
     }
     func validateOfficeWorkShift(newShiftId: String, date: String) -> String? {
         
-        let todayWorks = LocalStorageManager.shared.getOfficeWorkData() ?? []
+        let todayWorks = RealmStorageManager.shared.getOfficeWorkData() ?? []
         
         print("🗓 Selected Date:", date)
         print("📦 All Office Works:", todayWorks)
@@ -105,16 +105,16 @@ class OWActivitiesViewModel {
         if Reachability.isConnectedToNetwork() {
             fetchDataApplay(OWS: OWS) { done, message in
                 if done {
-                    LocalStorageManager.shared.saveOfficeWorkModel(OWS)
+                    RealmStorageManager.shared.saveOfficeWorkModel(OWS)
                     print("OWS >>>>\(OWS)")
-                    print("getOfficeWorkData >>>>\(LocalStorageManager.shared.getOfficeWorkData() ?? [])")
-//                    LocalStorageManager.shared.clearOWActivitiesModel()
+                    print("getOfficeWorkData >>>>\(RealmStorageManager.shared.getOfficeWorkData() ?? [])")
+//                    RealmStorageManager.shared.clearOWActivitiesModel()
                 }
                 completion(done, message)
             }
         } else {
-            LocalStorageManager.shared.saveOWActivitiesModel(OWS)
-            LocalStorageManager.shared.saveOfficeWorkModel(OWS)
+            RealmStorageManager.shared.saveOWActivitiesModel(OWS)
+            RealmStorageManager.shared.saveOfficeWorkModel(OWS)
             completion(true, "The data has been saved locally. It will be uploaded once an internet connection is available.")
         }
     }
@@ -122,8 +122,8 @@ class OWActivitiesViewModel {
     // MARK: - fetch Data Applay
     func fetchDataApplay(OWS: [OWSModel],completion: @escaping (Bool,String) -> Void) {
         
-        let user = LocalStorageManager.shared.getLoggedUser()
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
+        let user = RealmStorageManager.shared.getLoggedUser()
+        let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let url = baseURL + URLs.saveOwURL
         
         let visitArray: [[String: Any]] = OWS.map { model in

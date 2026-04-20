@@ -51,7 +51,7 @@ private extension UnPlannedVisitDetailsVC {
     
     func setupUI() {
         LocationManager.shared.getCurrentLocation { lat, lng in
-            LocalStorageManager.shared.saveVisitStartLocation(lat: lat, lng: lng)
+            RealmStorageManager.shared.saveVisitStartLocation(lat: lat, lng: lng)
         }
     }
 }
@@ -203,7 +203,7 @@ private extension UnPlannedVisitDetailsVC {
 
             managers[index] = item
             self.viewModel.managers.accept(managers)
-            LocalStorageManager.shared.saveManagerData(managers)
+            RealmStorageManager.shared.saveManagerData(managers)
         }
 
         cell.deleteIndex = { [weak self] in

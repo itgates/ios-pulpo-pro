@@ -38,7 +38,6 @@ final class AccountsListVC: BaseView {
     @IBOutlet private weak var stackFilter: UIStackView!
     
     @IBOutlet private weak var tableView: UITableView!
-//    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
     
     // MARK: - Properties
     private let disposeBag = DisposeBag()
@@ -50,19 +49,16 @@ final class AccountsListVC: BaseView {
     private var currentLines: [IdNameModel] = []
     private var selectedFilter = SelectFilter()
     
-    private let masterData = LocalStorageManager.shared.getMasterData()
-    
+    let masterData = AppDataProvider.shared.masterData
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupTableView()
-//        observeTableHeight()
         setupDropDown()
         setupGestures()
         bindActions()
         bindTableView()
-        bindLoading()
         viewModel.fetchData()
     }
     override func viewDidLayoutSubviews() {
@@ -228,15 +224,16 @@ private extension AccountsListVC {
 
         switch type {
         case .division:
-            guard let user = LocalStorageManager.shared.getLoggedUser(),
-                  let userDivIdsString = user.divIds else {
+            guard let user = RealmStorageManager.shared.getLoggedUser(),
+                  !user.divIds.isEmpty else {
                 currentLines = []
-                break }
-            //  Convert "1,2,5" -> ["1","2","5"]
-            let userDivIds = userDivIdsString
+                break
+            }
+
+            let userDivIds = user.divIds
                 .split(separator: ",")
                 .map { String($0.trimmingCharacters(in: .whitespaces)) }
-            
+
             currentLines = (masterData?.Data?.divisions ?? [])
                 .filter { division in
                     guard let id = division.id else { return false }
@@ -281,19 +278,3 @@ private extension AccountsListVC {
     }
 }
 
-// MARK: - Helpers
-private extension AccountsListVC {
-    
-//    func observeTableHeight() {
-//        tableObservation = tableView.observe(\.contentSize) { [weak self] table, _ in
-//            self?.heightTableView.constant = table.contentSize.height
-//        }
-//    }
-//    
-    func bindLoading() {
-        viewModel.loadingBehavior.subscribe(onNext: { [weak self] isLoading in
-            isLoading ? self?.startLoading() : self?.endLoading()
-        }).disposed(by: disposeBag)
-    }
-    
-}

@@ -50,7 +50,7 @@ private extension SplashVC {
 private extension SplashVC {
 
     func navigateToNextScreen() {
-        let user = LocalStorageManager.shared.getLoggedUser()
+        let user = RealmStorageManager.shared.getLoggedUser()
         let destinationVC: UIViewController = (user?.user_id != nil)
             ? HomeVC()
             : PinVC()

@@ -27,13 +27,13 @@ final class UnPlannedVisitItemsViewModel {
        
     // MARK: - Init
     init() {
-        if let savedProducts = LocalStorageManager.shared.getProductsData() {
+        if let savedProducts = RealmStorageManager.shared.getProductsData() {
             products.accept(savedProducts)
         }
         checkAddEnabled()
     }
     func checkAddEnabled() {
-        let visitItem = LocalStorageManager.shared.getVisitItemData()?.first
+        let visitItem = RealmStorageManager.shared.getVisitItemData()?.first
         let enabled = visitItem?.accountType?.id?.isEmpty == false
         isAddEnabled.accept(enabled)
     }
@@ -43,7 +43,7 @@ final class UnPlannedVisitItemsViewModel {
         var list = products.value
         
         let requiredCount = Int(
-            LocalStorageManager.shared
+            RealmStorageManager.shared
                 .getMasterData()?
                 .Data?
                 .settings?
@@ -68,7 +68,7 @@ final class UnPlannedVisitItemsViewModel {
                 )
             }
             products.accept(list)
-            LocalStorageManager.shared.saveProductsData(list)
+            RealmStorageManager.shared.saveProductsData(list)
             return
         }
         
@@ -86,7 +86,7 @@ final class UnPlannedVisitItemsViewModel {
             if last.product == nil {
                 list.removeLast()
                 products.accept(list)
-                LocalStorageManager.shared.saveProductsData(list)
+                RealmStorageManager.shared.saveProductsData(list)
                 return
             }
             if let error = last.validationError() {
@@ -106,7 +106,7 @@ final class UnPlannedVisitItemsViewModel {
             )
         )
         products.accept(list)
-        LocalStorageManager.shared.saveProductsData(list)
+        RealmStorageManager.shared.saveProductsData(list)
     }
     // MARK: - Helpers
     func deleteProducts(at index: Int) {
@@ -114,7 +114,7 @@ final class UnPlannedVisitItemsViewModel {
         guard index < list.count else { return }
         list.remove(at: index)
         products.accept(list)
-        LocalStorageManager.shared.saveProductsData(list)
+        RealmStorageManager.shared.saveProductsData(list)
     }
     
     func updateProductsCount(at index: Int, count: String) {
@@ -122,7 +122,7 @@ final class UnPlannedVisitItemsViewModel {
         guard index < list.count else { return }
         list[index].count = count
         products.accept(list)
-        LocalStorageManager.shared.saveProductsData(list)
+        RealmStorageManager.shared.saveProductsData(list)
     }
 
     func updateSelection(
@@ -155,7 +155,7 @@ final class UnPlannedVisitItemsViewModel {
         }
         
         products.accept(list)
-        LocalStorageManager.shared.saveProductsData(list)
+        RealmStorageManager.shared.saveProductsData(list)
         
         return nil
     }
@@ -168,7 +168,7 @@ final class UnPlannedVisitItemsViewModel {
         
         print("list >>\(list)")
         products.accept(list)
-        LocalStorageManager.shared.saveProductsData(list)
+        RealmStorageManager.shared.saveProductsData(list)
     }
     
     // MARK: - TextFields Handling
@@ -177,21 +177,21 @@ final class UnPlannedVisitItemsViewModel {
         guard index < list.count else { return }
         list[index].comment = text
         products.accept(list)
-        LocalStorageManager.shared.saveProductsData(list)
+        RealmStorageManager.shared.saveProductsData(list)
     }
     func updateMarket(at index: Int, text: String?) {
         var list = products.value
         guard index < list.count else { return }
         list[index].market = text
         products.accept(list)
-        LocalStorageManager.shared.saveProductsData(list)
+        RealmStorageManager.shared.saveProductsData(list)
     }
     func updateFollowUps(at index: Int, text: String?) {
         var list = products.value
         guard index < list.count else { return }
         list[index].followUp = text
         products.accept(list)
-        LocalStorageManager.shared.saveProductsData(list)
+        RealmStorageManager.shared.saveProductsData(list)
     }
     
 }

@@ -23,7 +23,7 @@ class BaseView: UIViewController, UITextFieldDelegate{
     private let disposeBag = DisposeBag()
     private let viewModel = OfflineRequestManager()
     
-    let user = LocalStorageManager.shared.getLoggedUser()
+    let user = RealmStorageManager.shared.getLoggedUser()
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -48,17 +48,17 @@ class BaseView: UIViewController, UITextFieldDelegate{
    
     private func executeOfflineRequestsIfNeeded() {
         guard Reachability.isConnectedToNetwork() else { return }
-        let offlineOWS = LocalStorageManager.shared.getOWActivitiesData() ?? []
-        let offlinePlans = LocalStorageManager.shared.getOfflinePlans() ?? []
+        let offlineOWS = RealmStorageManager.shared.getOWActivitiesData() ?? []
+        let offlinePlans = RealmStorageManager.shared.getOfflinePlans() ?? []
      
         
-        let visitItem = LocalStorageManager.shared.getVisitItemData() ?? []
-        let managerData = LocalStorageManager.shared.getManagerData() ?? []
-        let giftsData = LocalStorageManager.shared.getGiftsData() ?? []
-        let productsData = LocalStorageManager.shared.getProductsData() ?? []
-        let issetUnPlannedVisitOffline = LocalStorageManager.shared.isUnPlannedVisitOffline()
+        let visitItem = RealmStorageManager.shared.getVisitItemData() ?? []
+        let managerData = RealmStorageManager.shared.getManagerData() ?? []
+        let giftsData = RealmStorageManager.shared.getGiftsData() ?? []
+        let productsData = RealmStorageManager.shared.getProductsData() ?? []
+        let issetUnPlannedVisitOffline = RealmStorageManager.shared.isUnPlannedVisitOffline()
 
-        let actualVisits = LocalStorageManager.shared.getActualVisitData() ?? []
+        let actualVisits = RealmStorageManager.shared.getActualVisitData() ?? []
         let hasPendingUnplannedVisits = actualVisits.contains { !$0.isUploaded }
         
         print("offlineOWS.count >>>\(offlineOWS.count)")
@@ -90,7 +90,7 @@ class BaseView: UIViewController, UITextFieldDelegate{
             dispatchGroup.enter()
             viewModel.fetchDataApplay(OWS: offlineOWS) { done, message in
                 if done {
-                    LocalStorageManager.shared.clearOWActivitiesModel()
+                    RealmStorageManager.shared.clearOWActivitiesModel()
                     requestStatuses.append("OW & Activities: Success ✅")
                 } else {
                     requestStatuses.append("OW & Activities: Error - \(message) ❌")
@@ -104,7 +104,7 @@ class BaseView: UIViewController, UITextFieldDelegate{
             dispatchGroup.enter()
             viewModel.savePlans { done, message, idsMap  in
                 if done {
-                    var storedVisits = LocalStorageManager.shared.getNewPlanData() ?? []
+                    var storedVisits = RealmStorageManager.shared.getNewPlanData() ?? []
 
                     for index in storedVisits.indices {
                         guard !storedVisits[index].isUploaded else { continue }
@@ -114,8 +114,8 @@ class BaseView: UIViewController, UITextFieldDelegate{
                             storedVisits[index].onlineID = matched.onlineID
                         }
                     }
-                    LocalStorageManager.shared.saveNewPlanData(storedVisits)
-                    LocalStorageManager.shared.clearOfflinePlans()
+                    RealmStorageManager.shared.saveNewPlanData(storedVisits)
+                    RealmStorageManager.shared.clearOfflinePlans()
                     requestStatuses.append("Planning Visits: Success ✅")
                 } else {
                     requestStatuses.append("Planning Visits: Error - \(message) ❌")
@@ -129,7 +129,7 @@ class BaseView: UIViewController, UITextFieldDelegate{
             dispatchGroup.enter()
             viewModel.saveUnPlannedVisitAPI { done, message, idsMap in
                 if done {
-                    var storedVisits = LocalStorageManager.shared.getActualVisitData() ?? []
+                    var storedVisits = RealmStorageManager.shared.getActualVisitData() ?? []
 
                     for index in storedVisits.indices {
                         guard !storedVisits[index].isUploaded else { continue }
@@ -147,15 +147,15 @@ class BaseView: UIViewController, UITextFieldDelegate{
                         }
                     }
                    
-                    LocalStorageManager.shared.saveActualVisitData(storedVisits)
+                    RealmStorageManager.shared.saveActualVisitData(storedVisits)
 
-                    LocalStorageManager.shared.clearVisitItemData()
-                    LocalStorageManager.shared.clearManagerData()
-                    LocalStorageManager.shared.clearGiftsData()
-                    LocalStorageManager.shared.clearProductsData()
-                    LocalStorageManager.shared.clearSelectedImageVisitData()
-                    LocalStorageManager.shared.clearUnPlannedVisitOffline()
-                    LocalStorageManager.shared.clearVisitStartLocation()
+                    RealmStorageManager.shared.clearVisitItemData()
+                    RealmStorageManager.shared.clearManagerData()
+                    RealmStorageManager.shared.clearGiftsData()
+                    RealmStorageManager.shared.clearProductsData()
+                    RealmStorageManager.shared.clearSelectedImageVisitData()
+                    RealmStorageManager.shared.clearUnPlannedVisitOffline()
+                    RealmStorageManager.shared.clearVisitStartLocation()
 
                     requestStatuses.append("UnPlanned Visit: Success ✅")
                 } else {

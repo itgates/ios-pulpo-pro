@@ -99,7 +99,7 @@ private extension SavePlansVC {
 
         guard let doctorId = doctorId else { return false }
 
-        let existingPlans = LocalStorageManager.shared.getNewPlanData() ?? []
+        let existingPlans = RealmStorageManager.shared.getNewPlanData() ?? []
 
         return existingPlans.contains {
             $0.accountDoctorID == doctorId &&

@@ -16,8 +16,6 @@ struct VisitSection {
 final class ActualVisitViewModel {
 
     // MARK: - Properties
-    let loadingBehavior = BehaviorRelay<Bool>(value: false)
-
     var allVisits: [ActualVisitModel] = []
     var allOfficeWorks: [OWSModel] = []
 
@@ -28,13 +26,8 @@ final class ActualVisitViewModel {
 
     // MARK: - Fetch Data
     func fetchData() {
-
-        loadingBehavior.accept(true)
-
-       // DispatchQueue.global(qos: .userInitiated).async {
-
-            let visits = LocalStorageManager.shared.getActualVisitData() ?? []
-            let officeWorks = LocalStorageManager.shared.getOfficeWorkData() ?? []
+            let visits = RealmStorageManager.shared.getActualVisitData() ?? []
+            let officeWorks = RealmStorageManager.shared.getOfficeWorkData() ?? []
 
             self.allVisits = visits
             self.allOfficeWorks = officeWorks
@@ -42,13 +35,8 @@ final class ActualVisitViewModel {
             let sections: [VisitSection] = [
                 VisitSection(header: "Actual Visit", items: visits),
                 VisitSection(header: "Office Work", items: officeWorks)
-            ]
-
-            //DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                ]
                 self.sectionsSubject.accept(sections)
-                self.loadingBehavior.accept(false)
-//            }
-//        }
     }
 
     // MARK: - Filter by Date

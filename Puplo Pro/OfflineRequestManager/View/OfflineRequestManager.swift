@@ -21,8 +21,8 @@ class OfflineRequestManager {
     // MARK: - fetch Data Applay
     func fetchDataApplay(OWS: [OWSModel],completion: @escaping (Bool,String) -> Void) {
         
-        let user = LocalStorageManager.shared.getLoggedUser()
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
+        let user = RealmStorageManager.shared.getLoggedUser()
+        let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let url = baseURL + URLs.saveOwURL
         
         let visitArray: [[String: Any]] = OWS.map { model in
@@ -97,13 +97,13 @@ class OfflineRequestManager {
     // MARK: - save Plans
     func savePlans(completion: @escaping (Bool, String,[(offlineID: Int, onlineID: Int)]) -> Void) {
         guard
-            let user = LocalStorageManager.shared.getLoggedUser(),
-            let baseURL = LocalStorageManager.shared.getAPIPath()
+            let user = RealmStorageManager.shared.getLoggedUser(),
+            let baseURL = RealmStorageManager.shared.getAPIPath()
         else {
             completion(false, "Unauthorized", [])
             return
         }
-        let plans = LocalStorageManager.shared.getNewPlanData() ?? []
+        let plans = RealmStorageManager.shared.getNewPlanData() ?? []
         let url = baseURL + URLs.planURL
         let paramsArray = buildParams(from: plans, user_id: user.user_id ?? "")
         let headers = buildHeaders()
@@ -174,16 +174,16 @@ class OfflineRequestManager {
         completion: @escaping (Bool, String, [(offlineID: String, onlineID: String)]) -> Void
         
     ) {
-        guard let user = LocalStorageManager.shared.getLoggedUser() else {
+        guard let user = RealmStorageManager.shared.getLoggedUser() else {
             completion(false, "Unauthorized", [])
             return
         }
 
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
+        let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let url = baseURL + URLs.saveOw
 
         // Fetch all stored visits that are not uploaded
-        let storedVisits = (LocalStorageManager.shared.getActualVisitData() ?? [])
+        let storedVisits = (RealmStorageManager.shared.getActualVisitData() ?? [])
             .filter { !$0.isUploaded }
 
         guard !storedVisits.isEmpty else {
@@ -191,7 +191,7 @@ class OfflineRequestManager {
             return
         }
 
-        let startLocation = LocalStorageManager.shared.getVisitStartLocation()
+        let startLocation = RealmStorageManager.shared.getVisitStartLocation()
         let now = Date()
 
         // Aggregation state
@@ -263,8 +263,8 @@ class OfflineRequestManager {
                 let selectedShift: Int = Int(visit.shiftTypeId ?? "1") ?? 1
                 let ampm: Int = Int(visit.ampm ?? "1") ?? 1
                 let vPlannedID: Int = Int(visit.palnID ?? "0") ?? 0
-                let teamID: Int = Int((user.lineIds ?? "").components(separatedBy: ",").first ?? "0") ?? 0
-                let userIDString: String = (user.user_id ?? "")
+                let teamID: Int = Int((user.lineIds).components(separatedBy: ",").first ?? "0") ?? 0
+                let userIDString: String = (user.user_id)
 
                 let visitDict: [String: Any] = [
                     "ampm": ampm,
@@ -296,12 +296,12 @@ class OfflineRequestManager {
                     // accountType
                     "type_id": visit.accountTypeID ?? 0,
                     "user_id": userIDString,
-                    "vdate": now.formattedDate,
+                    "vdate": visit.visit_date ?? "",
                     "visit_address": "",
                     "visit_deviation": visitDeviation,
                     "visit_duration": "00:02:00",
                     "vplanned_id": vPlannedID,
-                    "vtime": now.formattedTime.to24HourFormat,
+                    "vtime": visit.visit_time ?? "",
                     "ll_start": resolvedStartLat,
                     "lg_start": resolvedStartLng,
                     "ll": endLat,

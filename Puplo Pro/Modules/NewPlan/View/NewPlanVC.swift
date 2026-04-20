@@ -17,7 +17,6 @@ class NewPlanVC: BaseView {
     
     @IBOutlet private weak var buttonBack: UIButton!
     @IBOutlet private weak var tableView: UITableView!
-//    @IBOutlet private weak var heightTableView: NSLayoutConstraint!
     
     // MARK: - Properties
     private let disposeBag = DisposeBag()
@@ -29,24 +28,14 @@ class NewPlanVC: BaseView {
         super.viewDidLoad()
         setupUI()
         configureTableView()
-//        observeTableHeight()
         bindUI()
         bindTableView()
-        subscribeToLoading()
         viewModel.loadProducts()
     }
 }
 
 private extension NewPlanVC {
     
-    // MARK: - Loading Indicator
-    private func subscribeToLoading() {
-        viewModel.loadingBehavior
-            .subscribe(onNext: { [weak self] isLoading in
-                isLoading ? self?.startLoading() : self?.endLoading()
-            })
-            .disposed(by: disposeBag)
-    }
     func setupUI() {
         drawRoundedCorners(for: viewBackgroundHeader, cornerRadius: 20, direction: .bottom)
         shadowView(viewBackgroundHeader)
@@ -102,13 +91,3 @@ private extension NewPlanVC {
             .disposed(by: disposeBag)
     }
 }
-
-//private extension NewPlanVC {
-//    
-//    func observeTableHeight() {
-//        tableObservation = tableView.observe(\.contentSize) { [weak self] _, _ in
-//            guard let self else { return }
-//            heightTableView.constant = tableView.contentSize.height
-//        }
-//    }
-//}

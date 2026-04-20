@@ -45,8 +45,8 @@ class DataCenterViewModel {
     
     // MARK: - get Master Data
     func getMasterData(completion: @escaping (Bool) -> Void) {
-        let user = LocalStorageManager.shared.getLoggedUser()
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
+        let user = RealmStorageManager.shared.getLoggedUser()
+        let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let now = Date()
         
         let url = "\(baseURL + URLs.masterDataURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")&lineId=\(user?.lineIds ?? "")&divId=\(user?.divIds ?? "")"
@@ -73,7 +73,7 @@ class DataCenterViewModel {
             switch result {
             case .success(let model):
                 // Save master data locally
-                LocalStorageManager.shared.saveMasterData(model)
+                RealmStorageManager.shared.saveMasterData(model)
                 if model.Data != nil {
                     completion(true)
                 } else {
@@ -89,8 +89,8 @@ class DataCenterViewModel {
     func getAccountsDoctors(completion: @escaping (Bool) -> Void) {
         
         // MARK: - Validate Required Data
-        guard let user = LocalStorageManager.shared.getLoggedUser(),
-              let baseURL = LocalStorageManager.shared.getAPIPath() else {
+        guard let user = RealmStorageManager.shared.getLoggedUser(),
+              let baseURL = RealmStorageManager.shared.getAPIPath() else {
             completion(false)
             return }
         
@@ -123,14 +123,14 @@ class DataCenterViewModel {
                     return
                 }
                 
-                LocalStorageManager.shared.saveAccountsDoctors(model)
+                RealmStorageManager.shared.saveAccountsDoctors(model)
                 
                 var amDoctors: [PlanningVisitsData] = []
                 var pmDoctors: [PlanningVisitsData] = []
                 var otherDoctors: [PlanningVisitsData] = []
                 
                 //  Optimization: Cache account types once
-                let accountTypes = LocalStorageManager.shared
+                let accountTypes = RealmStorageManager.shared
                     .getMasterData()?
                     .Data?
                     .account_types
@@ -191,9 +191,9 @@ class DataCenterViewModel {
                 print("amDoctors >>> \(amDoctors.count)")
                 print("pmDoctors >>> \(pmDoctors.count)")
                 print("otherDoctors >>> \(otherDoctors.count)")
-                LocalStorageManager.shared.saveAccountsDoctorsAM(amDoctors)
-                LocalStorageManager.shared.saveAccountsDoctorsPM(pmDoctors)
-                LocalStorageManager.shared.saveAccountsDoctorsOther(otherDoctors)
+                RealmStorageManager.shared.saveAccountsDoctorsAM(amDoctors)
+                RealmStorageManager.shared.saveAccountsDoctorsPM(pmDoctors)
+                RealmStorageManager.shared.saveAccountsDoctorsOther(otherDoctors)
                 
                 completion(true)
                 
@@ -224,9 +224,9 @@ class DataCenterViewModel {
     // MARK: - get Planned Visits
     func getPlannedVisits(completion: @escaping (Bool) -> Void) {
         
-        let user = LocalStorageManager.shared.getLoggedUser()
+        let user = RealmStorageManager.shared.getLoggedUser()
         let now = Date()
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
+        let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let url = "\(baseURL + URLs.plannedVisitsURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")"
         print("url >>\(url)")
         
@@ -251,7 +251,7 @@ class DataCenterViewModel {
             switch result {
             case .success(let model):
                 // Save  Plan Visits Data locally
-                LocalStorageManager.shared.savePlannedVisitsData(model.Data ?? [])
+                RealmStorageManager.shared.savePlannedVisitsData(model.Data ?? [])
                 if model.Data != nil {
                     completion(true)
                 } else {
@@ -267,8 +267,8 @@ class DataCenterViewModel {
     // MARK: - get app presentations
     func getAppPresentations(completion: @escaping (Bool) -> Void) {
         
-        let user = LocalStorageManager.shared.getLoggedUser()
-        let baseURL = LocalStorageManager.shared.getAPIPath() ?? ""
+        let user = RealmStorageManager.shared.getLoggedUser()
+        let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let url = "\(baseURL + URLs.appPresentationsURL)&teamId=\(user?.lineIds ?? "")"
         
         let headers: HTTPHeaders = [
@@ -292,7 +292,7 @@ class DataCenterViewModel {
             switch result {
             case .success(let model):
                 // Save  Plan Ows Data locally
-                LocalStorageManager.shared.saveAppPresentationsModel(model)
+                RealmStorageManager.shared.saveAppPresentationsModel(model)
                 if model.Data != nil {
                     completion(true)
                 } else {

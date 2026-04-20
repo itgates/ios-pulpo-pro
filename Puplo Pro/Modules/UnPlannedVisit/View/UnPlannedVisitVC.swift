@@ -170,7 +170,7 @@ private extension UnPlannedVisitVC {
             }
 
             // ✅ Validate managers
-            let managers = LocalStorageManager.shared.getManagerData() ?? []
+            let managers = RealmStorageManager.shared.getManagerData() ?? []
             if managers.count > 0 && managers.contains(where: { $0.name?.isEmpty ?? true }) {
                 showAlert(
                     alertTitle: "Incomplete Data",
@@ -180,7 +180,7 @@ private extension UnPlannedVisitVC {
             }
 
             // ✅ Validate gifts
-            let gifts = LocalStorageManager.shared.getGiftsData() ?? []
+            let gifts = RealmStorageManager.shared.getGiftsData() ?? []
             if gifts.contains(where: { !$0.isValid }) {
                 showAlert(
                     alertTitle: "Incomplete Data",
@@ -198,12 +198,12 @@ private extension UnPlannedVisitVC {
 
     // MARK: - Helpers
     private func clearCachedVisitData() {
-        LocalStorageManager.shared.clearVisitItemData()
-        LocalStorageManager.shared.clearManagerData()
-        LocalStorageManager.shared.clearGiftsData()
-        LocalStorageManager.shared.clearProductsData()
-        LocalStorageManager.shared.clearSelectedImageVisitData()
-        LocalStorageManager.shared.clearVisitStartLocation()
+        RealmStorageManager.shared.clearVisitItemData()
+        RealmStorageManager.shared.clearManagerData()
+        RealmStorageManager.shared.clearGiftsData()
+        RealmStorageManager.shared.clearProductsData()
+        RealmStorageManager.shared.clearSelectedImageVisitData()
+        RealmStorageManager.shared.clearVisitStartLocation()
     }
     func bindUI() {
 
@@ -231,7 +231,7 @@ private extension UnPlannedVisitVC {
         buttonBack.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .bind(with: self) { vc, _ in
-                let visit =  LocalStorageManager.shared.getVisitItemData()
+                let visit =  RealmStorageManager.shared.getVisitItemData()
                 if visit?.first?.planID != "0" {
                     vc.clearCachedVisitData()
                 }

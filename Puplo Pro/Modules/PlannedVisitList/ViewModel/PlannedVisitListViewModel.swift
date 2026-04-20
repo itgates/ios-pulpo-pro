@@ -12,8 +12,6 @@ import RxCocoa
 final class PlannedVisitListViewModel {
 
     // MARK: - Properties
-    let loadingBehavior = BehaviorRelay<Bool>(value: false)
-    
     var allVisits: [PlannedVisitsData] = []
     private var visitSubject = BehaviorRelay<[PlannedVisitsData]>(value: [])
     var visitObservable: Observable<[PlannedVisitsData]> {
@@ -22,15 +20,9 @@ final class PlannedVisitListViewModel {
 
     // MARK: - Fetch Data
     func fetchData() {
-        loadingBehavior.accept(true)
-//        DispatchQueue.global(qos: .userInitiated).async {
-            let items = LocalStorageManager.shared.getPlannedVisitsData() ?? []
+            let items = RealmStorageManager.shared.getPlannedVisitsData() ?? []
             self.allVisits = items
-            //DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                self.visitSubject.accept(items)
-                self.loadingBehavior.accept(false)
-            //}
-        //}
+            self.visitSubject.accept(items)
     }
 
     // MARK: - Filter by Date

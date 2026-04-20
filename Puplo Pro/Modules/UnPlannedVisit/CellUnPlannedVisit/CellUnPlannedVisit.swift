@@ -50,8 +50,7 @@ final class CellUnPlannedVisit: UICollectionViewCell {
 
     // MARK: - Properties
     private let dropDown = DropDown()
-    private let masterData = LocalStorageManager.shared.getMasterData()
-
+    let masterData = AppDataProvider.shared.masterData
     private var currentItems: [IdNameModel] = []
     private var currentField: ItemSelectionType?
 
@@ -397,18 +396,16 @@ private extension CellUnPlannedVisit {
 private extension CellUnPlannedVisit {
 
     var divisionData: [IdNameModel] {
-        
         guard
-            let user = LocalStorageManager.shared.getLoggedUser(),
-            let userDivIdsString = user.divIds,
+            let user = RealmStorageManager.shared.getLoggedUser(),
+            !user.divIds.isEmpty,
             let divisions = masterData?.Data?.divisions
         else {
             return []
         }
 
-        // "1,2,5" -> ["1","2","5"]
         let userDivIds = Set(
-            userDivIdsString
+            user.divIds
                 .split(separator: ",")
                 .map { String($0.trimmingCharacters(in: .whitespaces)) }
         )
@@ -456,7 +453,7 @@ private extension CellUnPlannedVisit {
     func accountsForBrick(_ brickID: String) -> [IdNameModel] {
 
         guard
-            let accounts = LocalStorageManager.shared
+            let accounts = RealmStorageManager.shared
                 .getAccountsDoctors()?
                 .Data?
                 .Accounts
@@ -488,7 +485,7 @@ private extension CellUnPlannedVisit {
             }
     }
     func doctorsForAccount(_ accountID: String) -> [IdNameModel] {
-        LocalStorageManager.shared.getAccountsDoctors()?
+        RealmStorageManager.shared.getAccountsDoctors()?
             .Data?.Doctors?
             .filter { $0.d_account_id ?? "" == accountID }
             .map { IdNameModel(id: $0.id, name: $0.name) } ?? []

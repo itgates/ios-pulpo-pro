@@ -57,18 +57,18 @@ final class CellProduct: UICollectionViewCell {
     }
     
     private var productsData: [IdNameModel]? {
-        LocalStorageManager.shared.getMasterData()?.Data?.products
+        RealmStorageManager.shared.getMasterData()?.Data?.products
     }
     private var presentationsData: [Presentations] {
-        LocalStorageManager.shared.getAppPresentationsModel()?.Data?.Presentations ?? []
+        RealmStorageManager.shared.getAppPresentationsModel()?.Data?.Presentations ?? []
     }
     private let presentationsRelay = BehaviorRelay<[Presentations]>(value: [])
     
     private var slidesData: [Slides] {
-        LocalStorageManager.shared.getAppPresentationsModel()?.Data?.Slides ?? []
+        RealmStorageManager.shared.getAppPresentationsModel()?.Data?.Slides ?? []
     }
     private var feedBackData: [IdNameModel]? {
-        LocalStorageManager.shared.getMasterData()?.Data?.comments
+        RealmStorageManager.shared.getMasterData()?.Data?.comments
     }
     // MARK: - Lifecycle
     override func awakeFromNib() {

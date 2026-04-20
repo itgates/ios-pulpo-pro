@@ -18,7 +18,7 @@ final class UnPlannedVisitGiftsViewModel {
     var allGiftsSelected: Observable<Bool> {
         gifts
             .map { currentGifts in
-                guard let masterGifts = LocalStorageManager.shared.getMasterData()?.Data?.giveaways,
+                guard let masterGifts = RealmStorageManager.shared.getMasterData()?.Data?.giveaways,
                       !masterGifts.isEmpty else {
                     return false
                 }
@@ -28,7 +28,7 @@ final class UnPlannedVisitGiftsViewModel {
     // MARK: - Init
     init() {
         // Load saved gifts
-        if let savedGifts = LocalStorageManager.shared.getGiftsData() {
+        if let savedGifts = RealmStorageManager.shared.getGiftsData() {
             gifts.accept(savedGifts)
         }
     }
@@ -44,7 +44,7 @@ final class UnPlannedVisitGiftsViewModel {
         )
         list.append(newGift)
         gifts.accept(list)
-        LocalStorageManager.shared.saveGiftsData(list)
+        RealmStorageManager.shared.saveGiftsData(list)
     }
 
     func deleteGift(at index: Int) {
@@ -52,7 +52,7 @@ final class UnPlannedVisitGiftsViewModel {
         guard index < list.count else { return }
         list.remove(at: index)
         gifts.accept(list)
-        LocalStorageManager.shared.saveGiftsData(list)
+        RealmStorageManager.shared.saveGiftsData(list)
     }
     
     func updateGiftCount(at index: Int, count: String) {
@@ -62,14 +62,14 @@ final class UnPlannedVisitGiftsViewModel {
         item.count = count
         list[index] = item
         gifts.accept(list)
-        LocalStorageManager.shared.saveGiftsData(list)
+        RealmStorageManager.shared.saveGiftsData(list)
     }
     
     func validateGiveaways() -> String? {
         
         print("🔍 Start validateGiveaways()")
         
-        let settings = LocalStorageManager.shared
+        let settings = RealmStorageManager.shared
             .getMasterData()?
             .Data?
             .settings

@@ -222,7 +222,6 @@ final class ActualVisitVC: BaseView {
     @IBOutlet weak var stackFilter: UIStackView!
 
     @IBOutlet weak var tableView: UITableView!
-//    @IBOutlet weak var heightTableView: NSLayoutConstraint!
 
     // MARK: - Properties
     private let disposeBag = DisposeBag()
@@ -236,10 +235,8 @@ final class ActualVisitVC: BaseView {
         super.viewDidLoad()
         setupUI()
         configureTableView()
-//        observeTableHeight()
         bindActions()
         bindTableView()
-        subscribeToLoading()
         viewModel.fetchData()
     }
 
@@ -476,37 +473,6 @@ private extension ActualVisitVC {
         showPopUp(view: calendarVC)
     }
 }
-
-// // MARK: - Table Height
-//private extension ActualVisitVC {
-//
-//    func observeTableHeight() {
-//
-//        tableObservation = tableView.observe(\.contentSize) { [weak self] _, _ in
-//
-//            self?.heightTableView.constant =
-//            self?.tableView.contentSize.height ?? 0
-//        }
-//    }
-//}
-
- // MARK: - Loading
-private extension ActualVisitVC {
-
-    func subscribeToLoading() {
-
-        viewModel.loadingBehavior
-            .subscribe(onNext: { [weak self] isLoading in
-
-                isLoading
-                ? self?.startLoading()
-                : self?.endLoading()
-
-            })
-            .disposed(by: disposeBag)
-    }
-}
-
  // MARK: - Calendar Delegate
 extension ActualVisitVC: BackSelectDate {
 
