@@ -193,5 +193,4 @@ final class UnPlannedVisitItemsViewModel {
         products.accept(list)
         RealmStorageManager.shared.saveProductsData(list)
     }
-    
 }

@@ -66,10 +66,10 @@ final class UnPlannedVisitNotesViewModel {
                 rows.append(NotesRow(title: "Doctor", value: doctor))
             }
             
-            if let shift = item.shiftType?.name {
+            if let shift = item.shiftType?.name,
+               !shift.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 rows.append(NotesRow(title: "Shift Type", value: shift))
             }
-            
             if let visitType = item.visitType?.name {
                 rows.append(NotesRow(title: "Visit Type", value: visitType))
             }
@@ -132,42 +132,7 @@ final class UnPlannedVisitNotesViewModel {
         
         return nil
     }
-//    // MARK: - Public Save
-//    func saveUnPlannedVisit(completion: @escaping (Bool, String) -> Void) {
-//        
-//        if Reachability.isConnectedToNetwork() {
-//            LocationManager.shared.getCurrentLocation { [weak self] lat, lng in
-//                self?.saveUnPlannedVisitAPI(endLat: lat, endLng: lng) { success, message, id in
-//                    // completion
-//                }
-//            }
-//            
-////            saveUnPlannedVisitAPI { [weak self] success, message, onlineID in
-////                guard let self = self else { return }
-////                
-////                RealmStorageManager.shared.setUnPlannedVisitOffline(false)
-////                self.saveActualVisitData(
-////                    onlineID: onlineID,
-////                    isUploaded: success
-////                )
-////                
-////                if success {
-////                    self.clearCachedVisitData()
-////                }
-////                
-////                completion(success, message)
-////            }
-//        } else {
-//            saveActualVisitData(
-//                onlineID: nil,
-//                isUploaded: false
-//            )
-//            
-//            RealmStorageManager.shared.setUnPlannedVisitOffline(true)
-//            completion(true, "The data has been saved locally. It will be uploaded once an internet connection is available.")
-//        }
-//    }
-//
+
     // MARK: - Public Save
     func saveUnPlannedVisit(completion: @escaping (Bool, String) -> Void) {
         
@@ -183,10 +148,7 @@ final class UnPlannedVisitNotesViewModel {
                 completion(success, message)
             }
         } else {
-            self.saveActualVisitData(
-                onlineID: nil,
-                isUploaded: false
-            )
+            self.saveActualVisitData(onlineID: nil,isUploaded: false)
             RealmStorageManager.shared.setUnPlannedVisitOffline(true)
             completion(
                 true,
@@ -194,12 +156,14 @@ final class UnPlannedVisitNotesViewModel {
             )
         }
     }
+    
+    
     // MARK: - Save Actual Visit (LOCAL)
     private func saveActualVisitData(
         onlineID: Int?,
         isUploaded: Bool
     ) {
-        
+        print("save visit offline data")
         guard let visit = RealmStorageManager.shared.getVisitItemData()?.first else {
             print("❌ No visit item found")
             return
@@ -215,9 +179,9 @@ final class UnPlannedVisitNotesViewModel {
         
         let now = Date()
         let offlineId = String(Date().timeIntervalSince1970)
-
-        LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
-            guard let self = self else { return }
+//
+//        LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
+//            guard let self = self else { return }
 
             let model = ActualVisitModel(
                 id: UUID().uuidString,
@@ -249,8 +213,8 @@ final class UnPlannedVisitNotesViewModel {
                 visit_time: now.formattedTime.to24HourFormat,
                 llAcccount: visit.account?.ll ?? "",
                 lgAcccount: visit.account?.lg ?? "",
-                endLat: "\(endLat)",
-                endLong: "\(endLng)",
+//                endLat: "\(endLat)",
+//                endLong: "\(endLng)",
                 isUploaded: isUploaded,
                 
                 productVisit: self.mapProducts(products),
@@ -261,7 +225,7 @@ final class UnPlannedVisitNotesViewModel {
             print("offline_id >> \(model.offline_id ?? "")")
             print("model >> \(model)")
             self.persistActualVisit(model)
-        }
+       // }
     }
     // MARK: - Mappers
     private func mapProducts(_ items: [ProductItem]) -> [ProductVisitModel] {

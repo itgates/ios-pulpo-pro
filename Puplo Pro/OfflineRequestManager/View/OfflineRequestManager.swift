@@ -105,7 +105,7 @@ class OfflineRequestManager {
         }
         let plans = RealmStorageManager.shared.getNewPlanData() ?? []
         let url = baseURL + URLs.planURL
-        let paramsArray = buildParams(from: plans, user_id: user.user_id ?? "")
+        let paramsArray = buildParams(from: plans, user_id: user.user_id)
         let headers = buildHeaders()
         
         do {

@@ -78,7 +78,6 @@ extension UIViewController {
     }
     private func validateVisitItem(_ item: VisitItem) -> String? {
         
-        
         let masterData = RealmStorageManager.shared.getMasterData()
         let isShiftEnabled =
             masterData?
@@ -110,9 +109,13 @@ extension UIViewController {
         if !item.visitType.isSelected {
             return "Please select visit type"
         }
-        // ✅ أهم سطر
+        
         if isShiftEnabled && !item.shiftType.isSelected {
             return "Please select shift type"
+        }
+        
+        if item.comment?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true {
+            return "Please enter comment"
         }
         return nil
     }
@@ -126,6 +129,10 @@ extension ProductItem {
         
         if !feedback.isSelected {
             return "Please select feedback."
+        }
+        
+        if comment?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true {
+            return "Please enter comment."
         }
         
         if count.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {

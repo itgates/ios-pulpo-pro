@@ -33,6 +33,7 @@ final class UnPlannedVisitNotesVC: BaseView {
     private var productsData: [ProductItem] {
         RealmStorageManager.shared.getProductsData() ?? []
     }
+    let masterData = AppDataProvider.shared.masterData?.Data?.settings
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -348,7 +349,7 @@ extension UnPlannedVisitNotesVC {
         let trackingSettingIsOn = getSettingValue("allow_actual_with_deviation")
         let greenZoneSettingIsOn = getSettingValue("green_zone_with_deviation")
         let checkStartSettingIsOn = getSettingValue("check_on_start_location")
-
+        
         switch zone {
 
         case .white:
@@ -371,14 +372,30 @@ extension UnPlannedVisitNotesVC {
 
             } else {
 
-                showLocationDeviationDialog(distance, acceptedDistance, true)
+                if getSettingValue("hide_dialog_on_deviation") {
+                    saveVisit()
+                } else {
+                    showLocationDeviationDialog(distance, acceptedDistance, true)
+                }
             }
+      
         case .red:
 
             if trackingSettingIsOn {
-                showLocationDeviationDialog(distance, acceptedDistance, true)
+
+                if getSettingValue("hide_dialog_on_deviation") {
+                    saveVisit()
+                } else {
+                    showLocationDeviationDialog(distance, acceptedDistance, true)
+                }
+
             } else {
-                showLocationDeviationDialogWithoutSave(distance, acceptedDistance)
+
+                if getSettingValue("hide_dialog_on_deviation") {
+                    return
+                } else {
+                    showLocationDeviationDialogWithoutSave(distance, acceptedDistance)
+                }
             }
         }
     }
