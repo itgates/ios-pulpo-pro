@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (5.10.2)
+  - Clarity (3.4.4)
   - Differentiator (5.0.0)
   - DropDown (2.3.13)
   - IQKeyboardCore (1.0.8)
@@ -62,6 +63,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - Clarity
   - DropDown
   - IQKeyboardManagerSwift
   - Kingfisher
@@ -76,6 +78,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - Clarity
     - Differentiator
     - DropDown
     - IQKeyboardCore
@@ -99,6 +102,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
+  Clarity: 817b84551963606d1633d22d748c66ed40da65d0
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
   DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
   IQKeyboardCore: 8652977ec919cf5351aa2977fedd1a6546476fbc
@@ -120,6 +124,6 @@ SPEC CHECKSUMS:
   RxSwift: 31649ace6aceeb422e16ff71c60804f9c3281ed9
   SSZipArchive: 8a6ee5677c8e304bebc109e39cf0da91ccef22ea
 
-PODFILE CHECKSUM: d44db63ad02129eebde0cb6249c152711c865f5a
+PODFILE CHECKSUM: c64353045bac2959637c8262cf998289fd14c775
 
 COCOAPODS: 1.16.2

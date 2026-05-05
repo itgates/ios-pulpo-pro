@@ -9,7 +9,7 @@ import UIKit
 import IQKeyboardManagerSwift
 import CoreData
 import CoreLocation
-
+import Clarity
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
@@ -32,6 +32,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
 //        GMSServices.provideAPIKey("AIzaSyCr-qeqsO7QlkOMXdIU8xiyooVP7EezO9Q")
 //        GMSPlacesClient.provideAPIKey("AIzaSyCr-qeqsO7QlkOMXdIU8xiyooVP7EezO9Q")
+
+        let clarityConfig = ClarityConfig(projectId: "wmcq5b0hsu", logLevel: .info)
+        ClaritySDK.initialize(config: clarityConfig)
         
         rootVC()
         // clear data 1783633

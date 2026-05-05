@@ -17,4 +17,5 @@ target 'Puplo Pro' do
  pod 'DropDown'
  pod 'SSZipArchive'
  pod 'RealmSwift'
+ pod 'Clarity'
 end
