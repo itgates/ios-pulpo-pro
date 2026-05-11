@@ -51,27 +51,35 @@ class BaseView: UIViewController, UITextFieldDelegate{
         let offlineOWS = RealmStorageManager.shared.getOWActivitiesData() ?? []
         let offlinePlans = RealmStorageManager.shared.getOfflinePlans() ?? []
      
-        
-        let visitItem = RealmStorageManager.shared.getVisitItemData() ?? []
-        let managerData = RealmStorageManager.shared.getManagerData() ?? []
-        let giftsData = RealmStorageManager.shared.getGiftsData() ?? []
-        let productsData = RealmStorageManager.shared.getProductsData() ?? []
-        let issetUnPlannedVisitOffline = RealmStorageManager.shared.isUnPlannedVisitOffline()
+//        let visitItem = RealmStorageManager.shared.getVisitItemData() ?? []
+//        let managerData = RealmStorageManager.shared.getManagerData() ?? []
+//        let giftsData = RealmStorageManager.shared.getGiftsData() ?? []
+//        let productsData = RealmStorageManager.shared.getProductsData() ?? []
+//        let issetUnPlannedVisitOffline = RealmStorageManager.shared.isUnPlannedVisitOffline()
 
+//        let actualVisits = RealmStorageManager.shared.getActualVisitData() ?? []
+//        let hasPendingUnplannedVisits = actualVisits.contains { !$0.isUploaded }
+//
         let actualVisits = RealmStorageManager.shared.getActualVisitData() ?? []
-        let hasPendingUnplannedVisits = actualVisits.contains { !$0.isUploaded }
-        
+//        let hasPendingUnplannedVisits = actualVisits.contains { !$0.isUploaded }
+        let hasPendingUnplannedVisits = actualVisits.contains {
+            !$0.isUploaded ||
+            $0.online_id == nil ||
+            $0.online_id == "" ||
+            $0.online_id == "-1" ||
+            $0.online_id == "0"
+        }
         print("offlineOWS.count >>>\(offlineOWS.count)")
 
-        let hasUnplannedVisitData =
-            !visitItem.isEmpty ||
-            !managerData.isEmpty ||
-            !giftsData.isEmpty ||
-            !productsData.isEmpty
+//        let hasUnplannedVisitData =
+//            !visitItem.isEmpty ||
+//            !managerData.isEmpty ||
+//            !giftsData.isEmpty ||
+//            !productsData.isEmpty
 
         let shouldSendUnPlannedVisit =
-            issetUnPlannedVisitOffline &&
-            hasUnplannedVisitData &&
+//            issetUnPlannedVisitOffline &&
+//            hasUnplannedVisitData &&
             hasPendingUnplannedVisits
 
         guard
@@ -131,20 +139,28 @@ class BaseView: UIViewController, UITextFieldDelegate{
                 if done {
                     var storedVisits = RealmStorageManager.shared.getActualVisitData() ?? []
 
+//                    for index in storedVisits.indices {
+//                        guard !storedVisits[index].isUploaded else { continue }
+//
+//                        if let offlineID = storedVisits[index].offline_id,
+//                           let matched = idsMap.first(where: { $0.offlineID == offlineID }) {
+//
+//                            storedVisits[index].isUploaded = true
+//                            storedVisits[index].online_id = "\(matched.onlineID)"
+//                        }
+//                    }
                     for index in storedVisits.indices {
-                        guard !storedVisits[index].isUploaded else { continue }
 
-                        
-                        print("idsMap.first?.offlineID  >> \(idsMap.first?.offlineID ?? "")")
-                        print("storedVisits[index].offlineID  >> \(storedVisits[index].offline_id ?? "")")
-                        
-                        
-                        if let offlineID = storedVisits[index].offline_id,
-                           let matched = idsMap.first(where: { $0.offlineID == offlineID }) {
+                        let visit = storedVisits[index]
 
-                            storedVisits[index].isUploaded = true
-                            storedVisits[index].online_id = "\(matched.onlineID)"
+                        guard let offlineID = visit.offline_id,
+                              let matched = idsMap.first(where: { $0.offlineID == offlineID }) else {
+                            continue
                         }
+
+                        // 🔥 Update always if we got valid response
+                        storedVisits[index].online_id = "\(matched.onlineID)"
+                        storedVisits[index].isUploaded = true
                     }
                    
                     RealmStorageManager.shared.saveActualVisitData(storedVisits)

@@ -340,10 +340,7 @@ extension ActualVisitVC: UITableViewDelegate, UITableViewDataSource {
             header.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         }
     }
-    func tableView(
-        _ tableView: UITableView,
-        cellForRowAt indexPath: IndexPath
-    ) -> UITableViewCell {
+    func tableView(_ tableView: UITableView,cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let item = sections[indexPath.section].items[indexPath.row]
 
@@ -388,6 +385,17 @@ extension ActualVisitVC: UITableViewDelegate, UITableViewDataSource {
             return cell
         }
         return UITableViewCell()
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+        let item = sections[indexPath.section].items[indexPath.row]
+
+        if let model = item as? ActualVisitModel {
+            print("model >>>\(model)")
+            let vc = VisitDetailsVC()
+            vc.visitModel = model
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
 

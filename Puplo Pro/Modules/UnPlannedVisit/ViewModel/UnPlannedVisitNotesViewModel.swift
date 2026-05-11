@@ -139,10 +139,8 @@ final class UnPlannedVisitNotesViewModel {
         if Reachability.isConnectedToNetwork() {
             
             self.saveUnPlannedVisitAPI() { success, message, onlineID in
-                
-                RealmStorageManager.shared.setUnPlannedVisitOffline(false)
-                self.saveActualVisitData(onlineID: onlineID,isUploaded: success)
-                if success {
+                if success == true {
+                    self.saveActualVisitData(onlineID: onlineID,isUploaded: success)
                     self.clearCachedVisitData()
                 }
                 completion(success, message)
@@ -179,6 +177,7 @@ final class UnPlannedVisitNotesViewModel {
         
         let now = Date()
         let offlineId = String(Date().timeIntervalSince1970)
+        let startLocation = RealmStorageManager.shared.getVisitStartLocation()
 //
 //        LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
 //            guard let self = self else { return }
@@ -213,8 +212,8 @@ final class UnPlannedVisitNotesViewModel {
                 visit_time: now.formattedTime.to24HourFormat,
                 llAcccount: visit.account?.ll ?? "",
                 lgAcccount: visit.account?.lg ?? "",
-//                endLat: "\(endLat)",
-//                endLong: "\(endLng)",
+                endLat: "\(startLocation?.coordinate.latitude ?? 0)",
+                endLong: "\(startLocation?.coordinate.longitude ?? 0)",
                 isUploaded: isUploaded,
                 
                 productVisit: self.mapProducts(products),
@@ -227,6 +226,7 @@ final class UnPlannedVisitNotesViewModel {
             self.persistActualVisit(model)
        // }
     }
+    
     // MARK: - Mappers
     private func mapProducts(_ items: [ProductItem]) -> [ProductVisitModel] {
         items.map {
@@ -358,6 +358,7 @@ final class UnPlannedVisitNotesViewModel {
             "ll": endLocation?.coordinate.latitude ?? 0,
             "lg": endLocation?.coordinate.longitude ?? 0,
         ]
+        
         print("visitDict >>>\(visitDict)")
         let visitArray = [visitDict]
         
@@ -383,8 +384,28 @@ final class UnPlannedVisitNotesViewModel {
                 self.loadingBehavior.accept(false)
                 
                 switch result {
+//                case .success(let model):
+//                    completion(true, model.Status_Message ?? "", Int(model.Data?.first?.visit_id ?? "") ?? 0)
+//                    print("model >>\(model)")
+                    
                 case .success(let model):
-                    completion(true, model.Status_Message ?? "", Int(model.Data?.first?.visit_id ?? "") ?? 0)
+
+                    let data = model.Data?.first
+
+                    let visitIDString = data?.visit_id ?? ""
+
+                    // ❗ validation مهم
+                    let isValidSave = !(visitIDString.isEmpty || visitIDString == "0" || data?.visit_id == nil)
+
+                    if isValidSave {
+                        completion(true,
+                                   model.Status_Message ?? "",
+                                   Int(visitIDString) ?? 0)
+                    } else {
+                        completion(false,
+                                   "Save failed: visit_id is nil",
+                                   0)
+                    }
                 case .failure(let error):
                     completion(false, error.localizedDescription, 0)
                 }
@@ -394,6 +415,7 @@ final class UnPlannedVisitNotesViewModel {
             completion(false, "JSON Encoding Error", 0)
         }
     }
+    
     private func buildProductsPayloadNEW(_ productsData: [ProductItem]) -> [[String: Any]] {
         
         return productsData.map { item in
@@ -523,10 +545,10 @@ final class UnPlannedVisitNotesViewModel {
         progressHandler: ((Int) -> Void)? = nil,
         completion: @escaping (Swift.Result<UploadResponse, Error>) -> Void
     ){
-        guard
-            let user = RealmStorageManager.shared.getLoggedUser(),
-            !images.isEmpty
-        else { return }
+//        guard
+//            let user = RealmStorageManager.shared.getLoggedUser(),
+//            !images.isEmpty
+//        else { return }
         
         let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let url = baseURL + URLs.attachmentsURL

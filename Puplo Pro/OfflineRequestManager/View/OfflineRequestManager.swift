@@ -17,12 +17,16 @@ class OfflineRequestManager {
     let loadingBehavior = BehaviorRelay<Bool>(value: false)
     let alertBehavior = PublishSubject<String>()
     
+    var user: UserLoginRealm? {
+        RealmStorageManager.shared.getLoggedUser()
+    }
     
+    var baseURL: String {
+        RealmStorageManager.shared.getAPIPath() ?? ""
+    }
     // MARK: - fetch Data Applay
     func fetchDataApplay(OWS: [OWSModel],completion: @escaping (Bool,String) -> Void) {
         
-        let user = RealmStorageManager.shared.getLoggedUser()
-        let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let url = baseURL + URLs.saveOwURL
         
         let visitArray: [[String: Any]] = OWS.map { model in
@@ -96,16 +100,10 @@ class OfflineRequestManager {
     
     // MARK: - save Plans
     func savePlans(completion: @escaping (Bool, String,[(offlineID: Int, onlineID: Int)]) -> Void) {
-        guard
-            let user = RealmStorageManager.shared.getLoggedUser(),
-            let baseURL = RealmStorageManager.shared.getAPIPath()
-        else {
-            completion(false, "Unauthorized", [])
-            return
-        }
+                
         let plans = RealmStorageManager.shared.getNewPlanData() ?? []
         let url = baseURL + URLs.planURL
-        let paramsArray = buildParams(from: plans, user_id: user.user_id)
+        let paramsArray = buildParams(from: plans, user_id: user?.user_id ?? "")
         let headers = buildHeaders()
         
         do {
@@ -174,18 +172,18 @@ class OfflineRequestManager {
         completion: @escaping (Bool, String, [(offlineID: String, onlineID: String)]) -> Void
         
     ) {
-        guard let user = RealmStorageManager.shared.getLoggedUser() else {
-            completion(false, "Unauthorized", [])
-            return
-        }
-
-        let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let url = baseURL + URLs.saveOw
 
         // Fetch all stored visits that are not uploaded
-        let storedVisits = (RealmStorageManager.shared.getActualVisitData() ?? [])
-            .filter { !$0.isUploaded }
-
+//        let storedVisits = (RealmStorageManager.shared.getActualVisitData() ?? [])
+//            .filter { !$0.isUploaded }
+        let storedVisits = (RealmStorageManager.shared.getActualVisitData() ?? []).filter {
+            !$0.isUploaded ||
+            $0.online_id == nil ||
+            $0.online_id == "" ||
+            $0.online_id == "-1" ||
+            $0.online_id == "0"
+        }
         guard !storedVisits.isEmpty else {
             completion(false, "No visits to upload", [])
             return
@@ -263,8 +261,8 @@ class OfflineRequestManager {
                 let selectedShift: Int = Int(visit.shiftTypeId ?? "1") ?? 1
                 let ampm: Int = Int(visit.ampm ?? "1") ?? 1
                 let vPlannedID: Int = Int(visit.palnID ?? "0") ?? 0
-                let teamID: Int = Int((user.lineIds).components(separatedBy: ",").first ?? "0") ?? 0
-                let userIDString: String = (user.user_id)
+                let teamID: Int = Int((user?.lineIds)?.components(separatedBy: ",").first ?? "0") ?? 0
+                let userIDString: String = (user?.user_id)!
 
                 let visitDict: [String: Any] = [
                     "ampm": ampm,
@@ -307,7 +305,7 @@ class OfflineRequestManager {
                     "ll": endLat,
                     "lg": endLng
                 ]
-
+                
                 print("visitDict >>> \(visitDict)")
                 appendQueue.async {
                     visitsArray.append(visitDict)
