@@ -21,6 +21,7 @@
                 <outlet property="stackColapseTapped" destination="Phd-8R-lWN" id="Oha-Ul-L8l"/>
                 <outlet property="stackFilter" destination="SBQ-r8-g6S" id="wgL-Xq-3TN"/>
                 <outlet property="tableView" destination="9C2-k1-Wr4" id="kcJ-Az-VAd"/>
+                <outlet property="userIDLabel" destination="rPu-p5-tpc" id="19M-vU-7V6"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="viewBackgroundHeader" destination="3jp-p4-59z" id="7Q6-PP-bws"/>
                 <outlet property="viewShadowFilter" destination="V47-pi-kvu" id="8dL-9p-bvF"/>
@@ -37,7 +38,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="393" height="120"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="yLX-Ks-tAR">
-                            <rect key="frame" x="16" y="62" width="306" height="50"/>
+                            <rect key="frame" x="16" y="62" width="319.66666666666669" height="50"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yOf-6Q-F0Q">
                                     <rect key="frame" x="0.0" y="0.0" width="90" height="50"/>
@@ -61,7 +62,7 @@
                                     </subviews>
                                 </stackView>
                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="aUD-6J-IuP">
-                                    <rect key="frame" x="90" y="0.0" width="216" height="50"/>
+                                    <rect key="frame" x="89.999999999999986" y="0.0" width="229.66666666666663" height="50"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gemstone Ultra" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="04y-7G-Z5j">
                                             <rect key="frame" x="0.0" y="0.0" width="170.33333333333334" height="50"/>
@@ -73,6 +74,12 @@
                                             <rect key="frame" x="175.33333333333331" y="0.0" width="40.666666666666657" height="50"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
                                             <color key="textColor" systemColor="systemGreenColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rPu-p5-tpc">
+                                            <rect key="frame" x="221" y="0.0" width="8.6666666666666572" height="50"/>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                            <color key="textColor" name="baseColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -297,7 +304,7 @@
             <color red="0.41600000858306885" green="0.3919999897480011" blue="0.85100001096725464" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

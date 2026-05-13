@@ -50,6 +50,7 @@ final class UnPlannedVisitDetailsVC: BaseView, UIScrollViewDelegate {
 private extension UnPlannedVisitDetailsVC {
     
     func setupUI() {
+        RealmStorageManager.shared.saveVisitStartDate(Date())
         LocationManager.shared.getCurrentLocation { lat, lng in
             RealmStorageManager.shared.saveVisitStartLocation(lat: lat, lng: lng)
         }

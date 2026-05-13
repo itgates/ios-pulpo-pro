@@ -461,4 +461,20 @@ final class RealmStorageManager {
         clear("applay_unplanned_visit_offline")
         print("✔ UnPlannedVisitOffline flag cleared")
     }
+    
+    // MARK: - VISIT START DATE
+
+    func saveVisitStartDate(_ date: Date) {
+        UserDefaults.standard.set(date, forKey: "visit_start_date")
+        print("✔ Visit start date saved")
+    }
+
+    func getVisitStartDate() -> Date? {
+        UserDefaults.standard.object(forKey: "visit_start_date") as? Date
+    }
+
+    func clearVisitStartDate() {
+        UserDefaults.standard.removeObject(forKey: "visit_start_date")
+        print("✔ Visit start date cleared")
+    }
 }

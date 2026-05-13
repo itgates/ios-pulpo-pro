@@ -182,6 +182,26 @@ final class UnPlannedVisitNotesViewModel {
 //        LocationManager.shared.getCurrentLocation { [weak self] endLat, endLng in
 //            guard let self = self else { return }
 
+//        "vdate": startDate.formattedDate,// start date
+//        "vtime": endDate.formattedTime.to24HourFormat, // start time
+//        "visit_duration": visitDuration,
+        
+        // duration
+        let startDate = RealmStorageManager.shared.getVisitStartDate() ?? Date()
+        let endDate = Date()
+
+        let duration = Int(endDate.timeIntervalSince(startDate))
+
+        let hours = duration / 3600
+        let minutes = (duration % 3600) / 60
+        let seconds = duration % 60
+
+        let visitDuration = String(
+            format: "%02d:%02d:%02d",
+            hours,
+            minutes,
+            seconds
+        )
             let model = ActualVisitModel(
                 id: UUID().uuidString,
                 accountID: visit.account?.id ?? "",
@@ -208,8 +228,9 @@ final class UnPlannedVisitNotesViewModel {
                 shift_type: visit.shiftType?.name ?? "",
                 visit_type: visit.visitType?.name ?? "",
                
-                visit_date: now.formattedDate,
-                visit_time: now.formattedTime.to24HourFormat,
+                visit_date: startDate.formattedDate,
+                visit_time: endDate.formattedTime.to24HourFormat,
+                visit_duration: visitDuration,
                 llAcccount: visit.account?.ll ?? "",
                 lgAcccount: visit.account?.lg ?? "",
                 endLat: "\(startLocation?.coordinate.latitude ?? 0)",
@@ -318,6 +339,22 @@ final class UnPlannedVisitNotesViewModel {
             lng2: endLocation?.coordinate.longitude ?? 0
         )
         
+        // duration
+        let startDate = RealmStorageManager.shared.getVisitStartDate() ?? Date()
+        let endDate = Date()
+
+        let duration = Int(endDate.timeIntervalSince(startDate))
+
+        let hours = duration / 3600
+        let minutes = (duration % 3600) / 60
+        let seconds = duration % 60
+
+        let visitDuration = String(
+            format: "%02d:%02d:%02d",
+            hours,
+            minutes,
+            seconds
+        )
         let visitDict: [String: Any] = [
             "ampm": ampm,
             "comments": visit.comment ?? "",
@@ -342,17 +379,17 @@ final class UnPlannedVisitNotesViewModel {
             "offline_id": "11",
             "product_info": products,
             "selected_shift": visit.shiftType?.id ?? 0,
-            "sync_date": now.formattedDate,
-            "sync_time": now.formattedTime.to24HourFormat,
+            "sync_date": "",//now.formattedDate,
+            "sync_time": "",//now.formattedTime.to24HourFormat,
             "team_id": user.lineIds,
             "type_id": visit.accountType?.id ?? 0,
             "user_id": user.user_id,
-            "vdate": now.formattedDate,
             "visit_address": "",
             "visit_deviation": visitDeviation,
-            "visit_duration": "00:02:00",
             "vplanned_id": visit.planID ?? "0",
-            "vtime": now.formattedTime.to24HourFormat,
+            "vdate": startDate.formattedDate,// start date
+            "vtime": endDate.formattedTime.to24HourFormat, // start time
+            "visit_duration": visitDuration,
             "ll_start": startLocation?.coordinate.latitude ?? 0,
             "lg_start": startLocation?.coordinate.longitude ?? 0,
             "ll": endLocation?.coordinate.latitude ?? 0,
@@ -525,6 +562,7 @@ final class UnPlannedVisitNotesViewModel {
         RealmStorageManager.shared.clearProductsData()
         RealmStorageManager.shared.clearSelectedImageVisitData()
         RealmStorageManager.shared.clearVisitStartLocation()
+        RealmStorageManager.shared.clearVisitStartDate()
     }
     
      func calculateDistance(

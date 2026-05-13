@@ -56,7 +56,7 @@ private extension CalenderVC {
         calender.circularViewDiameter = 0.5
         calender.calendarDelegate = self
         calender.inset = .zero
-        calender.weeks = ("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+        calender.weeks = ("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri")
         calender.style = .monotone
         calender.dayPosition = .center
         calender.selectionMode = .single(style: .background)

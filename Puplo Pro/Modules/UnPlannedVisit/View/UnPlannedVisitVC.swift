@@ -25,7 +25,8 @@ final class UnPlannedVisitVC: BaseView {
     @IBOutlet private weak var appVersionLabel: UILabel!
     @IBOutlet private weak var companyNameLabel: UILabel!
     @IBOutlet private weak var buttonBack: UIButton!
-
+    @IBOutlet weak var userIDLabel: UILabel!
+    
     @IBOutlet private weak var viewBackgroundButtonTappes: UIView!
     @IBOutlet private weak var firstTapButton: UIButton!
     @IBOutlet private weak var secondTapButton: UIButton!
@@ -60,7 +61,8 @@ private extension UnPlannedVisitVC {
         appVersionLabel.text = displayAppVersion()
         appVersionLabel.textColor = .green
         companyNameLabel.text = "I. \(user?.company_name ?? "")"
-
+        userIDLabel.rx.text.onNext("ID.\(user?.user_id ?? "")")
+        
         viewBackgroundButtonTappes.layer.cornerRadius = 10
         highlightButton(firstTapButton)
     }

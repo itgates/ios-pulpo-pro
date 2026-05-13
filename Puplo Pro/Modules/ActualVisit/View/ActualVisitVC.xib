@@ -21,6 +21,7 @@
                 <outlet property="stackColapseTapped" destination="53U-wK-07c" id="Tld-yw-FsM"/>
                 <outlet property="stackFilter" destination="wZw-SE-cm5" id="Edf-dW-cak"/>
                 <outlet property="tableView" destination="XC6-oZ-yoI" id="e0y-uM-mNI"/>
+                <outlet property="userIDLabel" destination="fCg-U4-Qhf" id="fAv-nO-JhI"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="viewBackgroundHeader" destination="9Ar-p6-GDn" id="T3B-mI-W1x"/>
                 <outlet property="viewShadowFilter" destination="MuY-gK-yeP" id="b2K-5W-pey"/>
@@ -37,7 +38,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="393" height="120"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="l2K-g8-wlP">
-                            <rect key="frame" x="16" y="62" width="306" height="50"/>
+                            <rect key="frame" x="16" y="62" width="319.66666666666669" height="50"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lcf-jK-gJZ">
                                     <rect key="frame" x="0.0" y="0.0" width="90" height="50"/>
@@ -61,7 +62,7 @@
                                     </subviews>
                                 </stackView>
                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="mjD-lr-ehQ">
-                                    <rect key="frame" x="90" y="0.0" width="216" height="50"/>
+                                    <rect key="frame" x="89.999999999999986" y="0.0" width="229.66666666666663" height="50"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gemstone Ultra" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eNR-Mq-8mj">
                                             <rect key="frame" x="0.0" y="0.0" width="170.33333333333334" height="50"/>
@@ -73,6 +74,12 @@
                                             <rect key="frame" x="175.33333333333331" y="0.0" width="40.666666666666657" height="50"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
                                             <color key="textColor" systemColor="systemGreenColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fCg-U4-Qhf">
+                                            <rect key="frame" x="221" y="0.0" width="8.6666666666666572" height="50"/>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                            <color key="textColor" name="baseColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>

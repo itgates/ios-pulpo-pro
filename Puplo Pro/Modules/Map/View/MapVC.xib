@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -16,6 +16,7 @@
                 <outlet property="buttonBack" destination="eGL-9i-1qu" id="EJ5-Le-70A"/>
                 <outlet property="companyNameLabel" destination="gii-bD-3c9" id="lhl-e4-FkY"/>
                 <outlet property="mapView" destination="VBP-ua-i2K" id="ThE-ek-7FC"/>
+                <outlet property="userIDLabel" destination="JGE-qX-3ok" id="miL-Lu-dch"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="viewBackgroundHeader" destination="uaj-aP-Lwp" id="MWc-BG-n7a"/>
             </connections>
@@ -43,7 +44,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="393" height="120"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="2uz-OU-sey">
-                            <rect key="frame" x="16" y="62" width="306" height="50"/>
+                            <rect key="frame" x="16" y="62" width="319.66666666666669" height="50"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u7F-QK-wVz">
                                     <rect key="frame" x="0.0" y="0.0" width="90" height="50"/>
@@ -67,7 +68,7 @@
                                     </subviews>
                                 </stackView>
                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="jIM-8R-8yz">
-                                    <rect key="frame" x="90" y="0.0" width="216" height="50"/>
+                                    <rect key="frame" x="89.999999999999986" y="0.0" width="229.66666666666663" height="50"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gemstone Ultra" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gii-bD-3c9">
                                             <rect key="frame" x="0.0" y="0.0" width="170.33333333333334" height="50"/>
@@ -79,6 +80,12 @@
                                             <rect key="frame" x="175.33333333333331" y="0.0" width="40.666666666666657" height="50"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
                                             <color key="textColor" systemColor="systemGreenColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JGE-qX-3ok">
+                                            <rect key="frame" x="221" y="0.0" width="8.6666666666666572" height="50"/>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                            <color key="textColor" name="baseColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>

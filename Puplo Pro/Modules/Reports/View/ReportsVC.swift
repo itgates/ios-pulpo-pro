@@ -14,6 +14,7 @@ final class ReportsVC: BaseView {
     @IBOutlet private weak var viewBackgroundHeader: UIView!
     @IBOutlet private weak var appVersionLabel: UILabel!
     @IBOutlet private weak var companyNameLabel: UILabel!
+    @IBOutlet weak var userIDLabel: UILabel!
     
     @IBOutlet private weak var buttonBack: UIButton!
     @IBOutlet private weak var tableView: UITableView!
@@ -43,6 +44,7 @@ private extension ReportsVC {
         appVersionLabel.text = displayAppVersion()
         appVersionLabel.textColor = .green
         companyNameLabel.rx.text.onNext("I. \(user?.company_name ?? "")")
+        userIDLabel.rx.text.onNext("ID.\(user?.user_id ?? "")")
     }
 }
 private extension ReportsVC {

@@ -26,6 +26,7 @@ final class HomeVC: BaseView {
     @IBOutlet private weak var viewBackgroundHeader: UIView!
     @IBOutlet private weak var appVersionLabel: UILabel!
     @IBOutlet weak var companyNameLabel: UILabel!
+    @IBOutlet weak var userIDLabel: UILabel!
     
     @IBOutlet private weak var viewContentUserData: UIView!
     @IBOutlet private weak var userImageView: UIImageView!
@@ -87,6 +88,7 @@ private extension HomeVC {
         appVersionLabel.text = displayAppVersion()
         appVersionLabel.textColor = .green
         companyNameLabel.rx.text.onNext("I. \(user?.company_name ?? "")")
+        userIDLabel.rx.text.onNext("ID.\(user?.user_id ?? "")")
     }
     
     func setupUserDataView() {

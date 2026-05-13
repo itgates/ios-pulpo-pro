@@ -33,6 +33,10 @@ struct ActualVisitModel: Codable {
 
     var visit_date: String? = nil
     var visit_time: String? = nil
+    var visit_duration: String? = nil
+    
+    var sync_date: String? = nil
+    var sync_time: String? = nil
     var llAcccount: String
     var lgAcccount: String
     var endLat: String? = nil

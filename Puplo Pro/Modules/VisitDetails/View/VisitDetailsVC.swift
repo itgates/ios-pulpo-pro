@@ -16,6 +16,7 @@ final class VisitDetailsVC: BaseView {
     @IBOutlet private weak var appVersionLabel: UILabel!
     @IBOutlet private weak var companyNameLabel: UILabel!
     @IBOutlet private weak var buttonBack: UIButton!
+    @IBOutlet weak var userIDLabel: UILabel!
     
     private let tableView = UITableView(frame: .zero, style: .grouped)
     // MARK: - Properties
@@ -53,7 +54,8 @@ private extension VisitDetailsVC {
         appVersionLabel.textColor = .green
 
         companyNameLabel.rx.text.onNext("I. \(user?.company_name ?? "")")
-
+        userIDLabel.rx.text.onNext("ID.\(user?.user_id ?? "")")
+        
         // MARK: - TableView
         view.addSubview(tableView)
 

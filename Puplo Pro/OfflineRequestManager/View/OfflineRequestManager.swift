@@ -29,43 +29,93 @@ class OfflineRequestManager {
         
         let url = baseURL + URLs.saveOwURL
         
-        let visitArray: [[String: Any]] = OWS.map { model in
-            return [
-                "ampm": model.shift_id ?? "1",
-                "comments": model.notes,
-                "date_added": model.date,
-                "appVersion": AppInfo.shared.appVersion,
-                "osVersion": AppInfo.shared.osVersion,
-                "deviceBrand": AppInfo.shared.deviceModel,
-                "osType": "iOS",
-                "div_id": -1,
-                "giveaway_info": [],
-                "id": 0,
-                "insertion_date": "",
-                "insertion_time": "",
-                "is_fake_end_location": false,
-                "is_fake_start_location": false,
-                "is_sync": 0,
-                "item_doc_id": 0,
-                "item_id": 0,
-                "member_info": [],
-                "members": "0",
-                "no_of_doctors": 0,
-                "offline_id": "11",
-                "product_info": [],
-                "selected_shift": model.shift_id ?? "1",
-                "sync_date": "",
-                "sync_time": "",
-                "team_id": 0,
-                "type_id": model.ow_type_id,
-                "user_id": user?.user_id ?? "",
-                "vdate": model.date,
-                "visit_address": "",
-                "visit_deviation": 0,
-                "visit_duration": "00:00:08",
-                "vplanned_id": 0,
-                "vtime": model.time,
-            ]
+//        let visitArray: [[String: Any]] = OWS.map { model in
+//            return [
+//                "ampm": model.shift_id ?? "1",
+//                "comments": model.notes,
+//                "date_added": model.date,
+//                "appVersion": AppInfo.shared.appVersion,
+//                "osVersion": AppInfo.shared.osVersion,
+//                "deviceBrand": AppInfo.shared.deviceModel,
+//                "osType": "iOS",
+//                "div_id": -1,
+//                "giveaway_info": [],
+//                "id": 0,
+//                "insertion_date": "",
+//                "insertion_time": "",
+//                "is_fake_end_location": false,
+//                "is_fake_start_location": false,
+//                "is_sync": 0,
+//                "item_doc_id": 0,
+//                "item_id": 0,
+//                "member_info": [],
+//                "members": "0",
+//                "no_of_doctors": 0,
+//                "offline_id": "11",
+//                "product_info": [],
+//                "selected_shift": "3",
+//                "sync_date": "",
+//                "sync_time": "",
+//                "team_id": 0,
+//                "type_id": model.ow_type_id,
+//                "user_id": user?.user_id ?? "",
+//                "vdate": model.date,
+//                "visit_address": "",
+//                "visit_deviation": 0,
+//                "visit_duration": "00:00:08",
+//                "vplanned_id": 0,
+//                "vtime": model.time,
+//            ]
+//        }
+        let visitArray: [[String: Any]] = OWS.flatMap { model -> [[String: Any]] in
+            
+            let shifts: [String]
+            
+            // لو Full Day ابعت AM + PM
+            if model.shift_id == "4" {
+                shifts = ["1", "2"]
+            } else {
+                shifts = [model.shift_id ?? "1"]
+            }
+            
+            return shifts.map { shift in
+                [
+                    "ampm": shift,
+                    "comments": model.notes,
+                    "date_added": model.date,
+                    "appVersion": AppInfo.shared.appVersion,
+                    "osVersion": AppInfo.shared.osVersion,
+                    "deviceBrand": AppInfo.shared.deviceModel,
+                    "osType": "iOS",
+                    "div_id": -1,
+                    "giveaway_info": [],
+                    "id": 0,
+                    "insertion_date": "",
+                    "insertion_time": "",
+                    "is_fake_end_location": false,
+                    "is_fake_start_location": false,
+                    "is_sync": 0,
+                    "item_doc_id": 0,
+                    "item_id": 0,
+                    "member_info": [],
+                    "members": "0",
+                    "no_of_doctors": 0,
+                    "offline_id": "11",
+                    "product_info": [],
+                    "selected_shift": "3",
+                    "sync_date": "",
+                    "sync_time": "",
+                    "team_id": 0,
+                    "type_id": model.ow_type_id,
+                    "user_id": user?.user_id ?? "",
+                    "vdate": model.date,
+                    "visit_address": "",
+                    "visit_deviation": 0,
+                    "visit_duration": "00:00:08",
+                    "vplanned_id": 0,
+                    "vtime": model.time,
+                ]
+            }
         }
         print("visitArray >>>\(visitArray)")
         do {
@@ -295,11 +345,12 @@ class OfflineRequestManager {
                     "type_id": visit.accountTypeID ?? 0,
                     "user_id": userIDString,
                     "vdate": visit.visit_date ?? "",
+                    "vtime": visit.visit_time ?? "",
                     "visit_address": "",
                     "visit_deviation": visitDeviation,
-                    "visit_duration": "00:02:00",
+                    "visit_duration": visit.visit_duration ?? "",
                     "vplanned_id": vPlannedID,
-                    "vtime": visit.visit_time ?? "",
+                   
                     "ll_start": resolvedStartLat,
                     "lg_start": resolvedStartLng,
                     "ll": endLat,

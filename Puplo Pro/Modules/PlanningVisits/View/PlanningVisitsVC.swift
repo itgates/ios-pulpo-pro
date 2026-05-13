@@ -16,7 +16,8 @@ final class PlanningVisitsVC: BaseView {
     @IBOutlet private weak var appVersionLabel: UILabel!
     @IBOutlet private weak var companyNameLabel: UILabel!
     @IBOutlet private weak var buttonBack: UIButton!
-
+    @IBOutlet weak var userIDLabel: UILabel!
+    
     @IBOutlet private weak var viewBackgroundButton: UIView!
     @IBOutlet private weak var amButton: UIButton!
     @IBOutlet private weak var pmButton: UIButton!
@@ -131,7 +132,8 @@ private extension PlanningVisitsVC {
         appVersionLabel.text = displayAppVersion()
         appVersionLabel.textColor = .green
         companyNameLabel.text = "I. \(user?.company_name ?? "")"
-
+        userIDLabel.rx.text.onNext("ID.\(user?.user_id ?? "")")
+        
         style(view: viewBackgroundSearch, borderWidth: 2, borderColor: baseColor)
 
         [nextButton, applyFilterButton].forEach {

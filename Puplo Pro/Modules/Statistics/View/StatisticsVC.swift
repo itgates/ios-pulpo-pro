@@ -15,7 +15,8 @@ final class StatisticsVC: BaseView {
     @IBOutlet private weak var viewBackgroundHeader: UIView!
     @IBOutlet private weak var appVersionLabel: UILabel!
     @IBOutlet private weak var companyNameLabel: UILabel!
-
+    @IBOutlet weak var userIDLabel: UILabel!
+    
     @IBOutlet private weak var buttonBack: UIButton!
 
     @IBOutlet private weak var productsCountLabel: UILabel!
@@ -50,6 +51,7 @@ private extension StatisticsVC {
         appVersionLabel.textColor = .green
 
         companyNameLabel.text = "I. \(user?.company_name ?? "")"
+        userIDLabel.rx.text.onNext("ID.\(user?.user_id ?? "")")
     }
 }
 

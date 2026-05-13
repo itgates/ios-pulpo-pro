@@ -25,7 +25,8 @@ final class MapVC: BaseView {
     @IBOutlet private weak var appVersionLabel: UILabel!
     @IBOutlet private weak var companyNameLabel: UILabel!
     @IBOutlet private weak var buttonBack: UIButton!
-
+    @IBOutlet weak var userIDLabel: UILabel!
+    
     // MARK: - Properties
     private let disposeBag = DisposeBag()
     private let locationManager = CLLocationManager()
@@ -63,7 +64,8 @@ private extension MapVC {
         appVersionLabel.text = displayAppVersion()
         appVersionLabel.textColor = .green
         companyNameLabel.text = "I. \(user?.company_name ?? "")"
-
+        userIDLabel.rx.text.onNext("ID.\(user?.user_id ?? "")")
+        
         mapView.delegate = self
         mapView.showsUserLocation = delegateType == .location
         mapView.userTrackingMode = delegateType == .location ? .follow : .none

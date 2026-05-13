@@ -15,6 +15,7 @@ final class PlannedVisitListVC: BaseView {
     @IBOutlet private weak var appVersionLabel: UILabel!
     @IBOutlet private weak var companyNameLabel: UILabel!
     @IBOutlet private weak var buttonBack: UIButton!
+    @IBOutlet weak var userIDLabel: UILabel!
     
     @IBOutlet weak var viewShadowFilter: UIView!
     @IBOutlet weak var stackColapseTapped: UIStackView!
@@ -64,6 +65,7 @@ private extension PlannedVisitListVC {
         appVersionLabel.text = displayAppVersion()
         appVersionLabel.textColor = .green
         companyNameLabel.rx.text.onNext("I. \(user?.company_name ?? "")")
+        userIDLabel.rx.text.onNext("ID.\(user?.user_id ?? "")")
         
         style(view: viewShadowFilter, cornerRadius: 10)
         shadowView(viewShadowFilter, color: .gray, opacity: 0.13, offset: .zero, radius: 10)

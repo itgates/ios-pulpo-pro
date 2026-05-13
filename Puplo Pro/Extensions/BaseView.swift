@@ -172,7 +172,7 @@ class BaseView: UIViewController, UITextFieldDelegate{
                     RealmStorageManager.shared.clearSelectedImageVisitData()
                     RealmStorageManager.shared.clearUnPlannedVisitOffline()
                     RealmStorageManager.shared.clearVisitStartLocation()
-
+                    RealmStorageManager.shared.clearVisitStartDate()
                     requestStatuses.append("UnPlanned Visit: Success ✅")
                 } else {
                     requestStatuses.append("UnPlanned Visit: Error - \(message) ❌")

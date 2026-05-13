@@ -17,6 +17,7 @@ final class AccountsListVC: BaseView {
     @IBOutlet private weak var appVersionLabel: UILabel!
     @IBOutlet private weak var companyNameLabel: UILabel!
     @IBOutlet private weak var buttonBack: UIButton!
+    @IBOutlet weak var userIDLabel: UILabel!
     
     @IBOutlet private weak var viewShadowFilter: UIView!
     @IBOutlet private weak var stackColapseTapped: UIStackView!
@@ -84,6 +85,7 @@ private extension AccountsListVC {
         appVersionLabel.text = displayAppVersion()
         appVersionLabel.textColor = .green
         companyNameLabel.text = "I. \(user?.company_name ?? "")"
+        userIDLabel.rx.text.onNext("ID.\(user?.user_id ?? "")")
         
         style(view: viewShadowFilter, cornerRadius: 10)
         shadowView(viewShadowFilter, color: .gray, opacity: 0.13, offset: .zero, radius: 10)

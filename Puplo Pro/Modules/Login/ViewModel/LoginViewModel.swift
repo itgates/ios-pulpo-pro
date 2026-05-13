@@ -150,6 +150,7 @@ class LoginViewModel {
                 }
                 print("DEBUG: switch success with model: \(model)")
             case .failure(let error):
+                completion(false)
                 print("DEBUG: switch failure with error: \(error)")
             }
         }
@@ -303,6 +304,7 @@ class LoginViewModel {
                 }
                 print("DEBUG: switch success with PlannedVisits: \(model)")
             case .failure(let error):
+                completion(false)
                 print("DEBUG: switch failure with error: \(error)")
             }
         }
