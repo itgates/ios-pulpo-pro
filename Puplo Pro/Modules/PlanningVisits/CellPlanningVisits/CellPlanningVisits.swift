@@ -17,9 +17,6 @@ class CellPlanningVisits: UITableViewCell {
     @IBOutlet weak var hosptalLabel: UILabel!
     @IBOutlet weak var AMAccountLabel: UILabel!
     
-    @IBOutlet weak var viewCircel: UIView!
-    @IBOutlet weak var viewBorder: UIView!
-    @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var checkImage: UIImageView!
     
     // MARK: - Properties
@@ -47,7 +44,6 @@ class CellPlanningVisits: UITableViewCell {
     }
     func configureCellPlanned(model: PlannedVisitsData) {
 
-        viewCircel.rx.isHidden.onNext(true)
         AMAccountLabel.textColor = .orange
         checkImage.image = UIImage(named: "pin")
         idLabel.rx.text.onNext("id: \(model.id ?? "")")
@@ -95,7 +91,6 @@ class CellPlanningVisits: UITableViewCell {
         self.accountName =  accountName
     }
     func configureCellOWS(model: PlanOwsData) {
-        viewCircel.rx.isHidden.onNext(true)
         checkImage.rx.isHidden.onNext(true)
 
         idLabel.rx.text.onNext("id: \(model.id ?? "")")
@@ -118,7 +113,6 @@ class CellPlanningVisits: UITableViewCell {
     
     func setupUI() {
         viewBackground.layer.rx.cornerRadius.onNext(10)
-        viewCircel.layer.rx.cornerRadius.onNext(viewCircel.frame.height / 2)
     }
     // MARK: - selectedItem
     func selectedItem() {

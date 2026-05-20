@@ -47,6 +47,7 @@ final class HomeVC: BaseView {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        executeOfflineRequestsIfNeeded()
         checkUpdateVersion()
         setNeedsStatusBarAppearanceUpdate()
         setupUI()

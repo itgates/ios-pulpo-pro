@@ -81,7 +81,7 @@ final class RealmStorageManager {
         user.fullname = userData?.Username ?? ""
         user.mobile = userData?.Mobile ?? ""
         user.divIds = userData?.DivIds ?? ""
-        user.lineIds = userData?.LineIds ?? ""
+        user.lineIds = normalizeLineIds(userData?.LineIds)
         user.check_in_date = checkInDate
         user.check_in_time = checkInTime
         user.company_name = companyName 
@@ -89,7 +89,11 @@ final class RealmStorageManager {
         write { realm.add(user, update: .modified) }
         print("✔ User saved successfully")
     }
-
+    func normalizeLineIds(_ value: String?) -> String {
+        return value?
+            .split(separator: "-")
+            .joined(separator: ",") ?? ""
+    }
     @discardableResult
     func getLoggedUser() -> UserLoginRealm? {
         realm.objects(UserLoginRealm.self)

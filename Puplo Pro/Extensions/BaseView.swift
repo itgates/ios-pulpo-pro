@@ -46,7 +46,7 @@ class BaseView: UIViewController, UITextFieldDelegate{
         LocationPermissionManager.shared.checkLocationPermission(from: self)
     }
    
-    private func executeOfflineRequestsIfNeeded() {
+     func executeOfflineRequestsIfNeeded() {
         guard Reachability.isConnectedToNetwork() else { return }
         let offlineOWS = RealmStorageManager.shared.getOWActivitiesData() ?? []
         let offlinePlans = RealmStorageManager.shared.getOfflinePlans() ?? []
@@ -139,16 +139,6 @@ class BaseView: UIViewController, UITextFieldDelegate{
                 if done {
                     var storedVisits = RealmStorageManager.shared.getActualVisitData() ?? []
 
-//                    for index in storedVisits.indices {
-//                        guard !storedVisits[index].isUploaded else { continue }
-//
-//                        if let offlineID = storedVisits[index].offline_id,
-//                           let matched = idsMap.first(where: { $0.offlineID == offlineID }) {
-//
-//                            storedVisits[index].isUploaded = true
-//                            storedVisits[index].online_id = "\(matched.onlineID)"
-//                        }
-//                    }
                     for index in storedVisits.indices {
 
                         let visit = storedVisits[index]
@@ -277,6 +267,7 @@ class BaseView: UIViewController, UITextFieldDelegate{
             return "v1.0"
         }
     }
+    
 }
 class BaseNavigationController: UINavigationController {
     override var childForStatusBarStyle: UIViewController? {

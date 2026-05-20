@@ -165,7 +165,8 @@ private extension PlannedVisitsVC {
             UINib(nibName: "CellPlanningVisits", bundle: nil),
             forCellReuseIdentifier: "CellPlanningVisits"
         )
-        tableView.rowHeight = 150
+        tableView.tableFooterView = UIView()
+        tableView.rowHeight = UITableView.automaticDimension
     }
     
     func bindTableView() {
@@ -245,8 +246,17 @@ private extension PlannedVisitsVC {
 
         let brick = masterData?.bricks?.first(where: { "\($0.id ?? "")" == account?.brick_id })
 
-        let brickName = brick?.name ?? ""
+        var brickName = ""
+        print("brick?.id >>>\(brick?.id ?? "")")
         
+        var brickId = brick?.id ?? ""
+        if brickId == "" {
+            brickId = "0"
+            brickName = "All Bricks"
+        } else {
+            brickId =  brick?.id ?? "0"
+            brickName = brick?.name ?? ""
+        }
         let accountTypeName = masterData?.account_types?
             .first(where: { $0.id == model.account_type })?
             .name ?? ""
@@ -286,7 +296,7 @@ private extension PlannedVisitsVC {
 //            time: model.vtime,
             planID: model.id,
             division: IdNameModel(id: model.div_id, name: divisionName,ll: accountll,lg: accountlg),
-            brick: IdNameModel(id: brick?.id ?? "", name: brickName, ll: accountll,lg: accountlg),
+            brick: IdNameModel(id: brickId, name: brickName, ll: accountll,lg: accountlg),
             accountType: IdNameModel(id: model.account_type, name: accountTypeName,ll: accountll,lg: accountlg),
             account: IdNameModel(id: accountId, name: accountName,ll: accountll,lg: accountlg),
             doctor: IdNameModel(id: model.item_doc_id, name: doctorName,ll: accountll,lg: accountlg),

@@ -81,44 +81,49 @@ class LoginViewModel {
     }
     // MARK: - fetchAllData
     func fetchAllData(completion: @escaping (Bool) -> Void) {
-        
+
+        loadingBehavior.accept(true)
+
         let group = DispatchGroup()
         var isAllSuccess = true
-        
+
         group.enter()
         getMasterData { success in
             isAllSuccess = isAllSuccess && success
             group.leave()
         }
-        
+
         group.enter()
         getAccountsDoctors { success in
             isAllSuccess = isAllSuccess && success
             group.leave()
         }
-        
+
         group.enter()
         getPlannedVisits { success in
             isAllSuccess = isAllSuccess && success
             group.leave()
         }
+
         group.enter()
         getAppPresentations { success in
             isAllSuccess = isAllSuccess && success
             group.leave()
         }
-        
-        group.notify(queue: .main) {
+
+        group.notify(queue: .main) { [weak self] in
+
+            self?.loadingBehavior.accept(false)
+
             completion(isAllSuccess)
         }
     }
-    
     // MARK: - get Master Data
     func getMasterData(completion: @escaping (Bool) -> Void) {
         
         let now = Date()
         
-        let url = "\(baseURL + URLs.masterDataURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")&lineId=\(user?.lineIds ?? "")&divId=\(user?.divIds ?? "")"
+        let url = "\(baseURL + URLs.masterDataURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")&lineId=\(normalizeLineIds(user?.lineIds))&divId=\(user?.divIds ?? "")"
         print("url >>\(url)")
         
         // MARK: - Headers
@@ -129,7 +134,7 @@ class LoginViewModel {
             "device-id": AppInfo.shared.deviceID,
             "timezone": "Africa/Cairo"
         ]
-        loadingBehavior.accept(true)
+//        loadingBehavior.accept(true)
         print("headers >>\(headers)")
         NetworkLayer.shared.fetchData(
             method: .get,
@@ -138,7 +143,7 @@ class LoginViewModel {
             headers: headers
         ) { [weak self] (result: Result<MasterDataModel>) in
             guard let self = self else { return }
-            self.loadingBehavior.accept(false)
+//            self.loadingBehavior.accept(false)
             switch result {
             case .success(let model):
                 // Save master data locally
@@ -158,7 +163,7 @@ class LoginViewModel {
     // MARK: - get Accounts Doctors
     func getAccountsDoctors(completion: @escaping (Bool) -> Void) {
        
-        let url = "\(baseURL + URLs.accountsDoctorsURL)&lineId=\(user?.lineIds ?? "")&divId=\(user?.divIds ?? "")"
+        let url = "\(baseURL + URLs.accountsDoctorsURL)&lineId=\(normalizeLineIds(user?.lineIds))&divId=\(user?.divIds ?? "")"
         
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -168,7 +173,7 @@ class LoginViewModel {
             "timezone": "Africa/Cairo"
         ]
         
-        loadingBehavior.accept(true)
+//        loadingBehavior.accept(true)
         
         NetworkLayer.shared.fetchData(
             method: .get,
@@ -178,7 +183,7 @@ class LoginViewModel {
         ) { [weak self] (result: Result<AccountsDoctorsModel>) in
             
             guard let self = self else { return }
-            self.loadingBehavior.accept(false)
+//            self.loadingBehavior.accept(false)
             switch result {
             case .success(let model):
                 
@@ -283,7 +288,7 @@ class LoginViewModel {
             "device-id": AppInfo.shared.deviceID,
             "timezone": "Africa/Cairo"
         ]
-        loadingBehavior.accept(true)
+//        loadingBehavior.accept(true)
         print("headers >>\(headers)")
         NetworkLayer.shared.fetchData(
             method: .get,
@@ -292,7 +297,7 @@ class LoginViewModel {
             headers: headers
         ) { [weak self] (result: Result<PlannedVisitsModel>) in
             guard let self = self else { return }
-            self.loadingBehavior.accept(false)
+//            self.loadingBehavior.accept(false)
             switch result {
             case .success(let model):
                 // Save  Plan Visits Data locally
@@ -313,7 +318,7 @@ class LoginViewModel {
     // MARK: - get app presentations
     func getAppPresentations(completion: @escaping (Bool) -> Void) {
         
-        let url = "\(baseURL + URLs.appPresentationsURL)&teamId=\(user?.lineIds ?? "")"
+        let url = "\(baseURL + URLs.appPresentationsURL)&teamId=\(normalizeLineIds(user?.lineIds))"
         
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -323,7 +328,7 @@ class LoginViewModel {
             "timezone": "Africa/Cairo"
         ]
         
-        loadingBehavior.accept(true)
+//        loadingBehavior.accept(true)
         
         NetworkLayer.shared.fetchData(
             method: .get,
@@ -332,7 +337,7 @@ class LoginViewModel {
             headers: headers
         ) { [weak self] (result: Result<AppPresentationsModel>) in
             guard let self = self else { return }
-            self.loadingBehavior.accept(false)
+//            self.loadingBehavior.accept(false)
             switch result {
             case .success(let model):
                 // Save  Plan Ows Data locally
@@ -349,6 +354,11 @@ class LoginViewModel {
                 
             }
         }
+    }
+    func normalizeLineIds(_ value: String?) -> String {
+        return value?
+            .split(separator: "-")
+            .joined(separator: ",") ?? ""
     }
 }
 

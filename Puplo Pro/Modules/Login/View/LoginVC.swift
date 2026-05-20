@@ -37,6 +37,7 @@ class LoginVC: BaseView {
         setupUI()
         setupStyles()
         setupBindings()
+        subscribeToLoading()
     }
 
     override func viewDidLayoutSubviews() {
@@ -141,7 +142,7 @@ class LoginVC: BaseView {
         let password = passwordTextField.text ?? ""
 
         setApplyButton(button: loginButton, enabled: false)
-        subscribeToLoading()
+//        subscribeToLoading()
 
         viewModel.loginUser(
             name: username,
@@ -156,19 +157,6 @@ class LoginVC: BaseView {
         showAlert( alertTitle: "Error", alertMessage: "Invalid username or password")
         setApplyButton(button: loginButton, enabled: true)
     }
-//    private func loadMasterData() {
-//        viewModel.fetchAllData { [weak self] success in
-//            guard let self, success else { return }
-//            if success {
-//                self.showTopAlert(message: "Successfully login") {
-//                    self.navigationHomeVC()
-//                }
-//            } else {
-//                showAlert( alertTitle: "Error", alertMessage: "Data not found")
-//            }
-//           
-//        }
-//    }
     private func loadMasterData() {
         viewModel.fetchAllData { [weak self] success in
             guard let self else { return }

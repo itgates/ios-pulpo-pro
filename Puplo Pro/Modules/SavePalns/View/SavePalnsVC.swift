@@ -214,7 +214,8 @@ private extension SavePlansVC {
             UINib(nibName: "CellPlanningVisits", bundle: nil),
             forCellReuseIdentifier: "CellPlanningVisits"
         )
-        tableView.rowHeight = 140
+        tableView.tableFooterView = UIView()
+        tableView.rowHeight = UITableView.automaticDimension
 
         doctorsObservable
             .bind(to: tableView.rx.items(
@@ -229,13 +230,6 @@ private extension SavePlansVC {
                                 opacity: 0.15,
                                 offset: .zero,
                                 radius: 10)
-
-                cell.viewCircel.isHidden = true
-
-                self.style(view: cell.viewBorder,
-                           cornerRadius: cell.viewBorder.frame.height / 2,
-                           borderWidth: 1.5,
-                           borderColor: .lightGray)
 
                 cell.configureCell(model: model)
                 cell.selectedItem()

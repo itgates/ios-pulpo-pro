@@ -23,6 +23,7 @@ class CellActualVisit: UITableViewCell {
     @IBOutlet weak var visitTypeLabel: UILabel!
     @IBOutlet weak var checkUpload: UIImageView!
     @IBOutlet weak var mapButton: UIButton!
+    @IBOutlet weak var visitTimeLabel: UILabel!
     
     // MARK: - Properties
     private let disposeBag = DisposeBag()
@@ -44,6 +45,7 @@ class CellActualVisit: UITableViewCell {
         doctorLabel.rx.text.onNext(model.doctor_name)
         visitDateLabel.rx.text.onNext(model.visit_date)
         visitTypeLabel.rx.text.onNext(model.visit_type)
+        visitTimeLabel.rx.text.onNext(model.visit_time)
         
         if model.isUploaded == true {
             checkUpload.isHidden = false

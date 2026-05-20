@@ -240,7 +240,8 @@ private extension PlanningVisitsVC {
             UINib(nibName: "CellPlanningVisits", bundle: nil),
             forCellReuseIdentifier: "CellPlanningVisits"
         )
-        tableView.rowHeight = 155
+        tableView.tableFooterView = UIView()
+        tableView.rowHeight = UITableView.automaticDimension
     }
 
     func bindTableView() {
@@ -248,15 +249,6 @@ private extension PlanningVisitsVC {
         let search = searchTextField.rx.text.orEmpty
             .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
-//
-//        let dataSource = Observable.combineLatest(filteredDoctors, search)
-//            .map { items, text in
-//                guard !text.isEmpty else { return items }
-//                return items.filter {
-//                    $0.name.localizedCaseInsensitiveContains(text) || $0.hosptal.localizedCaseInsensitiveContains(text) || $0.id.localizedCaseInsensitiveContains(text)
-//                    
-//                }
-//            }
 
         let dataSource = Observable.combineLatest(filteredDoctors, search)
             .map { items, text in
@@ -282,19 +274,6 @@ private extension PlanningVisitsVC {
                                 opacity: 0.15,
                                 offset: .zero,
                                 radius: 10)
-                
-                self.shadowView(cell.viewCircel,
-                                color: .gray,
-                                opacity: 0.15,
-                                offset: .zero,
-                                radius: 10)
-                
-                self.style(view: cell.viewBorder,
-                           cornerRadius: cell.viewBorder.frame.height / 2,
-                           borderWidth: 3,
-                           borderColor: borderColor)
-                
-//                cell.configureCell(model: model)
                 self.selectedModels.value.contains(where: { $0.id == model.id })
                     ? cell.selectedItem()
                     : cell.unSelectedItem()

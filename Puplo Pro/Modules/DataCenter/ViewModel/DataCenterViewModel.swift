@@ -49,7 +49,7 @@ class DataCenterViewModel {
         let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
         let now = Date()
         
-        let url = "\(baseURL + URLs.masterDataURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")&lineId=\(user?.lineIds ?? "")&divId=\(user?.divIds ?? "")"
+        let url = "\(baseURL + URLs.masterDataURL)&today=\(now.formattedDate)&userId=\(user?.user_id ?? "")&lineId=\(normalizeLineIds(user?.lineIds))&divId=\(user?.divIds ?? "")"
         print("url >>\(url)")
         
         // MARK: - Headers
@@ -94,7 +94,7 @@ class DataCenterViewModel {
             completion(false)
             return }
         
-        let url = "\(baseURL + URLs.accountsDoctorsURL)&lineId=\(user.lineIds ?? "")&divId=\(user.divIds ?? "")"
+        let url = "\(baseURL + URLs.accountsDoctorsURL)&lineId=\(normalizeLineIds(normalizeLineIds(user.lineIds)))&divId=\(user.divIds)"
         
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -204,23 +204,6 @@ class DataCenterViewModel {
         }
     }
     
-//    doctorsDataList.forEach {
-//                when(it.catId) {
-//                    1 -> {
-//                        pmDoctorsDataList.add(it)
-//                        pmDoctorsDataListToShow.add(it)
-//                    }
-//                    2 -> {
-//                        amDoctorsDataList.add(it)
-//                        amDoctorsDataListToShow.add(it)
-//                    }
-//                    3 -> {
-//                        otherDoctorsDataList.add(it)
-//                        otherDoctorsDataListToShow.add(it)
-//                    }
-//                }
-//            }
-    
     // MARK: - get Planned Visits
     func getPlannedVisits(completion: @escaping (Bool) -> Void) {
         
@@ -267,9 +250,10 @@ class DataCenterViewModel {
     // MARK: - get app presentations
     func getAppPresentations(completion: @escaping (Bool) -> Void) {
         
+        
         let user = RealmStorageManager.shared.getLoggedUser()
         let baseURL = RealmStorageManager.shared.getAPIPath() ?? ""
-        let url = "\(baseURL + URLs.appPresentationsURL)&teamId=\(user?.lineIds ?? "")"
+        let url = "\(baseURL + URLs.appPresentationsURL)&teamId=\(normalizeLineIds(user?.lineIds))"
         
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -305,5 +289,10 @@ class DataCenterViewModel {
                 
             }
         }
+    }
+    func normalizeLineIds(_ value: String?) -> String {
+        return value?
+            .split(separator: "-")
+            .joined(separator: ",") ?? ""
     }
 }

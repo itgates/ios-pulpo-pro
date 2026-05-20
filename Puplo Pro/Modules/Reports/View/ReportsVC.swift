@@ -28,6 +28,7 @@ final class ReportsVC: BaseView {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        executeOfflineRequestsIfNeeded()
         setupUI()
         configureTableView()
         observeTableHeight()
